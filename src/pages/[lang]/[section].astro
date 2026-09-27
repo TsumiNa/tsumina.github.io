@@ -1,0 +1,14 @@
+---
+import SitePage from '../../components/SitePage.astro';
+import type { Locale } from '../../i18n';
+export function getStaticPaths() {
+  return ['ja', 'zh'].flatMap((lang) =>
+    ['research', 'publications', 'blog', 'notes', 'cv'].map((section) => ({
+      params: { lang, section },
+    })),
+  );
+}
+const { lang, section } = Astro.params as { lang: Locale; section: string };
+---
+
+<SitePage {lang} {section} />

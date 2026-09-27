@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Search — TsumiNa"
+  ><div class="container page">
+    <header class="page-header">
+      <h1>Search</h1><p class="lead">Static full-text search across writing and research pages.</p>
+    </header><div id="search"></div><script is:inline src="/pagefind/pagefind-ui.js"></script><link
+      href="/pagefind/pagefind-ui.css"
+      rel="stylesheet"
+    /><script is:inline>
+      window.addEventListener(
+        'DOMContentLoaded',
+        () => new PagefindUI({ element: '#search', showSubResults: true }),
+      );
+    </script>
+  </div></BaseLayout
+>

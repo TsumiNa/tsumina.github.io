@@ -1,0 +1,52 @@
+---
+import { type Locale, localePath, ui } from '../i18n';
+const { lang = 'en' } = Astro.props as { lang?: Locale };
+const t = ui[lang];
+const nav = [
+  ['', t.home],
+  ['research', t.research],
+  ['publications', t.publications],
+  ['blog', t.blog],
+  ['notes', t.notes],
+  ['cv', t.cv],
+];
+---
+
+<header class="site-header no-print">
+  <nav class="container nav" aria-label="Primary">
+    <a class="brand" href={localePath(lang)}>TsumiNa</a><div class="nav-links">
+      {nav.map(([p, label]) => <a href={localePath(lang, p)}>{label}</a>)}
+    </div><details class="mobile-nav">
+      <summary>Menu</summary><div>
+        {nav.map(([p, label]) => <a href={localePath(lang, p)}>{label}</a>)}
+      </div>
+    </details><div class="nav-tools">
+      <a class="button" href="/search" aria-label={t.search}>⌕</a><label
+        ><span class="sr-only">{t.language}</span><select id="language" aria-label={t.language}
+          ><option value="en" selected={lang === 'en'}>EN</option><option
+            value="ja"
+            selected={lang === 'ja'}>日本語</option
+          ><option value="zh" selected={lang === 'zh'}>中文</option></select
+        ></label
+      ><button id="theme-toggle" type="button" aria-label={t.theme}>◐</button>
+    </div>
+  </nav>
+</header>
+<script is:inline>
+  const root = document.documentElement,
+    key = 'theme';
+  const saved = localStorage.getItem(key);
+  if (saved) root.dataset.theme = saved;
+  else if (matchMedia('(prefers-color-scheme: dark)').matches) root.dataset.theme = 'dark';
+  document.querySelector('#theme-toggle')?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    localStorage.setItem(key, next);
+  });
+  document.querySelector('#language')?.addEventListener('change', (event) => {
+    const lang = event.target.value;
+    localStorage.setItem('language', lang);
+    const path = location.pathname.replace(/^\/(ja|zh)(?=\/|$)/, '');
+    location.href = (lang === 'en' ? '' : `/${lang}`) + (path || '/');
+  });
+</script>

@@ -1,0 +1,7 @@
+---
+const { src, alt, caption } = Astro.props;
+---
+
+<figure class="chem-structure">
+  <img {src} {alt} loading="lazy" /><figcaption>{caption}</figcaption>
+</figure>

@@ -1,0 +1,23 @@
+---
+const {
+  src,
+  alt,
+  caption,
+  label,
+  credit,
+  width = 'normal',
+} = Astro.props as {
+  src: string;
+  alt: string;
+  caption?: string;
+  label?: string;
+  credit?: string;
+  width?: 'normal' | 'wide' | 'full';
+};
+---
+
+<figure class={width}>
+  <img {src} {alt} loading="lazy" /><figcaption>
+    {label && <strong>{label} </strong>}{caption}{credit && <span> — {credit}</span>}
+  </figcaption>
+</figure>

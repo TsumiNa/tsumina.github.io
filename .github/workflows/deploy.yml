@@ -1,0 +1,40 @@
+name: Deploy static site
+on:
+  push: { branches: [main, master, work] }
+  workflow_dispatch:
+permissions: { contents: read, pages: write, id-token: write }
+concurrency: { group: pages, cancel-in-progress: true }
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 10 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: dist }
+  deploy-pages:
+    needs: build
+    environment: { name: github-pages, url: '${{ steps.deployment.outputs.page_url }}' }
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy once-built artifact to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+  deploy-cloudflare:
+    if: "${{ vars.ENABLE_CLOUDFLARE == 'true' }}"
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { name: github-pages, path: artifact }
+      - run: mkdir dist && tar -xf artifact/artifact.tar -C dist
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: '${{ secrets.CLOUDFLARE_API_TOKEN }}'
+          accountId: '${{ secrets.CLOUDFLARE_ACCOUNT_ID }}'
+          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PROJECT_NAME }}
