@@ -6,13 +6,9 @@ applyTo: "**"
 
 # Shell Environment and Repository Commands
 
-At the start of a work session, identify the interpreter running commands before relying on shell-specific syntax. Inspect the current process first:
+At the start of a work session, identify the interpreter from execution-environment metadata or the command runner's configured shell before relying on shell-specific syntax. Do not make the initial probe depend on shell expansions such as `$$`, `$0`, `$fish_pid`, command substitution, or conditional syntax: those expressions must be parsed before the interpreter has been identified and are not portable across the supported shells.
 
-```sh
-ps -p $$ -o comm=
-```
-
-Also inspect `$0` when the process name is ambiguous. Treat `$SHELL` only as information about the user's configured login shell; it may not identify the interpreter executing the current command. Record the running interpreter for the session and do not assume Bash.
+If the execution environment does not expose the interpreter, use an explicitly selected shell through the command runner when available. Otherwise keep commands to literal, shell-neutral program invocations until the interpreter is known. Treat `$SHELL` only as information about the user's configured login shell; it may not identify the interpreter executing the current command. Record the running interpreter for the session and do not assume Bash.
 
 ## Shell-specific behavior
 

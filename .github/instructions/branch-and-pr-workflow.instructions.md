@@ -13,7 +13,7 @@ Before editing files for a feature, fix, refactor, dependency update, content ch
 Apply the first matching rule:
 
 1. If the user explicitly asks to work on the current branch, to edit directly, or not to open a PR, follow that instruction.
-2. If the current branch already has an open PR for the requested work, continue on that branch and update the existing PR. Do not open a duplicate PR.
+2. If the current branch already has an open PR for the requested work, continue locally on that branch. Push commits or otherwise update the existing PR only when the user requested or explicitly agreed to remote PR work. Never open a duplicate PR.
 3. If the current branch is ahead of the default branch and has no PR, stay on that branch. Open a PR before adding further related commits only when the user requested or explicitly agreed to remote PR work; otherwise continue locally without creating one.
 4. Otherwise, create a descriptive branch from an up-to-date default branch. Use the repository convention `codex/<short-description>` unless the user specifies another name.
 
