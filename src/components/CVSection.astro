@@ -1,0 +1,24 @@
+---
+import type { CVEntry } from '../data/cv';
+import { cvPeriod } from '../i18n/cv';
+import type { Locale } from '../i18n';
+interface Props {
+  title: string;
+  entries: readonly CVEntry[];
+  lang: Locale;
+}
+const { title, entries, lang } = Astro.props;
+---
+
+<section>
+  <h2>{title}</h2>
+  {
+    entries.map((entry) => (
+      <article class="entry">
+        <h3>{entry.title}</h3>
+        {entry.organization && <p>{entry.organization}</p>}
+        {entry.start && <p class="meta">{cvPeriod(entry, lang)}</p>}
+      </article>
+    ))
+  }
+</section>

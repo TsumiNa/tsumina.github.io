@@ -1,4 +1,6 @@
 ---
+import CVContent from './CVContent.astro';
+import { cvUI } from '../i18n/cv';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { type Locale, localePath, ui } from '../i18n';
 import { researchThemes, site } from '../config/site';
@@ -6,6 +8,7 @@ import { getCollection } from 'astro:content';
 import { getPublications } from '../utils/publications';
 const { lang = 'en', section = 'home' } = Astro.props as { lang?: Locale; section?: string };
 const t = ui[lang];
+const profile = cvUI[lang];
 const pubs = getPublications();
 const entries = (
   await getCollection(
@@ -14,23 +17,23 @@ const entries = (
   )
 ).sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
 const titles: Record<string, string> = {
-  home: 'TsumiNa',
+  home: site.name,
   research: t.research,
   publications: t.publications,
   blog: t.blog,
   notes: t.notes,
   cv: t.cv,
 };
-const title = titles[section] ?? 'TsumiNa';
+const title = titles[section] ?? site.name;
 ---
 
-<BaseLayout title={`${title} — TsumiNa`} {lang}>
+<BaseLayout title={section === 'home' ? site.title : `${title} — ${site.name}`} {lang}>
   <div class="container page" data-pagefind-body>
     <section hidden={section !== 'home'}>
       <header class="page-header">
-        <p class="eyebrow">{t.intro}</p><h1>TsumiNa</h1><p class="lead">{t.lead}</p><div
-          class="actions"
-        >
+        <p class="eyebrow">{profile.intro}</p><h1>{site.name}</h1><p class="lead">
+          {profile.lead}
+        </p><div class="actions">
           <a class="button primary" href={localePath(lang, 'publications')}>{t.publications}</a><a
             class="button"
             href={localePath(lang, 'research')}>{t.research}</a
@@ -168,18 +171,13 @@ const title = titles[section] ?? 'TsumiNa';
         ))
       }{entries.length === 0 && <p>{t.empty}</p>}
     </section>
-    <section hidden={section !== 'cv'}>
-      <header class="page-header">
-        <h1>{t.cv}</h1><p class="lead">
-          A web-native CV will be populated only from an authoritative CV source.
-        </p>
-      </header><h2>Profile</h2><p>{t.lead}</p><h2>Research interests</h2><ul>
-        {researchThemes.map((x) => <li>{x.title}</li>)}
-      </ul><p class="callout">
-        Employment, education, awards, and dates are intentionally omitted until a source CV is
-        added.
-      </p>
-    </section>
+    {
+      section === 'cv' && (
+        <section>
+          <CVContent {lang} />
+        </section>
+      )
+    }
   </div>
   <script is:inline>
     const q = document.querySelector('#publication-search'),

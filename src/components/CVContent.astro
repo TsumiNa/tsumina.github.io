@@ -1,0 +1,66 @@
+---
+import { cv } from '../data/cv';
+import { cvUI, cvPeriod } from '../i18n/cv';
+import { type Locale, ui } from '../i18n';
+import { researchThemes, site } from '../config/site';
+import CVSection from './CVSection.astro';
+const { lang } = Astro.props as { lang: Locale };
+const t = cvUI[lang];
+---
+
+<header class="page-header">
+  <h1>{cv.name} — {ui[lang].cv}</h1>
+  <p class="lead">{t.lead}</p>
+  <p>{cv.degree}</p>
+  <p>
+    <a href={`mailto:${cv.email}`}>{cv.email}</a> · <a href={site.orcid}>ORCID</a> · <a
+      href={site.github}>GitHub</a
+    > · <a href={cv.researchmap}>researchmap</a>
+  </p>
+  <p class="meta">{t.source}</p>
+</header>
+<CVSection title={t.appointments} entries={cv.appointments} {lang} />
+<section>
+  <h2>{ui[lang].focus}</h2><ul>{researchThemes.map((theme) => <li>{theme.title}</li>)}</ul>
+</section>
+<CVSection title={t.experience} entries={cv.experience} {lang} />
+<CVSection title={t.education} entries={cv.education} {lang} />
+<p class="meta">{t.educationNote}</p>
+<section><h2>{t.thesis}</h2><p lang="ja">{cv.thesis}</p></section>
+<section>
+  <h2>{t.projects}</h2>
+  {
+    cv.projects.map((project) => (
+      <article class="entry">
+        <h3>{'url' in project ? <a href={project.url}>{project.name}</a> : project.name}</h3>
+        <p>{project.description}</p>
+        <p class="meta">
+          {cvPeriod(project, lang)}
+          {'private' in project && ` · ${t.private}`}
+        </p>
+      </article>
+    ))
+  }
+</section>
+<CVSection title={t.teaching} entries={cv.teaching} {lang} />
+<section>
+  <h2>{t.talks}</h2>
+  {
+    cv.talks.map((talk) => (
+      <article class="entry">
+        <>
+          <h3>{talk.title}</h3>
+          <p>{talk.venue}</p>
+          <p class="meta">
+            {talk.location} · {talk.year}
+          </p>
+        </>
+      </article>
+    ))
+  }
+</section>
+<CVSection title={t.memberships} entries={cv.memberships} {lang} />
+<section>
+  <h2>{t.skills}</h2><p>{cv.programming.join(' · ')}</p><p>{cv.databases.join(' · ')}</p>
+</section>
+<section><h2>{t.languages}</h2><p>{cv.languages.join(' · ')}</p></section>

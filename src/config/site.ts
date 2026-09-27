@@ -1,6 +1,8 @@
+import { cv } from '../data/cv';
+
 export const site = {
-  name: 'TsumiNa',
-  title: 'TsumiNa — Research & Engineering',
+  name: cv.name,
+  title: `${cv.name} — Research & Engineering`,
   description:
     'Research and technical writing on machine learning, materials discovery, and scientific computing.',
   url: 'https://tsumina.github.io',

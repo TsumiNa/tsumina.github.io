@@ -62,4 +62,6 @@ Cloudflare is otherwise skipped and cannot block Pages. `.github/workflows/sync-
 
 ## Content status
 
-No authoritative CV file was present during initialization, so career, education, awards, dates, and affiliations are deliberately absent. The publication store starts empty until `pnpm sync:orcid` succeeds. Research-theme copy is generic and explicitly limited to the supplied subject areas.
+Career information in `src/data/cv.ts` is transcribed from the author's September 2026 CV. The home page and EN/JA/ZH CV pages now use these facts. The author confirmed the master's period as April 2012–March 2014; separate doctoral dates remain unspecified. See [`docs/cv-source.md`](docs/cv-source.md) for provenance, date decisions, and update guidance.
+
+ORCID remains the upstream publication source; the generated publication store is separate from CV career data. Blog and Notes remain empty apart from excluded development drafts.
