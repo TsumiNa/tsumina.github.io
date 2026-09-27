@@ -6,13 +6,13 @@ applyTo: "**"
 
 # Shell Environment and Repository Commands
 
-At the start of a work session, confirm the active shell before relying on shell-specific syntax:
+At the start of a work session, identify the interpreter running commands before relying on shell-specific syntax. Inspect the current process first:
 
 ```sh
-echo $SHELL
+ps -p $$ -o comm=
 ```
 
-If `$SHELL` is unset, inspect `$0`. Record the result for the session; do not assume Bash.
+Also inspect `$0` when the process name is ambiguous. Treat `$SHELL` only as information about the user's configured login shell; it may not identify the interpreter executing the current command. Record the running interpreter for the session and do not assume Bash.
 
 ## Shell-specific behavior
 
