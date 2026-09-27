@@ -1,0 +1,15 @@
+---
+import { getCollection, render } from 'astro:content';
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+export async function getStaticPaths() {
+  const all = await getCollection('notes', ({ data }) => !data.draft && data.lang !== 'en');
+  return all.map((entry) => ({
+    params: { lang: entry.data.lang, slug: entry.id },
+    props: { entry },
+  }));
+}
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<ArticleLayout {...entry.data}><Content /></ArticleLayout>

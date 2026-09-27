@@ -1,0 +1,199 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { type Locale, localePath, ui } from '../i18n';
+import { researchThemes, site } from '../config/site';
+import { getCollection } from 'astro:content';
+import { getPublications } from '../utils/publications';
+const { lang = 'en', section = 'home' } = Astro.props as { lang?: Locale; section?: string };
+const t = ui[lang];
+const pubs = getPublications();
+const entries = (
+  await getCollection(
+    section === 'notes' ? 'notes' : 'blog',
+    ({ data }) => !data.draft && data.lang === lang,
+  )
+).sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+const titles: Record<string, string> = {
+  home: 'TsumiNa',
+  research: t.research,
+  publications: t.publications,
+  blog: t.blog,
+  notes: t.notes,
+  cv: t.cv,
+};
+const title = titles[section] ?? 'TsumiNa';
+---
+
+<BaseLayout title={`${title} — TsumiNa`} {lang}>
+  <div class="container page" data-pagefind-body>
+    <section hidden={section !== 'home'}>
+      <header class="page-header">
+        <p class="eyebrow">{t.intro}</p><h1>TsumiNa</h1><p class="lead">{t.lead}</p><div
+          class="actions"
+        >
+          <a class="button primary" href={localePath(lang, 'publications')}>{t.publications}</a><a
+            class="button"
+            href={localePath(lang, 'research')}>{t.research}</a
+          ><a class="button" href={localePath(lang, 'cv')}>{t.cv}</a>
+        </div><p><a href={site.orcid}>ORCID</a> · <a href={site.github}>GitHub</a></p>
+      </header><h2>{t.focus}</h2><ul class="theme-list">
+        {
+          researchThemes.map((x) => (
+            <li>
+              <>
+                <h3>{x.title}</h3>
+                <p>{x.description}</p>
+              </>
+            </li>
+          ))
+        }
+      </ul><div class="split">
+        <div>
+          <h2>{t.publications}</h2>{
+            pubs
+              .filter((p) => p.featured)
+              .slice(0, 5)
+              .map((p) => (
+                <article class="entry">
+                  <>
+                    <h3>{p.title}</h3>
+                    <p class="meta">
+                      {p.venue} {p.year}
+                    </p>
+                  </>
+                </article>
+              ))
+          }{pubs.length === 0 && <p>{t.empty}</p>}
+        </div><div>
+          <h2>{t.writing}</h2>{
+            entries.slice(0, 4).map((e) => (
+              <article class="entry">
+                <>
+                  <h3>{e.data.title}</h3>
+                  <p>{e.data.description}</p>
+                </>
+              </article>
+            ))
+          }{entries.length === 0 && <p>{t.empty}</p>}
+        </div>
+      </div>
+    </section>
+    <section hidden={section !== 'research'}>
+      <header class="page-header">
+        <p class="eyebrow">Research programme</p><h1>{t.research}</h1><p class="lead">
+          A curated map of research directions connecting scientific questions, computational
+          methods, and dependable software.
+        </p>
+      </header><ul class="theme-list">
+        {
+          researchThemes.map((x) => (
+            <li>
+              <>
+                <h2>{x.title}</h2>
+                <p>{x.description}</p>
+              </>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+    <section hidden={section !== 'publications'}>
+      <header class="page-header">
+        <h1>{t.publications}</h1><p class="lead">
+          Records synchronized from <a href={site.orcid}>ORCID</a>, with curated metadata kept as
+          separate manual overrides.
+        </p>
+      </header><div class="actions no-print">
+        <input
+          id="publication-search"
+          type="search"
+          placeholder="Search title / venue / author"
+          aria-label="Search publications"
+        /><select id="publication-type"
+          ><option value="">All types</option><option>journal-article</option><option
+            >conference-paper</option
+          ><option>preprint</option><option>dataset</option></select
+        >
+      </div><div id="publications">
+        {
+          pubs.map((p) => (
+            <article
+              class="entry"
+              data-search={[p.title, p.venue, ...(p.authors ?? [])].join(' ').toLowerCase()}
+              data-type={p.category ?? p.type ?? ''}
+            >
+              <h2>{p.title}</h2>
+              {p.authors && <p>{p.authors.join(', ')}</p>}
+              <p class="meta">
+                {p.venue ?? p.journal} {p.year && `· ${p.year}`}
+              </p>
+              <p>
+                {p.doi && <a href={`https://doi.org/${p.doi}`}>DOI</a>}{' '}
+                {p.links && Object.entries(p.links).map(([k, v]) => <a href={v}>{k} </a>)}
+              </p>
+            </article>
+          ))
+        }{
+          pubs.length === 0 && (
+            <p>
+              {t.empty} <a href={site.orcid}>View the ORCID profile.</a>
+            </p>
+          )
+        }
+      </div>
+    </section>
+    <section hidden={section !== 'blog' && section !== 'notes'}>
+      <header class="page-header">
+        <h1>{title}</h1><p class="lead">
+          {
+            section === 'blog'
+              ? 'Polished research, technology, and engineering essays.'
+              : 'Working knowledge, study notes, and technical references. Status labels show their maturity.'
+          }
+        </p>
+      </header>{
+        entries.map((e) => (
+          <article class="entry">
+            <>
+              <h2>
+                <a href={localePath(lang, `${section}/${e.id}`)}>{e.data.title}</a>
+              </h2>
+              <p>{e.data.description}</p>
+              <p class="meta">
+                {e.data.published.toLocaleDateString(lang)} · {e.data.tags.join(' · ')}{' '}
+                {'status' in e.data && ` · ${e.data.status}`}
+              </p>
+            </>
+          </article>
+        ))
+      }{entries.length === 0 && <p>{t.empty}</p>}
+    </section>
+    <section hidden={section !== 'cv'}>
+      <header class="page-header">
+        <h1>{t.cv}</h1><p class="lead">
+          A web-native CV will be populated only from an authoritative CV source.
+        </p>
+      </header><h2>Profile</h2><p>{t.lead}</p><h2>Research interests</h2><ul>
+        {researchThemes.map((x) => <li>{x.title}</li>)}
+      </ul><p class="callout">
+        Employment, education, awards, and dates are intentionally omitted until a source CV is
+        added.
+      </p>
+    </section>
+  </div>
+  <script is:inline>
+    const q = document.querySelector('#publication-search'),
+      type = document.querySelector('#publication-type'),
+      run = () =>
+        document
+          .querySelectorAll('#publications article')
+          .forEach(
+            (x) =>
+              (x.hidden =
+                !x.dataset.search.includes(q.value.toLowerCase()) ||
+                (type.value && x.dataset.type !== type.value)),
+          );
+    q?.addEventListener('input', run);
+    type?.addEventListener('change', run);
+  </script>
+</BaseLayout>

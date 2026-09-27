@@ -1,0 +1,7 @@
+---
+const { type = 'Note', title = type } = Astro.props;
+---
+
+<aside class="callout" data-type={type.toLowerCase()}>
+  <p class="callout-title">{title}</p><slot />
+</aside>

@@ -1,0 +1,7 @@
+---
+const { caption, width = 'wide' } = Astro.props;
+---
+
+<figure class={width}>
+  <div class="figure-grid"><slot /></div>{caption && <figcaption>{caption}</figcaption>}
+</figure>

@@ -1,0 +1,36 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SEO from '../components/SEO.astro';
+import '../styles/global.css';
+import 'katex/dist/katex.min.css';
+import type { Locale } from '../i18n';
+const {
+  title,
+  description,
+  lang = 'en',
+} = Astro.props as { title?: string; description?: string; lang?: Locale };
+---
+
+<!doctype html>
+<html lang={lang === 'zh' ? 'zh-CN' : lang}>
+  <head
+    ><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><meta
+      name="generator"
+      content={Astro.generator}
+    /><SEO {title} {description} {lang} /><link rel="icon" href="/favicon.svg" /><link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Blog RSS"
+      href="/rss.xml"
+    /><script is:inline>
+      try {
+        const t = localStorage.getItem('theme');
+        if (t) document.documentElement.dataset.theme = t;
+      } catch {}
+    </script></head
+  ><body
+    ><a class="skip" href="#main">Skip to content</a><Header {lang} /><main id="main">
+      <slot />
+    </main><Footer /></body>
+</html>
