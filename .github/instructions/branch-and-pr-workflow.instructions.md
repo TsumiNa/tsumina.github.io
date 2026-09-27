@@ -8,14 +8,18 @@ applyTo: "**"
 
 Before editing files for a feature, fix, refactor, dependency update, content change, or repository-maintenance task, inspect the current branch and working-tree state.
 
-## Branch decision order
+## Branch and remote-action decisions
 
-Apply the first matching rule:
+Decide the local work location separately from remote PR actions. A request such as "do not open a PR" or "no PR needed" disables remote PR work but does not by itself select a local branch or authorize commits to the default branch.
 
-1. If the user explicitly asks to work on the current branch, to edit directly, or not to open a PR, follow that instruction.
-2. If the current branch already has an open PR for the requested work, continue locally on that branch. Push commits or otherwise update the existing PR only when the user requested or explicitly agreed to remote PR work. Never open a duplicate PR.
-3. If the current branch is ahead of the default branch and has no PR, stay on that branch. Open a PR before adding further related commits only when the user requested or explicitly agreed to remote PR work; otherwise continue locally without creating one.
-4. Otherwise, create a descriptive branch from an up-to-date default branch. Use the repository convention `codex/<short-description>` unless the user specifies another name.
+Choose the local branch by applying the first matching rule:
+
+1. If the user explicitly selects the current branch, default branch, another branch, or a worktree, honor that location.
+2. If the current branch already has an open PR for the requested work, continue locally on that branch.
+3. If the current branch is ahead of the default branch and has no PR, continue locally on that branch.
+4. Otherwise, create a descriptive local branch from an up-to-date default branch. Use the repository convention `codex/<short-description>` unless the user specifies another name.
+
+Remote actions are opt-in. Push commits, create or update a PR, request review, or merge only when the user requested or explicitly agreed to that remote work. When authorized, update the existing PR for the branch or, if the branch is ahead and has no PR, open one before adding further related commits. Never open a duplicate PR.
 
 Do not overwrite, discard, commit, or reformat unrelated user changes. If existing changes overlap the requested files and cannot be preserved safely, stop and ask the user how to proceed.
 
