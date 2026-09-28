@@ -2,11 +2,12 @@ import rss from '@astrojs/rss';
 import type { APIContext } from 'astro';
 import { getCollection } from 'astro:content';
 import { site } from '../config/site';
+import { isBlogEntryVisible } from '../utils/blog-series';
 
 export async function GET(context: APIContext) {
-  const posts = (await getCollection('blog', ({ data }) => !data.draft && data.lang === 'en')).sort(
-    (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
-  );
+  const posts = (await getCollection('blog', ({ data }) => data.lang === 'en'))
+    .filter((entry) => isBlogEntryVisible(entry))
+    .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
   return rss({
     title: site.title,
     description: site.description,

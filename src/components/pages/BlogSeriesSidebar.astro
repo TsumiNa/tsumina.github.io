@@ -1,0 +1,24 @@
+---
+import { type Locale, ui } from '../../i18n';
+import type { BlogSeriesNavigation } from '../../utils/blog-series';
+import BlogSeriesContents from './BlogSeriesContents.astro';
+
+const { navigation, currentId, lang } = Astro.props as {
+  navigation: BlogSeriesNavigation;
+  currentId: string;
+  lang: Locale;
+};
+const { group } = navigation;
+const t = ui[lang];
+---
+
+<aside class="series-sidebar no-print" aria-label={t.seriesContents}>
+  <details class="series-sidebar-panel series-sidebar-desktop" open>
+    <summary>{t.seriesContents}</summary>
+    <BlogSeriesContents {group} {currentId} {lang} />
+  </details>
+  <details class="series-sidebar-panel series-sidebar-mobile">
+    <summary>{t.seriesContents}</summary>
+    <BlogSeriesContents {group} {currentId} {lang} />
+  </details>
+</aside>

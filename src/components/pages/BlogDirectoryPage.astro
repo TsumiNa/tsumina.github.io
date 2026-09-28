@@ -1,0 +1,78 @@
+---
+import type { BlogDirectory } from '../../utils/blog-series';
+import { type Locale, localePath, ui } from '../../i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogSeriesTree from './BlogSeriesTree.astro';
+
+const { directory, lang, alternates } = Astro.props as {
+  directory: BlogDirectory;
+  lang: Locale;
+  alternates?: Partial<Record<Locale, string>>;
+};
+const t = ui[lang];
+const { series } = directory;
+const chapter = directory.kind === 'chapter' ? directory.chapter : undefined;
+const title = chapter ? `${chapter.title} — ${series.title}` : series.title;
+const entries = chapter ? chapter.articles.map(({ entry }) => entry) : [];
+const cover = chapter?.cover ?? (!chapter ? series.cover : undefined);
+---
+
+<BaseLayout {title} description={t.seriesLead} {lang} {alternates}>
+  <div class="container page" data-pagefind-body>
+    <header class="page-header series-directory-head">
+      <p class="eyebrow">
+        <a href={localePath(lang, `blog/category/${series.category}`)}>
+          {t.categories[series.category]}
+        </a>
+        {' / '}
+        {chapter ? <a href={localePath(lang, `blog/${series.key}`)}>{series.title}</a> : t.series}
+      </p>
+      <h1>{chapter?.title ?? series.title}</h1>
+      <p class="lead">{t.seriesLead}</p>
+    </header>
+    {
+      cover && (
+        <figure class="series-directory-cover">
+          <img src={cover} alt={chapter?.title ?? series.title} />
+        </figure>
+      )
+    }
+
+    {
+      chapter ? (
+        <section aria-labelledby="chapter-articles">
+          <h2 id="chapter-articles" class="section-title">
+            {t.articles}
+          </h2>
+          {entries.map((entry) => (
+            <article class:list={['entry', 'blog-entry-card', { 'has-banner': entry.data.banner }]}>
+              {entry.data.banner && (
+                <img
+                  class="entry-banner"
+                  src={entry.data.banner.src}
+                  alt={entry.data.banner.alt}
+                  loading="lazy"
+                />
+              )}
+              <div>
+                <p class="meta entry-meta">
+                  <time datetime={entry.data.published.toISOString()}>
+                    {entry.data.published.toLocaleDateString(lang)}
+                  </time>
+                </p>
+                <h2>
+                  <a href={localePath(lang, `blog/${entry.id}`)}>{entry.data.title}</a>
+                </h2>
+                {entry.data.description && (
+                  <p class="entry-description">{entry.data.description}</p>
+                )}
+              </div>
+            </article>
+          ))}
+        </section>
+      ) : (
+        <BlogSeriesTree {series} {lang} label={t.series} articleLabel={t.articles} />
+      )
+    }
+  </div>
+</BaseLayout>

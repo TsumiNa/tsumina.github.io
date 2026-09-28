@@ -7,6 +7,7 @@ import { cvUI } from '../../i18n/cv';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getPublications } from '../../utils/publications';
 import { personLd, websiteLd } from '../../utils/structured-data';
+import { isBlogEntryVisible } from '../../utils/blog-series';
 
 const { lang = 'en' } = Astro.props as { lang?: Locale };
 const t = ui[lang];
@@ -19,10 +20,9 @@ const highlighted = (
 ).slice(0, 4);
 
 const collect = async (name: 'blog' | 'notes') =>
-  (await getCollection(name, ({ data }) => !data.draft && data.lang === lang)).map((entry) => ({
-    kind: name,
-    entry,
-  }));
+  (await getCollection(name, ({ data }) => data.lang === lang && data.show))
+    .filter((entry) => name !== 'blog' || isBlogEntryVisible(entry as never))
+    .map((entry) => ({ kind: name, entry }));
 const writing = [...(await collect('blog')), ...(await collect('notes'))]
   .sort((a, b) => b.entry.data.published.valueOf() - a.entry.data.published.valueOf())
   .slice(0, 4);

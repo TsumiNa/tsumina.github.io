@@ -16,6 +16,8 @@ interface Props {
   alternates?: Alternates;
   article?: { published: Date; updated?: Date; tags?: string[] };
   jsonLd?: object[];
+  image?: string;
+  noindex?: boolean;
 }
 const {
   title = site.title,
@@ -24,6 +26,8 @@ const {
   alternates,
   article,
   jsonLd = [],
+  image,
+  noindex = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, site.url);
@@ -40,11 +44,13 @@ const alternateLinks = (Object.entries(resolved) as [Locale, string][]).map(([l,
 }));
 const xDefault = new URL(resolved.en ?? Astro.url.pathname, site.url);
 const ogLocale = lang === 'zh' ? 'zh_CN' : lang === 'ja' ? 'ja_JP' : 'en_US';
+const ogImage = image ? new URL(image, site.url) : undefined;
 ---
 
 <title>{title}</title>
 <meta name="description" content={description} />
 <meta name="author" content={site.name} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
 <link rel="canonical" href={canonical} />
 <meta property="og:type" content={article ? 'article' : 'website'} />
 <meta property="og:site_name" content={site.title} />
@@ -52,7 +58,9 @@ const ogLocale = lang === 'zh' ? 'zh_CN' : lang === 'ja' ? 'ja_JP' : 'en_US';
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
-<meta name="twitter:card" content="summary" />
+{ogImage && <meta property="og:image" content={ogImage} />}
+<meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+{ogImage && <meta name="twitter:image" content={ogImage} />}
 {
   article && (
     <>

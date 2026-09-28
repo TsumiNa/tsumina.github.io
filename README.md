@@ -5,7 +5,7 @@ A static-first [Astro](https://astro.build/) website for an academic CV, normali
 ## Architecture
 
 - Astro + TypeScript with no UI framework and no hydrated framework islands.
-- Blog and Notes are typed Astro Content Collections; MDX supports shared scientific components. Blog entries carry a `category` (research/technical/learning/tutorial) with static per-category listings.
+- Blog and Notes are typed Astro Content Collections; MDX supports shared scientific components. Blog entries carry a `category` (research/technical/learning/tutorial) with static per-category listings. Nested Blog folders define series and chapters; Astro generates their index pages and article sidebars without series metadata in frontmatter.
 - Shiki syntax highlighting and KaTeX math render at build time.
 - Pagefind indexes the finished static output.
 - `src/config`, `src/i18n`, and CSS tokens centralize site behavior and design. The theme is a token-driven design system (self-hosted Inter + JetBrains Mono variable fonts, fluid type/space scales, light/dark, print).
@@ -32,11 +32,11 @@ pnpm preview
 
 ## Authoring
 
-Add Blog `.md`/`.mdx` entries under `src/content/blog/` and Notes under `src/content/notes/`. Follow `src/content.config.ts`; set `draft: true` to exclude an entry. Optional translations are separate files with `lang: ja` or `lang: zh` and a shared stable `translationKey`.
+Add Blog `.mdx` entries under `articles/blog/` and Notes `.mdx` entries under `articles/notes/`. Follow `src/content.config.ts`. Every entry renders in branch builds for Cloudflare Preview review; merging the owner-approved PR makes it eligible for production. Optional translations are separate files with `lang: ja` or `lang: zh` and a shared stable `translationKey`.
 
-Figures, grids, wide tables, equations, chemical structure SVGs, callouts, code, and footnotes are documented in [`docs/content-authoring.md`](docs/content-authoring.md). The sole sample is a draft development fixture, not personal content.
+Figures, grids, wide tables, equations, chemical structure SVGs, callouts, code, and footnotes are documented in [`docs/content-authoring.md`](docs/content-authoring.md).
 
-Most articles are AI-drafted from the owner's outline and key points, then owner-reviewed. The self-contained, tool-agnostic writing skill lives at [`skills/draft-article/SKILL.md`](skills/draft-article/SKILL.md) in the open SKILL.md format; any agent reading `AGENTS.md` is directed to it, Claude Code discovers it through the `.claude/skills/draft-article` symlink, and `.github/instructions/ai-writing.instructions.md` auto-attaches it for editor integrations. It covers the outline-driven workflow, the owner's researcher identity, factual-integrity and argumentation rules, autonomous source gathering and figure generation, the TL;DR-first structure with numbered footnote citations, anti-content-farm style constraints, and the `draft: true` approval gate.
+Most articles are AI-drafted from the owner's outline and key points, then owner-reviewed in the Cloudflare branch preview before merge. The self-contained, tool-agnostic writing skill lives at [`skills/draft-article/SKILL.md`](skills/draft-article/SKILL.md) in the open SKILL.md format; any agent reading `AGENTS.md` is directed to it, Claude Code discovers it through the `.claude/skills/draft-article` symlink, and `.github/instructions/ai-writing.instructions.md` auto-attaches it for editor integrations. It covers the outline-driven workflow, the owner's researcher identity, factual-integrity and argumentation rules, autonomous source gathering and figure generation, the TL;DR-first structure with numbered footnote citations, anti-content-farm style constraints, and the preview-before-merge approval gate.
 
 ## Publications and ORCID
 
@@ -68,4 +68,4 @@ Cloudflare Workers Builds connects directly to the same repository and independe
 
 Career information in `src/data/cv.ts` is transcribed from the author's September 2026 CV. The home page and EN/JA/ZH CV pages now use these facts. The author confirmed the master's period as April 2012–March 2014; separate doctoral dates remain unspecified. See [`docs/cv-source.md`](docs/cv-source.md) for provenance, date decisions, and update guidance.
 
-ORCID remains the upstream publication source; the generated publication store is separate from CV career data. Blog and Notes remain empty apart from excluded development drafts.
+ORCID remains the upstream publication source; the generated publication store is separate from CV career data. Blog and Notes content is stored as MDX and reviewed in branch previews before merge.

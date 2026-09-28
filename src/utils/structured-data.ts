@@ -42,6 +42,7 @@ export function articleLd(input: {
   lang: Locale;
   tags?: string[];
   kind: 'blog' | 'notes';
+  image?: string;
 }) {
   return {
     '@context': 'https://schema.org',
@@ -52,6 +53,7 @@ export function articleLd(input: {
     dateModified: (input.updated ?? input.published).toISOString(),
     inLanguage: inLanguageOf[input.lang],
     keywords: input.tags?.length ? input.tags.join(', ') : undefined,
+    image: input.image ? new URL(input.image, site.url).toString() : undefined,
     mainEntityOfPage: String(input.url),
     author: { '@id': personId, '@type': 'Person', name: site.name, url: site.url },
   };

@@ -1,0 +1,82 @@
+---
+import { localePath, type Locale } from '../../i18n';
+import type { BlogSeriesGroup } from '../../utils/blog-series';
+
+const { series, lang, label, articleLabel } = Astro.props as {
+  series: BlogSeriesGroup;
+  lang: Locale;
+  label: string;
+  articleLabel: string;
+};
+const firstBanner =
+  (series.cover && { src: series.cover, alt: series.title }) ??
+  series.articles[0]?.entry.data.banner ??
+  series.chapters[0]?.articles[0]?.entry.data.banner;
+const articleCount =
+  series.articles.length +
+  series.chapters.reduce((sum, chapter) => sum + chapter.articles.length, 0);
+---
+
+<section class="blog-series" aria-labelledby={`series-${series.key}`}>
+  <header class="blog-series-header">
+    <div>
+      <p class="eyebrow">{label}</p>
+      <h2 id={`series-${series.key}`}>
+        <a href={localePath(lang, `blog/${series.key}`)}>{series.title}</a>
+      </h2>
+      <p>{articleCount} {articleLabel}</p>
+    </div>
+    {
+      firstBanner && (
+        <img class="blog-series-cover" src={firstBanner.src} alt={firstBanner.alt} loading="lazy" />
+      )
+    }
+  </header>
+  <ol class="blog-series-level">
+    {
+      series.articles.map(({ entry, order }) => (
+        <li class="blog-series-node">
+          <article class="blog-series-entry">
+            <span class="blog-series-position" aria-hidden="true">
+              {order}
+            </span>
+            <div>
+              <h3>
+                <a href={localePath(lang, `blog/${entry.id}`)}>{entry.data.title}</a>
+              </h3>
+              {entry.data.description && <p class="entry-description">{entry.data.description}</p>}
+            </div>
+          </article>
+        </li>
+      ))
+    }
+    {
+      series.chapters.map((chapter) => (
+        <li class="blog-series-chapter">
+          <h3>
+            <a href={localePath(lang, `blog/${series.key}/${chapter.key}`)}>{chapter.title}</a>
+          </h3>
+          <ol class="blog-series-level">
+            {chapter.articles.map(({ entry, order }) => (
+              <li class="blog-series-node">
+                <article class="blog-series-entry">
+                  <span class="blog-series-position" aria-hidden="true">
+                    {chapter.order}.{order}
+                  </span>
+                  <div>
+                    <h3>
+                      <a href={localePath(lang, `blog/${entry.id}`)}>{entry.data.title}</a>
+                    </h3>
+                    {entry.data.description && (
+                      <p class="entry-description">{entry.data.description}</p>
+                    )}
+                  </div>
+                </article>
+              </li>
+            ))}
+          </ol>
+        </li>
+      ))
+    }
+  </ol>
+</section>
