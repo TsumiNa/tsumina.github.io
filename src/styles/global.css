@@ -991,6 +991,9 @@ h3 {
 .prose > * {
   max-width: var(--max-reading);
 }
+.article-shell.has-series :is(.article-head, .prose, .prose > *) {
+  max-width: none;
+}
 .prose :is(h2, h3, h4) {
   margin-top: 2.2em;
   margin-bottom: 0.6em;
