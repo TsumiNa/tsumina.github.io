@@ -1255,15 +1255,6 @@ figcaption {
 .footer-links a:hover {
   color: var(--accent);
 }
-.footer-colophon {
-  font-family: var(--font-mono);
-  font-size: var(--step--2);
-  color: var(--text-faint);
-  border-top: 1px solid var(--border);
-  padding-top: var(--space-3);
-  margin: var(--space-5) 0 0;
-}
-
 /* ---------------------------------------------------------------------------
  * Responsive
  * ------------------------------------------------------------------------- */

@@ -34,7 +34,6 @@ const en = {
   updated: 'Updated',
   skipToContent: 'Skip to content',
   headingAnchor: 'Link to this section',
-  footerBuilt: 'Static Astro site — content lives in Git; no tracking by default.',
   researchLead:
     'A curated map of research directions connecting scientific questions, computational methods, and dependable software.',
   publicationsLead:
@@ -91,7 +90,6 @@ export const ui: Record<Locale, UIDict> = {
     updated: '更新',
     skipToContent: '本文へスキップ',
     headingAnchor: 'このセクションへのリンク',
-    footerBuilt: '静的 Astro サイト — コンテンツは Git 管理、既定でトラッキングなし。',
     researchLead: '科学的な問いと計算手法、信頼できるソフトウェアをつなぐ研究の見取り図。',
     publicationsLead:
       'ORCID から同期し、DOI レジストラのメタデータで補完しています。責任著者・同等貢献の印は手作業で管理しています。',
@@ -146,7 +144,6 @@ export const ui: Record<Locale, UIDict> = {
     updated: '更新于',
     skipToContent: '跳到正文',
     headingAnchor: '本节链接',
-    footerBuilt: '静态 Astro 站点 — 内容存于 Git，默认无跟踪。',
     researchLead: '连接科学问题、计算方法与可靠软件的研究方向图谱。',
     publicationsLead:
       '数据自 ORCID 同步，并由 DOI 注册机构元数据补全；通讯作者与同等贡献标记为人工维护。',
