@@ -1,0 +1,387 @@
+---
+title: 'AI Coding Project Primer: Understanding Terms and Workflows'
+description: 'Using a Python CLI project, this chapter explains project structure, frameworks, scaffolds, factories, abstraction, and AI instructions, then connects branches, commits, PRs, CI, and merges into a delivery workflow.'
+published: 2026-09-28
+lang: en
+tags: [ai-coding, python, software-engineering]
+category: tutorial
+translationKey: ai-coding-project-vocabulary
+banner:
+  src: /figures/ai-coding-project-vocabulary/banner.svg
+  alt: A project map connecting framework, scaffold, factory, abstraction boundaries, and delivery checks
+---
+
+import Callout from '../../../../src/components/content/Callout.astro';
+
+<Callout type="Note" title="TL;DR">
+  AI can generate directories, configuration, interfaces, and tests in one pass, confronting a
+  beginner with abstractions that older textbooks spread across many chapters. The first step toward
+  directing that speed is to state what you want and decide, through observable checks, whether AI
+  delivered it. This chapter uses a Python project to explain common structures and tools, then
+  connects AI instructions, branches, commits, PRs, CI, and merges into a recoverable workflow.
+</Callout>
+
+Writing a few Python programs is not the same as turning an idea into a maintainable project. What is often missing is not more syntax but a vocabulary for describing the project: where execution begins, who manages dependencies, how a framework differs from a library, what a scaffold generates, why an abstraction belongs here, and whether an interface should be an ABC or a Protocol.
+
+These words matter more in AI coding. A conventional textbook can teach syntax first and design later; AI may generate a framework, factories, interfaces, tests, and CI configuration in its first answer. We do not have to master every implementation immediately, but we do need to ask why each part exists. Otherwise, “does it run?” becomes our only measure, and we cannot tell whether AI built the project we intended.
+
+This chapter therefore follows two connected threads: understand the project's structures and abstractions, then understand how a change moves through constraints, implementation, checks, and integration. The terms are questions to ask AI, not a list to memorize.
+
+## Start with a small but real project
+
+This series will not proceed through variables, loops, and classes in textbook order. We will build a deliverable tool and fill in knowledge when the project calls for it.
+
+Our example project is `paper-digest`. It reads a list of papers from `papers.csv`, checks required fields, groups the records by year and topic, and writes `report.md`:
+
+```console
+$ paper-digest build data/papers.csv --output report.md
+Loaded 42 papers
+Wrote report.md
+```
+
+Those two output lines are not a complete specification. A real project needs at least four more decisions:
+
+1. <strong>Input and output</strong>: the CSV contains at least `title`, `year`, and `topic`; the
+   Markdown output is deterministic, so the same input produces the same result.
+2. <strong>Failure behavior</strong>: an invalid year makes the program exit with a nonzero status
+   and report the row number and field name.
+3. <strong>Acceptance criteria</strong>: tests cover valid data, a CSV with only a header, and an
+   invalid year; the README gives a command that can be copied from installation through report
+   generation.
+4. <strong>Non-goals</strong>: the first version has no web UI, database, cloud deployment, or LLM
+   summary.
+
+Three useful terms already appear here. A <strong>requirement</strong> says what the system should do. <strong>Scope</strong> says what this change will and will not do. <strong>Acceptance criteria</strong> turn “done” into something observable. “Build me a paper-management tool” states a wish, not a boundary. The four decisions above begin to describe a project.
+
+## From one file to a project
+
+Putting all the logic in `digest.py` could still work. A script does not become a project at some magic line count or through professional-looking folders. A project must let people develop, run, and verify it repeatedly and reliably, including on another machine.
+
+One possible minimal structure is:
+
+```text
+paper-digest/
+├── pyproject.toml
+├── README.md
+├── AGENTS.md
+├── src/
+│   └── paper_digest/
+│       ├── __init__.py
+│       ├── cli.py
+│       ├── models.py
+│       ├── sources.py
+│       └── report.py
+└── tests/
+    ├── test_sources.py
+    └── test_report.py
+```
+
+Do not treat this tree as the standard answer. `AGENTS.md` records how AI should work in the repository; we will return to it below. Every other name should also have a responsibility:
+
+- A <strong>repository (repo)</strong> is a version-controlled work area, usually holding source code, tests, configuration, and documentation. It provides a boundary for collaboration and history.
+- A <strong>project</strong> is all the work organized toward a goal. A project often has one repository, but the terms are not synonyms; one repository may contain several publishable projects.
+- A <strong>module</strong> is commonly an importable `.py` file in Python, such as `report.py`. The Python tutorial defines a module as a file containing Python definitions and statements.[^python-modules]
+- A <strong>package</strong> organizes modules under an import namespace, here `paper_digest/`. Do not confuse it with an installation artifact: in conversation, “package” may also mean something installed from PyPI.
+- An <strong>entry point</strong> is where the outside world enters the program. When someone runs `paper-digest`, the entry point parses arguments, calls application logic, and translates results into terminal output and an exit status.
+- <strong>Configuration</strong> consists of project settings that can change without editing
+  business logic. Python projects commonly use `pyproject.toml` to declare build settings, metadata,
+  dependencies, and tool configuration.[^pyproject]
+
+Splitting files is not an abstraction contest. `cli.py` isolates terminal interaction, `sources.py` reads data, and `report.py` produces the report. Those boundaries let a test exercise data processing without simulating a terminal. A three-line forwarding file with no independent reason to change does not become useful just because it creates another “layer.”
+
+### Runtime, environment, and dependencies are different
+
+A <strong>runtime</strong> is the language implementation and execution machinery a program needs while running. For this project, the most immediate runtime is a particular version of the Python interpreter.
+
+A <strong>dependency</strong> is software the project calls but does not implement. A third-party parser for a complex format would be a dependency. Its name and allowed versions belong in project configuration, not only on a developer's computer.
+
+A <strong>virtual environment</strong> gives a project a relatively isolated Python and set of installed packages. It helps when project A needs one package version and project B another; it is not a virtual machine or container. Python's documentation describes it as a semi-isolated environment for packages installed for a particular application.[^venv]
+
+A <strong>lock file</strong> additionally records the concrete dependency versions that were resolved, making it easier to reproduce an installation elsewhere.[^lock-file] Its role differs from `pyproject.toml`: broadly, one records what was resolved, while the other declares what the project requires and permits. Tools differ in lock-file format and support, so read the repository's existing configuration before letting AI switch package managers.
+
+## Libraries, frameworks, and scaffolds operate at different levels
+
+These three terms often appear when a project is initialized, but they answer different questions.
+
+### Library: your code calls it
+
+A <strong>library</strong> provides functions, classes, or modules to call. Your code still owns the main flow. For example, `paper-digest` could use Python's standard `csv` library:
+
+```python
+import csv
+
+with open("papers.csv", newline="", encoding="utf-8") as file:
+    rows = list(csv.DictReader(file))
+```
+
+Our code decides when to open the file, call `csv.DictReader`, and take the next step.
+
+### Framework: it calls your code at defined points
+
+A <strong>framework</strong> provides functionality and defines the application's principal structure or lifecycle. You put code into its designated extension points, and it calls that code at the appropriate time. Martin Fowler identifies this inversion of control as an important distinction between frameworks and ordinary libraries.[^ioc]
+
+In a web framework, for instance, we might declare a function for a particular URL path. The framework owns the broader sequence of listening, parsing a request, selecting a route, and producing a response. A useful first question is: <strong>who owns the main loop, and who calls whom?</strong> It is not the only classification test, but it is better than calling large tools “frameworks” and small ones “libraries.”
+
+The first version of `paper-digest` reads, transforms, and writes once. It has no lifecycle that a framework must manage. The standard library or a few small libraries may suffice. Asking AI to “set it up with a modern framework” does not automatically improve quality; it may only add concepts and dependencies.
+
+### Scaffold: the starting structure you keep after generation
+
+A <strong>scaffold</strong> is an initial set of files and directories generated from a template. Cookiecutter describes itself as a tool for creating projects from templates.[^cookiecutter] A scaffold might generate `pyproject.toml`, a package directory, tests, CI configuration, and a placeholder README.
+
+The scaffolding tool usually runs when the project is created; the generated files then belong to the project. A framework normally continues to control part of the application at runtime. “Use FastAPI as a framework” and “scaffold a FastAPI project from a template” are therefore different decisions.
+
+Two neighboring words help here: a <strong>template</strong> is the blueprint used to generate files, while <strong>boilerplate</strong> is the largely repeated text required in many projects. A scaffold can generate boilerplate from a template, but the three words are not interchangeable.
+
+## A factory creates objects; it does not set up a project
+
+The established design terms are <strong>factory</strong>, <strong>Factory Method</strong>, and <strong>Factory pattern</strong>. If someone says “factory mode,” first ask whether it names a tool-specific mode or is a mistaken name for Factory Method.
+
+Suppose `paper-digest` later supports both CSV and JSON. The entry point could repeat `if` statements wherever it chooses a reader, or centralize that object-creation decision:
+
+```python
+from pathlib import Path
+
+
+def make_source(path: Path) -> "PaperSource":
+    match path.suffix.lower():
+        case ".csv":
+            return CsvPaperSource()
+        case ".json":
+            return JsonPaperSource()
+        case suffix:
+            raise ValueError(f"Unsupported input format: {suffix}")
+```
+
+`make_source()` is a simple factory function: the caller asks for a source for this path, and one place selects the concrete class. The strict Factory Method pattern usually involves a creation method that a subclass may override.[^factory-method] In Python, a function is often enough; do not ask AI to add a hierarchy of factory classes unless inheritance provides a real variation point.
+
+Framework, scaffold, and factory thus lie on different axes:
+
+| Concept   | What it decides                                        | When it matters               | Possible form in the example                  |
+| --------- | ------------------------------------------------------ | ----------------------------- | --------------------------------------------- |
+| framework | Application structure, lifecycle, and extension points | Runtime                       | Not needed in version one                     |
+| scaffold  | Initial project files and configuration                | Project creation or expansion | Generates `src/`, `tests/`, and configuration |
+| factory   | Which concrete object to create now                    | Runtime or object assembly    | Chooses a CSV or JSON source from a filename  |
+
+## Abstraction is not a way to make code more elaborate
+
+An <strong>abstraction</strong> hides some implementation detail while preserving the contract a caller actually needs. Its value is not fewer lines or textbook-looking code. It places change on one side of a boundary.
+
+With only CSV input, a direct `load_csv()` is clearest. Once a second format exists, the report generator should not need to know CSV column names, JSON keys, and file-opening details if all it really needs is a list of papers. We can then express the abstraction “a source can load papers” and leave format-specific details in each implementation.
+
+Ask three questions before adding that boundary:
+
+1. Are there already two real implementations, or only an imagined future one?
+2. Can the caller depend on a smaller, more stable set of behaviors?
+3. Will isolation make the implementations noticeably easier to test or replace?
+
+If every answer is no, concrete code is usually better. Given a filename or “keep it extensible,” AI can readily produce repository, service, manager, adapter, and factory layers. Each layer should identify the real change it isolates; otherwise, it is another jump while reading the code.
+
+## ABC and Protocol: two kinds of contract
+
+In Python, an Abstract Base Class (ABC) and `typing.Protocol` can both describe operations an object should provide, but they express different relationships.
+
+The next example shows interface relationships only. It omits CSV parsing and Markdown rendering; it is a structural illustration, not the complete runnable project delivered in this chapter.
+
+```python
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Protocol
+
+
+@dataclass(frozen=True)
+class Paper:
+    title: str
+    year: int
+    topic: str
+
+
+class PaperSource(Protocol):
+    def load(self, path: Path) -> list[Paper]: ...
+
+
+class CsvPaperSource:
+    def load(self, path: Path) -> list[Paper]:
+        # A real project parses and validates the CSV here.
+        return []
+
+
+def build_report(source: PaperSource, path: Path) -> str:
+    papers = source.load(path)
+    return f"# Paper digest\n\nTotal: {len(papers)}\n"
+```
+
+`CsvPaperSource` does not inherit from `PaperSource`, but it supplies a compatible `load()` signature, so a static type checker can treat it as satisfying the protocol. This is <strong>structural subtyping</strong>: what matters is what an object can do, not the family it declares. PEP 544 defines Protocol as support for this form of static duck typing.[^pep544]
+
+An ABC is commonly written with explicit inheritance:
+
+```python
+from abc import ABC, abstractmethod
+from pathlib import Path
+
+
+class PaperSource(ABC):
+    @abstractmethod
+    def load(self, path: Path) -> list[Paper]:
+        """Load and validate papers from a path."""
+
+
+class CsvPaperSource(PaperSource):
+    def load(self, path: Path) -> list[Paper]:
+        return []
+```
+
+If a subclass omits an abstract method, Python prevents its instantiation at runtime.[^abc] An ABC can also provide shared concrete methods, properties, and a controlled inheritance hierarchy. A common decision guide is:
+
+| Question                        | Protocol                                 | ABC                                                            |
+| ------------------------------- | ---------------------------------------- | -------------------------------------------------------------- |
+| Relationship                    | Structural: compatible methods suffice   | Nominal: usually explicit inheritance                          |
+| Main check                      | Static type checker                      | Inheritance and runtime instantiation                          |
+| Existing or third-party classes | Easy to accept without changing them     | Usually needs inheritance, wrapping, or registration           |
+| Shared implementation           | Not the primary purpose                  | A natural home for template methods and shared behavior        |
+| Suitable boundary               | Caller needs a small set of capabilities | Framework owns implementations with a defined shared lifecycle |
+
+These are common uses, not absolute limits on Python: ABCs can register virtual subclasses and customize `__subclasshook__()`, while a class can explicitly inherit a Protocol. For `paper-digest`, Protocol is lighter if the report generator merely needs something with `load()`. An ABC may fit if the project must coordinate opening, closing, caching, and error handling across sources, with shared implementations.
+
+Neither ABC nor Protocol automatically “decouples” code. If the interface exposes CSV column names, file handles, and parser options to the report generator, the two sides remain tightly coupled. The key is a sufficiently small contract expressed in business terms, such as `list[Paper]`.
+
+## People and AI enter the same project through different documents
+
+Even if each function runs, several rounds of AI changes may conflict if the agent does not know where it may edit, what counts as done, or whether it may introduce a new framework. Rather than repeat those boundaries in every conversation, put a few stable rules in the repository so each task starts from the same constraints.
+
+`README.md` is primarily for users and new human contributors: what the project does, how to install and run it, and what result to expect. `AGENTS.md` is an entry point for coding agents: what to read before editing, which boundaries to respect, what checks to run, and which actions require human approval. `CLAUDE.md` serves a similar project-instruction role in Claude Code. Tools may discover these files and apply precedence differently; do not assume automatic interchangeability. Claude Code's documentation also says it can read `AGENTS.md`; if both files exist, avoid contradictory rules.[^agents-md][^claude-memory]
+
+For `paper-digest`, a starting `AGENTS.md` need not be a manual:
+
+```md
+# AI development rules for paper-digest
+
+- Before editing, read README.md, pyproject.toml, and relevant tests; identify the existing entry point.
+- Work only on the requested change; do not add a web service, database, or plugin system unasked.
+- Cover new behavior with normal and failure cases; run the repository's existing checks.
+- Report changed files, check results, and unverified assumptions; do not merge a PR yourself.
+```
+
+These rules are more useful than “write high-quality code” because each can be checked against the resulting change. They are not a security sandbox: instructions reduce mistakes but cannot guarantee compliance or replace permissions, tests, and human review. Update them as the project changes; obsolete or conflicting rules create uncertainty too.
+
+`skills/<name>/SKILL.md` addresses a different need: it packages an <strong>on-demand, specialized workflow</strong> with reference material or scripts, such as “check CSV-format compatibility before release.” `AGENTS.md` or `CLAUDE.md` suits short rules needed on every task; a skill suits steps relevant only to particular tasks. AI tools differ in how they discover skills, so consult the tool in use. Version one of `paper-digest` has one workflow and does not need a stack of preemptive skills.[^claude-skills]
+
+## How a change moves through branch, commit, PR, CI, and merge
+
+Suppose we add CSV input to `paper-digest`. Knowing the definitions separately is not enough. Their sequence turns a potentially mistaken AI change into something isolated, reviewable, and recoverable. Git manages local history; PRs and GitHub Actions are collaboration and automation features provided by GitHub, not Git commands.[^github-pr]
+
+1. Create a <strong>branch</strong> from the current stable version, such as `feat/csv-input`. It is a pointer to commits that can advance independently: AI can experiment here without putting unfinished work directly on `main`.
+2. State the task, edit, and run local checks; then make a focused <strong>commit</strong>, for example “read and validate CSV.” A commit records the project state and a message. If AI also changed report formatting, the diff reveals that extra change so it can be corrected separately.
+3. Push the branch to GitHub and open a <strong>pull request (PR)</strong>. A PR proposes bringing the branch's changes relative to a target branch into the project, collecting the diff, discussion, and checks in one review location. It means neither “already merged” nor “proven correct.”
+4. The PR triggers <strong>CI (continuous integration)</strong>. For example, a GitHub Actions workflow in `.github/workflows/` can react to `pull_request`, reinstall dependencies on a remote machine, and run tests or a build. If CI fails, fix and commit on the same branch; the PR updates with the new commit. A green result still needs comparison with the requirements.[^github-actions]
+5. After reviewers check scope, results, and risk, they <strong>merge</strong> the PR into the target branch. If the acceptance criteria are unmet, keep working instead of merging just because the check is green.
+
+GitLab calls the comparable review object a merge request (MR) and normally presents automated checks as a pipeline. The names differ, but the relationships—isolating a change, reviewing its diff, checking it automatically, then integrating it—are similar. GitLab distinguishes branch pipelines from MR pipelines, so “CI passed” should prompt another question: which commit and which result were checked?[^gitlab-ci]
+
+This sequence is not ceremony for its own sake. A branch protects the stable version; a commit leaves locatable history; a PR puts human intent beside the actual diff; CI repeats mechanical checks on another machine; a merge is the decision to accept the change. Remove a link and AI's speed can move changes we have not understood into the main line.
+
+### What do we check, and what do we deliver?
+
+Automated checks in a PR answer different questions. A <strong>formatter</strong> standardizes indentation and presentation. A <strong>linter</strong> finds suspicious patterns. A <strong>type checker</strong> checks type relationships, such as whether an object passed to `build_report()` satisfies `PaperSource`. A <strong>test</strong> executes code and compares behavior with expectations; pytest expresses expectations with `assert`.[^pytest] Run checks locally first, then let CI repeat them. Running remotely does not make CI understand the business requirement better than the tests do.
+
+`paper-digest` should test at least three behaviors: valid CSV produces the expected groups; CSV containing only a header and no records produces a valid empty report; and an invalid year reports its row number and field name. A “blank file” meaning zero bytes, not even a header, is a separate case whose expected behavior must be specified rather than conflated with “zero records.”
+
+A <strong>build</strong> turns source and metadata into a distributable artifact. A Python CLI need not be compiled, but it can be built into a wheel or source distribution; a Python package in source code is not the same thing as that distribution. A <strong>deploy</strong> makes an application available in a target environment. This local CLI can be packaged for installation without deployment to a server; a web service usually needs a deployment step too.[^packaging]
+
+Version one need not use every tool, but it must answer: how do we install and run it, which checks validate the requirement, and what is delivered? When AI says, “CI passed, so it is done,” return to the acceptance criteria: was empty input tested, does the error actually include a row number, and can the README commands be copied and run?
+
+## Put prompts into the workflow instead of writing one giant prompt
+
+Vibe coding need not mean describing a vague goal and accepting anything that runs. Use prompts at three distinct points: understand the repository, implement one bounded task, and check the diff against the intended result.
+
+First ask AI to read without editing:
+
+```text
+Read README.md, AGENTS.md, pyproject.toml, and the relevant tests.
+Tell me where the CLI starts, which checks exist, and which files CSV input would touch.
+Propose the smallest approach and list uncertainties. Do not edit files yet.
+```
+
+Once you agree on the approach, give the implementation task. It does not dictate every line but sets boundaries AI must not decide for you:
+
+```text
+Context:
+- Work on the existing Python CLI in the feat/csv-input branch; follow repository instructions.
+- pyproject.toml is the source of dependency and tool configuration.
+
+Goal:
+- Read CSV with title, year, and topic, and produce a Markdown report grouped by year and topic.
+
+Constraints:
+- Keep the CLI thin; parsing must not depend on terminal I/O.
+- Do not add a web framework, database, plugin system, or factory class.
+- Consider a source abstraction only if a second real implementation needs it.
+
+Acceptance:
+- Test valid input, header-only input, and an invalid year.
+- Errors include the row number and field name; README has reproducible install, run, and test commands.
+
+Verification:
+- Run the repository's formatter, type checker, and focused tests.
+- Report the diff, check results, and unverified assumptions; do not merge.
+```
+
+After committing and opening the PR, ask for a review rather than another “finish the whole project” prompt:
+
+```text
+Check the PR diff and test output against each Acceptance item.
+Identify out-of-scope files, failed or unrun checks, and decisions still requiring me.
+Do not equate green CI with a fulfilled requirement; do not merge yourself.
+```
+
+If AI proposes a framework, ask what lifecycle it needs to manage. If it generates a scaffold, ask why each file belongs. If it adds a factory, ABC, or Protocol, ask for the real second implementation and the boundary that changes. <strong>Do not make one prompt handle exploration, an architecture migration, and a large implementation at once.</strong> Smaller steps do not discard AI's speed; they place each acceleration inside a checkable, reversible process.
+
+## Chapter checkpoint
+
+Return to `paper-digest`. After this chapter, you should be able to answer these questions without reading the code:
+
+1. Which entry point does the user run, and what are the program's inputs, outputs, and failure behavior?
+2. Which files are Python modules, which directory is a Python package, and where is project configuration?
+3. Does the project use a library or a framework? If a framework, who controls the main flow?
+4. Which files came from a scaffold? Which should be kept, and which are unused boilerplate?
+5. Is there a real variation worth isolating yet? Which is sufficient: Protocol, ABC, or a concrete function?
+6. Who reads README versus AGENTS.md or CLAUDE.md? When is a skill warranted?
+7. How does a change pass through branch, commit, PR, CI, and merge? What does GitLab call comparable steps?
+8. What do a formatter, linter, type checker, and test each verify? What does build produce, and do we need deploy?
+
+If these questions have no answers, asking AI for more features enlarges the unknown. With a project map, you can consult documentation, ask precise questions, and judge whether generated code belongs in this project even before you remember every Python API.
+
+The next chapter will create the `paper-digest` repository within this minimal scope: record short AI development rules, express the requirements as executable acceptance criteria, and deliver the first vertical slice that installs, runs, and passes tests.
+
+[^python-modules]: Python documentation, [Modules](https://docs.python.org/3/tutorial/modules.html).
+
+[^pyproject]: Python Packaging User Guide, [Writing your `pyproject.toml`](https://packaging.python.org/en/latest/guides/writing-pyproject-toml/).
+
+[^venv]: Python documentation, [Installing Python Modules: Key terms](https://docs.python.org/3/installing/index.html#key-terms).
+
+[^lock-file]: Python Packaging User Guide, [Tool recommendations](https://packaging.python.org/en/latest/guides/tool-recommendations/).
+
+[^ioc]: Martin Fowler, [Inversion of Control](https://martinfowler.com/bliki/InversionOfControl.html).
+
+[^cookiecutter]: Cookiecutter documentation, [Cookiecutter: Better Project Templates](https://cookiecutter.readthedocs.io/).
+
+[^factory-method]: Real Python, [The Factory Method Pattern and Its Implementation in Python](https://realpython.com/factory-method-python/).
+
+[^pep544]: Python Enhancement Proposals, [PEP 544 — Protocols: Structural subtyping](https://peps.python.org/pep-0544/).
+
+[^abc]: Python documentation, [`abc` — Abstract Base Classes](https://docs.python.org/3/library/abc.html).
+
+[^pytest]: pytest documentation, [Get Started](https://docs.pytest.org/en/stable/getting-started.html).
+
+[^packaging]: Python Packaging User Guide, [Packaging Python Projects](https://packaging.python.org/en/latest/tutorials/packaging-projects/).
+
+[^agents-md]: AGENTS.md project, [A simple, open format for guiding coding agents](https://agents.md/).
+
+[^claude-memory]: Anthropic, [How Claude remembers your project](https://code.claude.com/docs/en/memory).
+
+[^claude-skills]: Anthropic, [Extend Claude with skills](https://code.claude.com/docs/en/skills).
+
+[^github-pr]: GitHub Docs, [About pull requests](https://docs.github.com/en/pull-requests/getting-started/about-pull-requests).
+
+[^github-actions]: GitHub Docs, [Workflows](https://docs.github.com/en/actions/concepts/workflows-and-actions/workflows).
+
+[^gitlab-ci]: GitLab Docs, [CI/CD pipelines](https://docs.gitlab.com/ci/pipelines/).

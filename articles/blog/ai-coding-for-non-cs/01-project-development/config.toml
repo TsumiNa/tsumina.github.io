@@ -1,4 +1,6 @@
 show = true
 
 [title]
+en = "Getting Started with Project Development"
+ja = "プロジェクト開発入門"
 zh = "项目开发入门"
