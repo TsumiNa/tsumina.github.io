@@ -1,5 +1,10 @@
 ---
-import SitePage from '../components/SitePage.astro';
+import BlogIndexPage from '../components/pages/BlogIndexPage.astro';
+import CVPage from '../components/pages/CVPage.astro';
+import NotesIndexPage from '../components/pages/NotesIndexPage.astro';
+import PublicationsPage from '../components/pages/PublicationsPage.astro';
+import ResearchPage from '../components/pages/ResearchPage.astro';
+
 export function getStaticPaths() {
   return ['research', 'publications', 'blog', 'notes', 'cv'].map((section) => ({
     params: { section },
@@ -8,4 +13,8 @@ export function getStaticPaths() {
 const { section } = Astro.params;
 ---
 
-<SitePage lang="en" section={section} />
+{section === 'research' && <ResearchPage lang="en" />}
+{section === 'publications' && <PublicationsPage lang="en" />}
+{section === 'blog' && <BlogIndexPage lang="en" />}
+{section === 'notes' && <NotesIndexPage lang="en" />}
+{section === 'cv' && <CVPage lang="en" />}

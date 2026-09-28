@@ -7,4 +7,7 @@
     "directory": "./dist",
     "html_handling": "auto-trailing-slash",
   },
+  // Required (even empty) by `wrangler preview`, which Workers Builds runs
+  // for branch/PR preview deployments. Assets stay configured at top level.
+  "previews": {},
 }

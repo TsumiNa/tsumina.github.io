@@ -1,42 +1,76 @@
 ---
+import type { BlogCategory } from '../content.config';
+import { type Locale, ui } from '../i18n';
+import { articleLd } from '../utils/structured-data';
 import BaseLayout from './BaseLayout.astro';
-import type { Locale } from '../i18n';
-const {
-  title,
-  description,
-  published,
-  updated,
-  tags = [],
-  lang = 'en',
-  status,
-} = Astro.props as {
+
+interface Props {
+  kind: 'blog' | 'notes';
   title: string;
   description?: string;
   published: Date;
   updated?: Date;
   tags?: string[];
   lang?: Locale;
-  status?: string;
-};
+  category?: BlogCategory;
+  status?: 'draft' | 'evolving' | 'stable';
+  topic?: string;
+  alternates?: Partial<Record<Locale, string>>;
+}
+const {
+  kind,
+  title,
+  description,
+  published,
+  updated,
+  tags = [],
+  lang = 'en',
+  category,
+  status,
+  topic,
+  alternates,
+} = Astro.props;
+const t = ui[lang];
+const eyebrow = kind === 'blog' ? `~/blog${category ? `/${category}` : ''}` : '~/notes';
+const jsonLd = [
+  articleLd({ title, description, published, updated, url: Astro.url, lang, tags, kind }),
+];
 ---
 
-<BaseLayout {title} {description} {lang}
-  ><article class="container page" data-pagefind-body>
+<BaseLayout
+  {title}
+  {description}
+  {lang}
+  {alternates}
+  article={{ published, updated, tags }}
+  {jsonLd}
+>
+  <article class="container page article" data-pagefind-body>
     <header class="article-head">
-      <p class="eyebrow">{status ? `${status} note` : 'Article'}</p><h1>{title}</h1>{
-        description && <p class="lead">{description}</p>
-      }<p class="meta">
-        <time datetime={published.toISOString()}>{published.toLocaleDateString(lang)}</time>{
+      <p class="eyebrow">{eyebrow}</p>
+      <h1>{title}</h1>
+      {description && <p class="lead">{description}</p>}
+      <p class="meta article-meta">
+        <time datetime={published.toISOString()}>{published.toLocaleDateString(lang)}</time>
+        {
           updated && (
-            <>
-              {' '}
-              · Updated{' '}
+            <span>
+              {t.updated}{' '}
               <time datetime={updated.toISOString()}>{updated.toLocaleDateString(lang)}</time>
-            </>
+            </span>
           )
         }
-        {tags.length > 0 && <> · {tags.join(' · ')}</>}
+        {
+          status && (
+            <span class="tag" data-status={status}>
+              {t.statuses[status]}
+            </span>
+          )
+        }
+        {topic && <span class="tag">{topic}</span>}
+        {tags.map((tag) => <span class="tag">{tag}</span>)}
       </p>
-    </header><div class="prose"><slot /></div>
-  </article></BaseLayout
->
+    </header>
+    <div class="prose"><slot /></div>
+  </article>
+</BaseLayout>

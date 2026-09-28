@@ -1,36 +1,49 @@
 ---
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import SEO from '../components/SEO.astro';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
 import 'katex/dist/katex.min.css';
-import type { Locale } from '../i18n';
-const {
-  title,
-  description,
-  lang = 'en',
-} = Astro.props as { title?: string; description?: string; lang?: Locale };
+import Analytics from '../components/Analytics.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import SEO from '../components/SEO.astro';
+import { ui, type Locale } from '../i18n';
+
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: Locale;
+  alternates?: Partial<Record<Locale, string>>;
+  article?: { published: Date; updated?: Date; tags?: string[] };
+  jsonLd?: object[];
+}
+const { title, description, lang = 'en', alternates, article, jsonLd } = Astro.props;
+const t = ui[lang];
 ---
 
 <!doctype html>
 <html lang={lang === 'zh' ? 'zh-CN' : lang}>
-  <head
-    ><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><meta
-      name="generator"
-      content={Astro.generator}
-    /><SEO {title} {description} {lang} /><link rel="icon" href="/favicon.svg" /><link
-      rel="alternate"
-      type="application/rss+xml"
-      title="Blog RSS"
-      href="/rss.xml"
-    /><script is:inline>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <SEO {title} {description} {lang} {alternates} {article} {jsonLd} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title="Blog RSS" href="/rss.xml" />
+    <script is:inline>
       try {
-        const t = localStorage.getItem('theme');
-        if (t) document.documentElement.dataset.theme = t;
+        const saved = localStorage.getItem('theme');
+        if (saved) document.documentElement.dataset.theme = saved;
+        else if (matchMedia('(prefers-color-scheme: dark)').matches)
+          document.documentElement.dataset.theme = 'dark';
       } catch {}
-    </script></head
-  ><body
-    ><a class="skip" href="#main">Skip to content</a><Header {lang} /><main id="main">
-      <slot />
-    </main><Footer /></body>
+    </script>
+    <Analytics />
+  </head>
+  <body>
+    <a class="skip" href="#main">{t.skipToContent}</a>
+    <Header {lang} />
+    <main id="main"><slot /></main>
+    <Footer {lang} />
+  </body>
 </html>

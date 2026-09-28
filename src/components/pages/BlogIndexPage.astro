@@ -1,0 +1,85 @@
+---
+import { getCollection } from 'astro:content';
+import type { BlogCategory } from '../../content.config';
+import { site } from '../../config/site';
+import { type Locale, localePath, ui } from '../../i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const { lang = 'en', category } = Astro.props as { lang?: Locale; category?: BlogCategory };
+const t = ui[lang];
+
+const all = (await getCollection('blog', ({ data }) => !data.draft && data.lang === lang)).sort(
+  (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
+);
+const entries = category ? all.filter((e) => e.data.category === category) : all;
+const counts = new Map<BlogCategory, number>();
+for (const entry of all)
+  counts.set(entry.data.category, (counts.get(entry.data.category) ?? 0) + 1);
+const chips = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+
+const title = category ? `${t.blog} — ${t.categories[category]}` : t.blog;
+/** Category listings exist only in locales that have posts, so advertise
+ *  alternates only for the locales where the same category page is built. */
+const alternates = category
+  ? Object.fromEntries(
+      (
+        await Promise.all(
+          (['en', 'ja', 'zh'] as Locale[]).map(async (l) => {
+            const posts = await getCollection(
+              'blog',
+              ({ data }) => !data.draft && data.lang === l && data.category === category,
+            );
+            return posts.length > 0 ? [l, localePath(l, `blog/category/${category}`)] : null;
+          }),
+        )
+      ).filter((x): x is [Locale, string] => x !== null),
+    )
+  : undefined;
+---
+
+<BaseLayout title={`${title} — ${site.name}`} description={t.blogLead} {lang} {alternates}>
+  <div class="container page" data-pagefind-body>
+    <header class="page-header">
+      <p class="eyebrow">~/blog{category ? `/${category}` : ''}</p>
+      <h1>{title}</h1>
+      <p class="lead">{t.blogLead}</p>
+    </header>
+    {
+      chips.length > 0 && (
+        <nav class="chip-row no-print" aria-label={t.blog}>
+          <a class="chip" class:list={{ active: !category }} href={localePath(lang, 'blog')}>
+            {t.allPosts}
+            <span class="chip-count">{all.length}</span>
+          </a>
+          {chips.map(([cat, count]) => (
+            <a
+              class="chip"
+              class:list={{ active: category === cat }}
+              href={localePath(lang, `blog/category/${cat}`)}
+            >
+              {t.categories[cat]}
+              <span class="chip-count">{count}</span>
+            </a>
+          ))}
+        </nav>
+      )
+    }
+    {
+      entries.map((entry) => (
+        <article class="entry">
+          <p class="meta entry-meta">
+            <time datetime={entry.data.published.toISOString()}>
+              {entry.data.published.toLocaleDateString(lang)}
+            </time>
+            <span class="tag">{t.categories[entry.data.category]}</span>
+          </p>
+          <h2>
+            <a href={localePath(lang, `blog/${entry.id}`)}>{entry.data.title}</a>
+          </h2>
+          {entry.data.description && <p class="entry-description">{entry.data.description}</p>}
+        </article>
+      ))
+    }
+    {entries.length === 0 && <p class="meta">{t.empty}</p>}
+  </div>
+</BaseLayout>

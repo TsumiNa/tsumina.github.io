@@ -1,0 +1,32 @@
+---
+import { researchThemes, site } from '../../config/site';
+import { type Locale, localePath, ui } from '../../i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const { lang = 'en' } = Astro.props as { lang?: Locale };
+const t = ui[lang];
+---
+
+<BaseLayout title={`${t.research} — ${site.name}`} description={t.researchLead} {lang}>
+  <div class="container page" data-pagefind-body>
+    <header class="page-header">
+      <p class="eyebrow">~/research</p>
+      <h1>{t.research}</h1>
+      <p class="lead">{t.researchLead}</p>
+    </header>
+    <ol class="theme-list">
+      {
+        researchThemes.map((theme, index) => (
+          <li>
+            <span class="theme-index">{String(index + 1).padStart(2, '0')}</span>
+            <h2>{theme.title}</h2>
+            <p>{theme.description}</p>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="more-link">
+      <a href={localePath(lang, 'publications')}>{t.allPublications} →</a>
+    </p>
+  </div>
+</BaseLayout>

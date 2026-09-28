@@ -1,11 +1,39 @@
 ---
 import { site } from '../config/site';
+import { type Locale, localePath, ui } from '../i18n';
+const { lang = 'en' } = Astro.props as { lang?: Locale };
+const t = ui[lang];
+const sections: [string, string][] = [
+  ['research', t.research],
+  ['publications', t.publications],
+  ['blog', t.blog],
+  ['notes', t.notes],
+  ['cv', t.cv],
+];
+const profiles: [string, string][] = [
+  [site.orcid, 'ORCID'],
+  [site.github, 'GitHub'],
+  [site.researchmap, 'researchmap'],
+  [`mailto:${site.email}`, 'Email'],
+  ['/rss.xml', 'RSS'],
+];
 ---
 
-<footer class="site-footer">
+<footer class="site-footer no-print">
+  <div class="container footer-grid">
+    <div class="footer-identity">
+      <p class="footer-name">{t.fullName}</p>
+      <p class="footer-intro">{t.intro}</p>
+      <p class="footer-copyright">© {new Date().getFullYear()} {site.name}</p>
+    </div>
+    <nav class="footer-links" aria-label="Footer">
+      {sections.map(([path, label]) => <a href={localePath(lang, path)}>{label}</a>)}
+    </nav>
+    <div class="footer-links footer-profiles">
+      {profiles.map(([href, label]) => <a href={href}>{label}</a>)}
+    </div>
+  </div>
   <div class="container">
-    <a href={site.orcid}>ORCID</a> · <a href={site.github}>GitHub</a><br /><small
-      >© {new Date().getFullYear()} {site.name}. Built as a static Astro site.</small
-    >
+    <p class="footer-colophon">{t.footerBuilt}</p>
   </div>
 </footer>

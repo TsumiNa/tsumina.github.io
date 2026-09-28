@@ -16,3 +16,9 @@ All four can produce static assets suitable for GitHub Pages and Cloudflare. Ast
 Build a small, idiomatic Astro system from scratch, informed by the content-collection and progressive-enhancement patterns of AstroPaper/Cactus. This avoids retaining irrelevant theme branding or demo content and is less risky than overriding a blog theme until little upstream structure remains.
 
 The adaptation is intentionally cohesive: one global layout, centralized tokens and i18n, typed content collections, shared scientific-content primitives, normalized publication data, and static deployment. No upstream theme code was copied.
+
+## 2026-09-28 re-evaluation (visual redesign)
+
+Before the visual redesign, the community-theme landscape was re-surveyed with the owner's "prefer a maintained community theme" request in mind. Verified findings: no maintained Astro theme simultaneously covers trilingual root/`ja`/`zh` routing and an ORCID publications pipeline. The actively maintained candidates (AstroPaper v6, Astro Cactus v8, astro-erudite v2) are blog-first with no publications/CV model, and the academic-specific themes (as-folio, astro_academia, Scholar-Lite, astro-scholar) are 9–71-star single-maintainer projects, several already unmaintained; none has route-level i18n.
+
+Decision, agreed with the owner: keep the custom architecture and redesign the visual layer in place, borrowing design language rather than code — astro-erudite v2's fluid Utopia type/space scales and framework-free CSS philosophy, Astro Cactus's posts/notes information architecture, AntfuStyle's restrained "modern researcher, slightly geeky" temperament, and as-folio's publications-page interaction patterns.
