@@ -8,6 +8,7 @@ Before modifying this repository, read and follow the applicable rules in:
 
 - [Branch and Pull Request Workflow](.github/instructions/branch-and-pr-workflow.instructions.md) for branch selection, PR scope, and code-refactor planning;
 - [Implementation, Checks, and Content Review](.github/instructions/implementation-and-tests.instructions.md) for Astro/TypeScript implementation, proportionate verification, and the author-preserving Markdown/MDX review boundary;
+- [AI-Assisted Writing](.github/instructions/ai-writing.instructions.md) when drafting, revising, or translating Blog/Notes content on the owner's behalf — most articles are AI-drafted from the owner's outline and gated on the owner's approval;
 - [Shell Environment and Repository Commands](.github/instructions/shell-environment.instructions.md) before running terminal commands.
 
 These files are mandatory extensions of `AGENTS.md`, not optional guidance. Classify work by what is changing:

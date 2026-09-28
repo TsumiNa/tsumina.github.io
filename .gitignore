@@ -146,3 +146,6 @@ vite.config.ts.timestamp-*
 .astro/
 .wrangler/
 .dev.vars*
+
+# Claude Code personal project settings
+.claude/settings.local.json

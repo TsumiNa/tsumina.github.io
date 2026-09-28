@@ -36,6 +36,8 @@ Add Blog `.md`/`.mdx` entries under `src/content/blog/` and Notes under `src/con
 
 Figures, grids, wide tables, equations, chemical structure SVGs, callouts, code, and footnotes are documented in [`docs/content-authoring.md`](docs/content-authoring.md). The sole sample is a draft development fixture, not personal content.
 
+Most articles are AI-drafted from the owner's outline and key points, then owner-reviewed. The self-contained writing instruction lives in [`.github/instructions/ai-writing.instructions.md`](.github/instructions/ai-writing.instructions.md) (any agent reading `AGENTS.md` picks it up); Claude Code users can also invoke it as the `draft-article` skill from `.claude/skills/`.
+
 ## Publications and ORCID
 
 ```sh

@@ -55,6 +55,8 @@ For instruction- or documentation-only changes outside published site content, r
 
 Treat Blog and Learning Notes as author-owned writing. Review technical integrity and editorial correctness without taking over authorship.
 
+Commissioned drafting is different from review: when the owner asks for new or revised content from an outline, follow `ai-writing.instructions.md`, which permits full drafting freedom before approval. This section's author-preserving boundary governs content the owner has already approved.
+
 Article creation, revision, translation, restructuring, or review is content work, not a code refactor. It does not trigger the `docs/plans` rules in `branch-and-pr-workflow.instructions.md`. The presence of MDX imports, embedded components, equations, figures, or code examples does not by itself turn an article edit into an implementation refactor; only an actual change to the underlying component, schema, renderer, build pipeline, or other site code is code work.
 
 ### In scope
