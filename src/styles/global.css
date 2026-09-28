@@ -235,6 +235,30 @@ h2 {
   color: var(--text-muted);
   font-size: 0.9rem;
 }
+.publication-title {
+  font-size: 1.15rem;
+  margin: 0.2rem 0;
+}
+.publication-authors {
+  margin: 0.2rem 0;
+}
+.publication-authors .owner {
+  font-weight: 700;
+}
+.publication-authors sup {
+  color: var(--accent);
+}
+.publication-annotation {
+  color: var(--text-muted);
+  margin: 0.2rem 0;
+}
+.publication-links {
+  margin: 0.2rem 0;
+  font-size: 0.9rem;
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
 .article-head,
 .prose {
   max-width: var(--max-reading);

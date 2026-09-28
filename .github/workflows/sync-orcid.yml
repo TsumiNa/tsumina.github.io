@@ -1,20 +1,37 @@
-name: Preview ORCID synchronization
+name: Sync ORCID publications
 on:
   schedule: [{ cron: '17 4 * * 1' }]
   workflow_dispatch:
-permissions: { contents: read }
+permissions: { contents: write, actions: write }
+concurrency: { group: sync-orcid }
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with: { ref: main }
+      # pnpm version comes solely from "packageManager" in package.json.
       - uses: pnpm/action-setup@v4
-        with: { version: 10 }
       - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: pnpm }
+        with: { node-version-file: .node-version, cache: pnpm }
       - run: pnpm install --frozen-lockfile
       - run: pnpm sync:orcid
         env:
           ORCID_ID: 0000-0002-9511-4283
           ORCID_ACCESS_TOKEN: '${{ secrets.ORCID_ACCESS_TOKEN }}'
-      - run: git diff -- src/data/publications.json
+      - name: Commit refreshed data and trigger deployment
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          if git diff --quiet -- src/data/publications.json; then
+            echo "Publications are already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/publications.json
+          git commit -m "chore(data): sync publications from ORCID"
+          git push origin HEAD:main
+          # Cloudflare Workers Builds rebuilds from its own GitHub App webhook on this
+          # push, but pushes made with GITHUB_TOKEN do not start GitHub Actions
+          # workflows, so the Pages build is dispatched explicitly.
+          gh workflow run deploy.yml --ref main

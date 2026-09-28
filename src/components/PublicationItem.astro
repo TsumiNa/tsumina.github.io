@@ -1,0 +1,55 @@
+---
+import { citationAuthors } from '../utils/citation';
+import type { DisplayPublication } from '../utils/publications';
+
+interface Props {
+  pub: DisplayPublication;
+}
+const { pub } = Astro.props;
+const authors = citationAuthors(pub);
+const searchText = [
+  pub.title,
+  pub.venue,
+  ...authors.map((a) => a.display),
+  ...(pub.authors ?? []).map((a) => a.name),
+]
+  .filter(Boolean)
+  .join(' ')
+  .toLowerCase();
+
+// Citation text is assembled as escaped HTML: Astro inserts whitespace around
+// expression children, which would separate names from their commas/markers.
+const escape = (value: string) =>
+  value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const authorsHtml = authors
+  .map((a, i) => {
+    const separator = i === 0 ? '' : i === authors.length - 1 ? ' &amp; ' : ', ';
+    const marks =
+      (a.equalContribution ? '<sup>†</sup>' : '') + (a.corresponding ? '<sup>*</sup>' : '');
+    return `${separator}<span${a.isOwner ? ' class="owner"' : ''}>${escape(a.display)}</span>${marks}`;
+  })
+  .join('');
+const venueHtml = [
+  pub.venue ? `<em>${escape(pub.venue)}</em>` : '',
+  pub.volume ? ` <strong>${escape(pub.volume)}</strong>` : '',
+  pub.pages ? `, ${escape(pub.pages)}` : '',
+  pub.year ? ` (${pub.year})` : '',
+  pub.type && pub.type !== 'journal-article' ? ` · ${escape(pub.type)}` : '',
+].join('');
+---
+
+<article
+  class="entry publication"
+  data-search={searchText}
+  data-type={pub.category ?? pub.type ?? ''}
+>
+  <h2 class="publication-title">{pub.title}</h2>
+  {authors.length > 0 && <p class="publication-authors" set:html={authorsHtml} />}
+  <p class="meta publication-venue" set:html={venueHtml} />
+  {pub.annotation && <p class="publication-annotation">{pub.annotation}</p>}
+  <p class="publication-links">
+    {pub.doi && <a href={`https://doi.org/${pub.doi}`}>{`doi:${pub.doi}`}</a>}
+    {!pub.doi && pub.url && <a href={pub.url}>link</a>}
+    {pub.links && Object.entries(pub.links).map(([label, href]) => <a href={href}>{label}</a>)}
+  </p>
+</article>
