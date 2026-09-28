@@ -1,7 +1,7 @@
 ---
-description: "Use for every repository modification. Defines branch and pull-request decisions, reviewable change boundaries, and the version decision for this private Astro site."
-name: "Branch and Pull Request Workflow"
-applyTo: "**"
+description: 'Use for every repository modification. Defines branch and pull-request decisions, reviewable change boundaries, and the version decision for this private Astro site.'
+name: 'Branch and Pull Request Workflow'
+applyTo: '**'
 ---
 
 # Branch and Pull Request Workflow
@@ -31,6 +31,27 @@ Do not overwrite, discard, commit, or reformat unrelated user changes. If existi
 - A PR must be understandable, testable, and revertible on its own.
 - Describe the user-visible effect, implementation scope, and verification commands in the PR body.
 - Do not push, open, merge, close, or otherwise change a remote PR unless the user requested that remote action or it is an explicitly agreed part of the task.
+
+## Review, CI attribution, and merge eligibility
+
+Judge a PR by the behavior and failures attributable to its own diff, not by unrelated repository history.
+
+- If no PR checks are triggered, treat the PR as having no CI blocker. Do not add or repair CI merely to manufacture a passing check for that PR.
+- A failing check is non-blocking when there is concrete evidence that the same failure existed on the PR's base commit before the PR, and the current diff does not touch the related code, content, workflow, configuration, or failure path. Record that evidence in the PR or handoff instead of claiming that all checks passed.
+- A failure blocks merging when the PR introduced or worsened it, the changed files could reasonably affect it, or its independence from the PR cannot be established. Investigate uncertain attribution before deciding.
+- Do not expand the current PR to repair a pre-existing failure owned by another commit or PR when that repair is unrelated to the requested outcome. Report it separately and use a focused follow-up task or PR if the user authorizes the repair.
+- When fixing a pre-existing failure is the stated purpose of the current PR, that failure is in scope and the PR must include proportionate evidence that the fix works.
+- Inspect all review feedback on the latest head commit. Address actionable findings in scope, and respond with a concise rationale when a suggestion is incorrect or belongs in a separate follow-up. Resolve review threads only after their disposition is clear.
+- If a requested automated reviewer is unavailable or has exhausted its quota, perform an independent review of the final diff and record the result; reviewer unavailability alone is not a merge blocker.
+
+Immediately before an authorized merge:
+
+1. Confirm the PR head has not changed since the final checks and review.
+2. Reinspect the final diff and confirm that the PR still has one coherent scope.
+3. Confirm the applicable local verification from `implementation-and-tests.instructions.md` passed, or accurately document anything that could not be run.
+4. Classify every reported PR check as passing, non-blocking under the pre-existing-failure rule above, or blocking. Do not describe a non-blocking failure as successful.
+5. Confirm all actionable review findings are addressed and no unresolved thread still requires a change.
+6. Use the merge method authorized by the user. Do not bypass branch protection or repository permissions to force a merge; report a configuration-level block instead.
 
 ## Code refactors and complex implementation changes
 
