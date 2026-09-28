@@ -1,0 +1,401 @@
+---
+title: 'AI codingプロジェクト入門：用語とワークフローを理解する'
+description: 'PythonのCLIプロジェクトを例に、構成、framework、scaffold、factory、抽象化、AIへの指示を説明し、branch、commit、PR、CI、mergeを一つの開発ワークフローとして結び付ける。'
+published: 2026-09-28
+lang: ja
+tags: [ai-coding, python, software-engineering]
+category: tutorial
+translationKey: ai-coding-project-vocabulary
+banner:
+  src: /figures/ai-coding-project-vocabulary/banner.svg
+  alt: framework、scaffold、factory、抽象化の境界、成果物の検証を結ぶプロジェクトの見取り図
+---
+
+import Callout from '../../../../src/components/content/Callout.astro';
+
+<Callout type="Note" title="TL;DR">
+  AIはディレクトリ、設定、インターフェース、テストを一度に生成できる。そのため初学者は、従来の教科書なら別々の章で学ぶ抽象化に、最初の機能を書く前から直面する。その速さを使いこなす第一歩は、自分の意図を明確にし、確認できる結果によってAIが意図を満たしたか判断することだ。この章ではPythonプロジェクトを通して構成と道具を理解し、AIへの指示、branch、commit、PR、CI、mergeを、やり直しの利くワークフローとして結び付ける。
+</Callout>
+
+Pythonの短いプログラムを書けることと、アイデアを保守できるプロジェクトに仕立てることは違う。その間で足りないのは、文法よりもプロジェクトを説明する語彙かもしれない。実行はどこから始まるのか。依存関係は誰が管理するのか。frameworkとlibraryはどう違うのか。scaffoldは何を生成するのか。なぜここで抽象化が必要で、インターフェースにはABCとProtocolのどちらが適切なのか。
+
+AI codingでは、これらの語がさらに重要になる。従来の教科書は文法を先に、設計を後から教えられる。しかしAIは最初の回答でframework、factory、インターフェース、テスト、CI設定まで生成し得る。すべての実装をすぐに習得する必要はないが、それぞれがなぜ存在するのかは判断したい。そうでなければ、「動くかどうか」だけが評価基準となり、AIが意図したプロジェクトを作ったか分からない。
+
+この章では、つながった二つの流れを追う。まずプロジェクトの構成と抽象化を理解し、次に一つの変更が制約、実装、検証、統合をどう通過するかを見る。用語は暗記する一覧ではなく、AIに問いかけるための道具である。
+
+## 小さいが実際に使えるプロジェクトから始める
+
+このシリーズは変数、ループ、クラスを教科書の順番で並べない。まず届けられる道具を作り、必要になった知識をその都度補う。
+
+例に使うプロジェクトは`paper-digest`だ。論文一覧`papers.csv`を読み、必須項目を確認し、年とトピックで分類して`report.md`を出力する。
+
+```console
+$ paper-digest build data/papers.csv --output report.md
+Loaded 42 papers
+Wrote report.md
+```
+
+この二行の出力だけでは仕様にならない。実際のプロジェクトでは、少なくとも次の四点を決める必要がある。
+
+1. <strong>入力と出力</strong>
+   ：CSVには少なくとも`title`、`year`、`topic`を含める。Markdownの出力は決定的で、同じ入力から同じ結果が得られる。
+2. <strong>失敗時の振る舞い</strong>
+   ：年を解析できなければ終了ステータスを非ゼロにし、行番号とフィールド名を示す。
+3. <strong>受け入れ条件</strong>
+   ：正常なデータ、ヘッダーだけのCSV、不正な年を自動テストで扱う。READMEにはインストールからレポート生成までコピーして実行できるコマンドを載せる。
+4. <strong>対象外</strong>
+   ：初版ではWeb画面、データベース、クラウドへのデプロイ、LLMによる要約を作らない。
+
+ここで三つの語が現れた。<strong>要件（requirement）</strong>はシステムがすべきこと、<strong>スコープ（scope）</strong>は今回することとしないこと、<strong>受け入れ条件（acceptance criteria）</strong>は「完成」を観察・確認できる結果にしたものだ。「論文管理ツールを作って」は願望ではあっても境界ではない。上の四点があって初めてプロジェクトを記述し始められる。
+
+## 一つのファイルからプロジェクトへ
+
+すべての処理を`digest.py`に書いても動くかもしれない。スクリプトとプロジェクトの違いは行数でも、立派そうなディレクトリでもない。プロジェクトでは、複数の人が何度も、別のマシンでも、開発・実行・検証を安定して行える必要がある。
+
+最小構成の一例は次のとおり。
+
+```text
+paper-digest/
+├── pyproject.toml
+├── README.md
+├── AGENTS.md
+├── src/
+│   └── paper_digest/
+│       ├── __init__.py
+│       ├── cli.py
+│       ├── models.py
+│       ├── sources.py
+│       └── report.py
+└── tests/
+    ├── test_sources.py
+    └── test_report.py
+```
+
+これを唯一の正解と考えないでほしい。`AGENTS.md`にはAIがこのリポジトリでどう作業するかを記す。詳しくは後で扱う。それ以外の名前にも、それぞれ責任が必要だ。
+
+- <strong>repository（リポジトリ、repo）</strong>
+  はバージョン管理される作業領域で、通常はソース、テスト、設定、文書を含む。共同作業と履歴の境界になる。
+- <strong>project（プロジェクト）</strong>
+  は一つの目標に向けて組織した仕事全体だ。通常は一つのリポジトリを持つが同義語ではなく、一つのリポジトリに複数の配布可能なプロジェクトが入ることもある。
+- <strong>module（モジュール）</strong>
+  はPythonでは一般にインポートできる`.py`ファイルで、`report.py`が例になる。Pythonの公式チュートリアルは、Pythonの定義と文を含むファイルとして説明している。[^python-modules]
+- <strong>package（パッケージ）</strong>
+  はモジュールをまとめ、インポート時の名前空間を与える。ここでは`paper_digest/`だ。ただし会話中のpackageは、PyPIからインストールする配布物を指す場合もあるため、文脈で区別する。
+- <strong>entry point（エントリーポイント）</strong>
+  は外部からプログラムに入る場所だ。利用者が`paper-digest`を実行すると、引数を解析し、処理を呼び出し、結果を端末の出力と終了ステータスに変える。
+- <strong>configuration（設定）</strong>
+  は業務ロジックを書き換えずに変更できるプロジェクトの値だ。Pythonでは`pyproject.toml`にビルド方式、メタデータ、依存関係、ツール設定などを記すことが多い。[^pyproject]
+
+ファイル分割は抽象化の競争ではない。`cli.py`は端末とのやり取り、`sources.py`はデータの読み込み、`report.py`はレポート生成を担当する。こう分ければ、テストは端末を経由せずにデータ処理を確認できる。別々に変わる理由のない三行の転送ファイルを「層」のためだけに増やす必要はない。
+
+### 実行環境、仮想環境、依存関係は別のもの
+
+<strong>runtime（ランタイム）</strong>
+はプログラムの実行時に必要な言語実装と仕組みだ。この例では、まず特定のバージョンのPythonインタープリターが当たる。
+
+<strong>dependency（依存関係）</strong>
+はプロジェクトが利用するが自分では実装しないソフトウェアだ。複雑な形式を解析する外部ライブラリなら依存関係になる。名前と許容バージョンは開発者のPCだけでなく、プロジェクトに記録する。
+
+<strong>virtual environment（仮想環境）</strong>
+はプロジェクト用のPythonとインストール済みパッケージを比較的独立させる。プロジェクトAとBが異なるバージョンを必要とするときに役立つが、仮想マシンやコンテナではない。Pythonの文書は、特定のアプリケーションのための半隔離された環境として説明する。[^venv]
+
+<strong>lock file（ロックファイル）</strong>
+は、解決された具体的な依存バージョンをさらに記録し、別のマシンで同じインストール結果を再現しやすくする。[^lock-file]
+`pyproject.toml`が何を必要とし、どの範囲を認めるかを宣言するのに対し、前者は実際に何が選ばれたかを示す。形式や対応状況はツールによって違うため、AIにパッケージマネージャーを変更させる前に既存の設定を読む。
+
+## Library、framework、scaffoldは異なる層にある
+
+この三つは初期設定で同時に登場しやすいが、答える問いは違う。
+
+### Library：自分のコードから呼び出す
+
+<strong>library（ライブラリ）</strong>
+は呼び出せる関数、クラス、モジュールを提供する。全体の流れは自分のコードが握る。`paper-digest`なら標準ライブラリの`csv`を利用できる。
+
+```python
+import csv
+
+with open("papers.csv", newline="", encoding="utf-8") as file:
+    rows = list(csv.DictReader(file))
+```
+
+いつファイルを開き、`csv.DictReader`を呼び、その後どうするかは、こちらのコードが決める。
+
+### Framework：決められた場所で自分のコードが呼ばれる
+
+<strong>framework（フレームワーク）</strong>
+は機能に加えて、アプリケーションの主要な構造やライフサイクルも定める。自分のコードを用意された拡張点に置くと、適切な時点でフレームワークがそれを呼ぶ。Martin
+Fowlerは、この制御の反転を通常のライブラリとの重要な違いとして挙げている。[^ioc]
+
+例えばWebフレームワークでは、あるパスへのリクエストで実行する関数を宣言する。待ち受け、リクエストの解析、ルートの選択、レスポンスの生成という大きな流れはフレームワークが管理する。判断するときは、<strong>メインの流れを持つのは誰で、誰が誰を呼ぶのか</strong>をまず問うとよい。唯一の分類基準ではないが、「大きければフレームワーク」という判断より役立つ。
+
+初版の`paper-digest`は一度読み、変換し、書き出すだけで、フレームワークに管理させるべきライフサイクルがない。標準ライブラリや小さなライブラリで十分かもしれない。AIに「モダンなフレームワークで作って」と頼んでも品質は自動的に上がらず、概念と依存関係だけが増える可能性がある。
+
+### Scaffold：生成後に引き継ぐ初期構造
+
+<strong>scaffold（ひな型生成・足場）</strong>
+はテンプレートから生成された初期ファイルとディレクトリだ。Cookiecutterも自らをプロジェクトテンプレートからプロジェクトを作るツールと説明する。[^cookiecutter]
+`pyproject.toml`、パッケージやテストのディレクトリ、CI設定、仮のREADMEなどが生成される。
+
+scaffoldのツールは通常、プロジェクト作成時に動き、生成物はその後プロジェクト自身が管理する。frameworkは実行時にも処理の流れに関わる。「FastAPIをframeworkとして使う」と「テンプレートでFastAPIプロジェクトをscaffoldする」は別の判断だ。
+
+近い言葉として、<strong>template（テンプレート）</strong>は生成に使う設計図、<strong>boilerplate（定型コード）</strong>は多くのプロジェクトで繰り返される、変化の少ない必要な記述だ。scaffoldはtemplateからboilerplateを生成し得るが、同義語ではない。
+
+## Factoryはオブジェクトを作るもので、プロジェクトを立ち上げるものではない
+
+設計上の定着した用語は<strong>factory（ファクトリー）</strong>、<strong>Factory Method（ファクトリーメソッド）</strong>、<strong>Factory pattern（ファクトリーパターン）</strong>だ。「factory mode」と聞いたら、特定のツールのモード名なのか、Factory Methodの言い間違いなのかを先に確認する。
+
+後に`paper-digest`がCSVとJSONの両方に対応するとしよう。どこでも`if`を書いて読み取り器を選ぶこともできるが、オブジェクト生成の判断を一か所に集められる。
+
+```python
+from pathlib import Path
+
+
+def make_source(path: Path) -> "PaperSource":
+    match path.suffix.lower():
+        case ".csv":
+            return CsvPaperSource()
+        case ".json":
+            return JsonPaperSource()
+        case suffix:
+            raise ValueError(f"Unsupported input format: {suffix}")
+```
+
+`make_source()`は単純なfactory functionだ。呼び出し側は「このパスに対応するデータソース」を求め、具体的なクラスの選択を一か所に任せる。厳密なFactory Methodパターンには、サブクラスが上書きできる生成メソッドが含まれることが多い。[^factory-method] Pythonではまず関数で十分な場合が多い。継承が実際の変更点を表さないなら、AIにfactory classの階層を作らせる必要はない。
+
+framework、scaffold、factoryは同じ分類軸にはない。
+
+| 概念      | 決めること                   | 主に関わる時点                   | この例での形                            |
+| --------- | ---------------------------- | -------------------------------- | --------------------------------------- |
+| framework | 構造、ライフサイクル、拡張点 | 実行時                           | 初版では不要                            |
+| scaffold  | 最初のファイルと設定         | プロジェクトの作成・拡張時       | `src/`、`tests/`、設定を生成            |
+| factory   | 今回作る具体的なオブジェクト | 実行時やオブジェクトの組み立て時 | 拡張子からCSV／JSONのデータソースを選択 |
+
+## 抽象化はコードを複雑に見せるためではない
+
+<strong>abstraction（抽象化）</strong>
+は実装の一部を隠し、呼び出し側が必要とする契約を残す。行数を減らしたり、教科書らしいコードにしたりすることが目的ではない。変更を境界の片側に閉じ込めるためのものだ。
+
+入力がCSVだけなら、直接的な`load_csv()`が最も分かりやすい。二つ目の形式が現れた後、レポート生成側が必要とするのが「論文の一覧」だけなら、CSVの列名、JSONのキー、ファイルを開く方法まで知るべきではない。そこで「データソースは論文を読み込める」という抽象化を作り、形式ごとの差を各実装に残せる。
+
+境界を追加する前に、三つの問いを確認する。
+
+1. 実際に二つの実装があるのか、それとも将来を想像しているだけか。
+2. 呼び出し側は、より小さく安定した振る舞いだけに依存できるか。
+3. 分離すると、テストや実装の交換が明らかに容易になるか。
+
+すべて「いいえ」なら、具体的なコードのままがよいことが多い。AIはファイル名や「拡張しやすく」という一言から、repository、service、manager、adapter、factoryの階層を生成できる。各層がどの実際の変更を隔離するか説明できなければ、コードを読むときの移動が一つ増えるだけだ。
+
+## ABCとProtocol：異なる二種類の契約
+
+PythonのAbstract Base Class（抽象基底クラス、ABC）と`typing.Protocol`は、どちらもオブジェクトに必要な操作を表せるが、示す関係が異なる。
+
+以下はインターフェースの関係だけを示す。CSVの解析とMarkdownの描画を省略した構成例であり、この章で完成品として提供する実行可能なプロジェクトではない。
+
+```python
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Protocol
+
+
+@dataclass(frozen=True)
+class Paper:
+    title: str
+    year: int
+    topic: str
+
+
+class PaperSource(Protocol):
+    def load(self, path: Path) -> list[Paper]: ...
+
+
+class CsvPaperSource:
+    def load(self, path: Path) -> list[Paper]:
+        # 実際のプロジェクトでは、ここでCSVを解析・検証する。
+        return []
+
+
+def build_report(source: PaperSource, path: Path) -> str:
+    papers = source.load(path)
+    return f"# Paper digest\n\nTotal: {len(papers)}\n"
+```
+
+`CsvPaperSource`は`PaperSource`を継承していないが、互換性のある`load()`を持つため、静的型チェッカーはProtocolを満たすと判断できる。これを<strong>structural subtyping（構造的部分型）</strong>という。宣言した所属ではなく、備える構造と振る舞いを見る。PEP 544は、この静的なduck typingを支えるものとしてProtocolを定義している。[^pep544]
+
+ABCでは、通常、実装クラスが明示的に継承する。
+
+```python
+from abc import ABC, abstractmethod
+from pathlib import Path
+
+
+class PaperSource(ABC):
+    @abstractmethod
+    def load(self, path: Path) -> list[Paper]:
+        """Load and validate papers from a path."""
+
+
+class CsvPaperSource(PaperSource):
+    def load(self, path: Path) -> list[Paper]:
+        return []
+```
+
+サブクラスが抽象メソッドを実装しない場合、Pythonは実行時にインスタンス化を阻止する。[^abc] ABCには共通の具象メソッドやプロパティも置け、継承関係を明示的に管理できる。一般的な選び方は次のとおり。
+
+| 判断点             | Protocol                               | ABC                                             |
+| ------------------ | -------------------------------------- | ----------------------------------------------- |
+| 関係               | 構造的：メソッドが適合すればよい       | 名目的：通常は明示的に継承                      |
+| 主な検査           | 静的型チェッカー                       | 継承関係と実行時のインスタンス化                |
+| 既存・外部のクラス | 元のクラスを変更せずに受け入れやすい   | 通常は継承、ラップ、登録が必要                  |
+| 共通実装           | 主な用途ではない                       | テンプレートメソッドや共通処理を置きやすい      |
+| 適した境界         | 呼び出し側が少数の能力だけを必要とする | frameworkが実装群と共通ライフサイクルを管理する |
+
+この表は一般的な使い方で、Pythonの能力の絶対的な限界ではない。ABCは仮想サブクラスの登録や`__subclasshook__()`の定義ができ、Protocolを明示的に継承することもできる。`paper-digest`でレポート生成器が`load()`だけを必要とするならProtocolが軽い。一方、データソースの開閉、キャッシュ、エラー処理を共通の実装で管理するならABCが合う場合もある。
+
+ABCもProtocolも、それだけでコードを「疎結合」にするわけではない。インターフェースからCSVの列名、ファイルハンドル、解析オプションをすべてレポート生成器に見せれば、結合は強いままだ。重要なのは、`list[Paper]`のように業務で必要な小さな契約にすることだ。
+
+## 人とAIは異なる入口から同じプロジェクトを知る
+
+各関数が動いていても、AIが変更可能な範囲、完成条件、新しいframeworkを導入してよいかを知らなければ、何度かの変更が互いに矛盾する可能性がある。毎回の対話で境界を説明し直す代わりに、少数の安定したルールをリポジトリに置き、各タスクを同じ制約から始める。
+
+`README.md`はまず利用者や新しい人のための入口で、プロジェクトの目的、インストール、実行方法、期待される結果を示す。`AGENTS.md`はコーディングエージェントの作業入口で、変更前に読むもの、守る境界、実行する検査、人の承認が必要な操作を示す。`CLAUDE.md`はClaude Codeで似た役割を持つ。ツールによって発見方法、読み込み方、優先順位が違う可能性があり、自動的に互換だと考えない。Claude Codeの文書は`AGENTS.md`も読めると説明している。両方置くなら矛盾する規則を避ける。[^agents-md][^claude-memory]
+
+`paper-digest`を始めるための`AGENTS.md`は、長い手引きでなくてよい。
+
+```md
+# paper-digestのAI開発ルール
+
+- 変更前にREADME.md、pyproject.toml、関連テストを読み、既存の入口を説明する。
+- 今回の依頼だけを扱い、Webサービス、データベース、プラグイン機構を勝手に加えない。
+- 新しい振る舞いには正常系と失敗系の例を用意し、既存の検査を実行する。
+- 変更したファイル、検査結果、未確認の前提を報告し、PRを独断でmergeしない。
+```
+
+「品質の高いコードを書く」よりこれらが役立つのは、変更結果と照らして確認できるからだ。ただし指示はセキュリティ上の隔離ではない。誤りを減らしても、必ず守られる保証はなく、権限制御、テスト、人によるレビューの代わりにはならない。プロジェクトの変化に合わせて更新し、古い規則や矛盾も取り除く。
+
+`skills/<name>/SKILL.md`は別の必要性に応える。「リリース前にCSV形式の互換性を確認する」のような<strong>必要なときだけ使う専門的な手順</strong>を、資料やスクリプトとまとめる。`AGENTS.md`や`CLAUDE.md`は毎回必要な短いルールに、skillは特定のタスクだけに必要な手順に向く。skillの発見方法はツールによって異なるので、使用中のツールの文書を確認する。初版の`paper-digest`に、形だけのskillsをいくつも作る必要はない。[^claude-skills]
+
+## 一つの変更はbranch、commit、PR、CI、mergeをどう通るか
+
+`paper-digest`にCSV入力を加えると仮定しよう。各語の定義を別々に知るだけでは足りない。この順序が、AIによる誤り得る変更を、隔離・レビュー・復元できるものにする。Gitはローカルの履歴を管理し、PRとGitHub ActionsはGitHubが提供する共同作業・自動化の機能で、Gitのコマンドではない。[^github-pr]
+
+1. 安定した現在の状態から<strong>branch（ブランチ）</strong>を作る。例えば`feat/csv-input`だ。独立して進められるcommitへの参照なので、未完成の変更を`main`に直接入れずに試せる。
+2. 仕事を明確にし、変更してローカルで検査し、「CSVを読み込み検証する」のような範囲の絞られた<strong>commit（コミット）</strong>を作る。commitにはその時点の状態と説明が残る。AIがついでにレポート形式を変えたなら、差分から見つけて別に直せる。
+3. branchをGitHubにpushし、<strong>pull request（PR）</strong>を開く。PRは、対象branchとの差分を取り込む提案で、差分、議論、検査結果を一か所に集める。開いたことは「merge済み」でも「正しさの証明」でもない。
+4. PRから<strong>CI（継続的インテグレーション）</strong>が動く。例えば`.github/workflows/`のGitHub Actions設定が`pull_request`を受け、リモートのマシンで依存関係を入れ直し、テストやビルドを実行する。失敗したら同じbranchで直してcommitする。PRは新しいcommitで更新されるが、成功しても要件を満たしたかは別途確かめる。[^github-actions]
+5. レビューで範囲、結果、リスクを確認した後に<strong>merge（マージ）</strong>し、変更を対象branchへ取り込む。受け入れ条件が満たされていないなら、緑のチェックだけを理由にmergeせず修正を続ける。
+
+GitLabでは対応するレビューの入口をmerge request（MR）、自動検査を通常pipelineと呼ぶ。名前は違っても、変更を隔離し、差分をレビューし、自動で確認してから本流に統合する関係は似ている。GitLabにはbranch pipelineとMR pipelineもあるため、「CI成功」を見たら、どのcommitのどの結果を検査したのかまで確かめたい。[^gitlab-ci]
+
+この連結は儀式ではない。branchは安定版を守り、commitは探せる履歴を残し、PRは人の意図と実際の差分を並べ、CIは別のマシンで機械的な検査を繰り返す。mergeで初めて変更を受け入れる。どこかが欠ければ、AIの速さによって理解していない変更が本流に入る可能性がある。
+
+### 何を確認し、何を届けるか
+
+PRの自動検査は別々の問いに答える。<strong>formatter</strong>はインデントなどの外観をそろえ、<strong>linter</strong>は疑わしい書き方を探す。<strong>type checker</strong>は、`build_report()`に渡すものが`PaperSource`を満たすかといった型の関係を調べる。<strong>test</strong>は実行結果と期待を比較する。pytestは`assert`で期待を書く。[^pytest] これらはまずローカルで実行し、CIで繰り返せる。リモートで動いたからといって、CIが業務要件をテスト以上に理解するわけではない。
+
+`paper-digest`では少なくとも三つを検査する。正常なCSVから想定した分類が得られること。ヘッダーだけでデータ行のないCSVから正しい空のレポートができること。不正な年で行番号とフィールド名を示すことだ。「空ファイル」がヘッダーもないゼロバイトを意味するなら、それは「レコードがゼロ」と別のケースで、エラーにするかどうかを決める必要がある。
+
+<strong>build（ビルド）</strong>
+はソースとメタデータを配布可能な成果物にする。PythonのCLIは必ずしもコンパイルを要しないが、wheelやsource
+distributionを作れる。ソース中のPython packageと、その配布物は別の層にある。
+<strong>deploy（デプロイ）</strong>
+はアプリケーションを対象環境で利用できるようにすることだ。このローカルCLIはインストール用にパッケージ化しても、サーバーへのデプロイは不要かもしれない。Webサービスには通常デプロイも必要になる。[^packaging]
+
+初版ですべての道具を使う必要はない。ただし、どうインストール・実行するか、どの検査が要件を確かめるか、何を届けるかには答えたい。AIが「CIが通ったので完成」と言ったら、受け入れ条件に戻る。空入力はテストしたか。エラーに本当に行番号があるか。READMEのコマンドはコピーして実行できるか。
+
+## 一度きりの大きなpromptではなく、ワークフローに指示を置く
+
+vibe codingは、曖昧な目標を伝え、動くものなら何でも受け入れることではない。リポジトリの理解、境界を決めた実装、差分と受け入れ条件の照合という三つの時点で、指示を分ける。
+
+最初は読み取りだけを頼む。
+
+```text
+README.md、AGENTS.md、pyproject.toml、関連テストを読んでください。
+CLIの入口、既存の検査コマンド、CSV入力を加えると触るファイルを説明してください。
+最小の方針と不明点を先に示し、まだファイルを変更しないでください。
+```
+
+方針を確認してから実装を頼む。一行ずつ指示するのではなく、AIに代わりに決めさせない境界を示す。
+
+```text
+Context:
+- 既存のPython CLIをfeat/csv-input branchで変更し、リポジトリの指示に従う。
+- 依存関係とツール設定はpyproject.tomlに従う。
+
+Goal:
+- title、year、topicを含むCSVを読み、年とトピック別のMarkdownレポートを生成する。
+
+Constraints:
+- CLIは引数と端末とのやり取りに専念し、解析処理は端末I/Oに依存させない。
+- Web framework、データベース、プラグイン機構、factory classを追加しない。
+- 二つ目の実際の実装が必要になったときだけデータソースの抽象化を検討する。
+
+Acceptance:
+- 正常入力、ヘッダーだけの入力、不正な年をテストする。
+- エラーに行番号とフィールド名を含め、READMEに再現可能なインストール・実行・テストコマンドを書く。
+
+Verification:
+- 既存のformatter、type checker、関連テストを実行する。
+- 差分、検査結果、未確認の前提を報告し、独断でmergeしない。
+```
+
+commitしてPRを開いた後は、もう一度「プロジェクトを完成させて」と頼むのでなく、受け入れ確認を頼む。
+
+```text
+PRの差分とテスト結果をAcceptanceの各項目と照合してください。
+対象外のファイル、失敗または未実行の検査、私の判断が必要な点を挙げてください。
+CIの緑のチェックを要件達成と同一視せず、独断でmergeしないでください。
+```
+
+AIがframeworkを提案したら、何のライフサイクルを管理するのか聞く。scaffoldを生成したら、各ファイルがなぜ必要か確かめる。factory、ABC、Protocolを追加したら、実在する二つ目の実装と変更の境界を示してもらう。<strong>一つのpromptに調査、アーキテクチャ移行、大量の実装を同時に任せない。</strong>手順を小さくしてもAIの速さは失われない。各段階を検査・復元できる流れの中に置ける。
+
+## この章のチェックポイント
+
+最後に`paper-digest`へ戻ろう。この章を終えたら、コードを見ずに次へ答えられるはずだ。
+
+1. 利用者はどのentry pointから入り、入力、出力、失敗時の振る舞いは何か。
+2. どのファイルがPython moduleで、どのディレクトリがPython packageか。設定はどこか。
+3. libraryとframeworkのどちらを使うか。frameworkなら主な流れを管理するのは誰か。
+4. どのファイルがscaffoldで作られ、何を残し、何が不要なboilerplateか。
+5. 隔離すべき実際の変化はすでにあるか。Protocol、ABC、具体的な関数のどれが最小で十分か。
+6. READMEとAGENTS.md／CLAUDE.mdはそれぞれ誰に向くか。いつskillが必要か。
+7. 変更はbranch、commit、PR、CI、mergeをどう通るか。GitLabでの対応する名称は何か。
+8. formatter、linter、type checker、testは何を確かめるか。buildは何を作り、deployは必要か。
+
+答えがなければ、AIに機能を増やさせるほど未知の領域が広がる。プロジェクトの見取り図があれば、PythonのAPIをまだ覚えていなくても、文書を調べ、正確に質問し、生成コードがこのプロジェクトに属するか判断できる。
+
+次章では、この最小の範囲で`paper-digest`のリポジトリを実際に作る。短いAI開発ルールを記録し、要件を実行可能な受け入れ条件に変え、インストールから実行、テストまで一通り動く最小単位を届ける。
+
+[^python-modules]: Python documentation, [Modules](https://docs.python.org/3/tutorial/modules.html).
+
+[^pyproject]: Python Packaging User Guide, [Writing your `pyproject.toml`](https://packaging.python.org/en/latest/guides/writing-pyproject-toml/).
+
+[^venv]: Python documentation, [Installing Python Modules: Key terms](https://docs.python.org/3/installing/index.html#key-terms).
+
+[^lock-file]: Python Packaging User Guide, [Tool recommendations](https://packaging.python.org/en/latest/guides/tool-recommendations/).
+
+[^ioc]: Martin Fowler, [Inversion of Control](https://martinfowler.com/bliki/InversionOfControl.html).
+
+[^cookiecutter]: Cookiecutter documentation, [Cookiecutter: Better Project Templates](https://cookiecutter.readthedocs.io/).
+
+[^factory-method]: Real Python, [The Factory Method Pattern and Its Implementation in Python](https://realpython.com/factory-method-python/).
+
+[^pep544]: Python Enhancement Proposals, [PEP 544 — Protocols: Structural subtyping](https://peps.python.org/pep-0544/).
+
+[^abc]: Python documentation, [`abc` — Abstract Base Classes](https://docs.python.org/3/library/abc.html).
+
+[^pytest]: pytest documentation, [Get Started](https://docs.pytest.org/en/stable/getting-started.html).
+
+[^packaging]: Python Packaging User Guide, [Packaging Python Projects](https://packaging.python.org/en/latest/tutorials/packaging-projects/).
+
+[^agents-md]: AGENTS.md project, [A simple, open format for guiding coding agents](https://agents.md/).
+
+[^claude-memory]: Anthropic, [How Claude remembers your project](https://code.claude.com/docs/en/memory).
+
+[^claude-skills]: Anthropic, [Extend Claude with skills](https://code.claude.com/docs/en/skills).
+
+[^github-pr]: GitHub Docs, [About pull requests](https://docs.github.com/en/pull-requests/getting-started/about-pull-requests).
+
+[^github-actions]: GitHub Docs, [Workflows](https://docs.github.com/en/actions/concepts/workflows-and-actions/workflows).
+
+[^gitlab-ci]: GitLab Docs, [CI/CD pipelines](https://docs.gitlab.com/ci/pipelines/).
