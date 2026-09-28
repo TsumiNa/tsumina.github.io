@@ -17,7 +17,7 @@ Choose the local branch by applying the first matching rule:
 1. If the user explicitly selects the current branch, default branch, another branch, or a worktree, honor that location.
 2. If the current branch already has an open PR for the requested work, continue locally on that branch.
 3. If the current branch is ahead of the default branch and has no PR, continue locally on that branch.
-4. Otherwise, create a descriptive local branch from an up-to-date default branch. Use the repository convention `codex/<short-description>` unless the user specifies another name.
+4. Otherwise, create a descriptive local branch from an up-to-date default branch. Use the repository convention `<type>/<short-description>`, where `<type>` is the conventional-commit type of the work — `feat`, `fix`, or `chore` (e.g. `feat/site-redesign`) — unless the user specifies another name. Existing `codex/*` branches predate this convention and keep their names.
 
 Remote actions are opt-in. Push commits, create or update a PR, request review, or merge only when the user requested or explicitly agreed to that remote work. When authorized, update the existing PR for the branch or, if the branch is ahead and has no PR, open one before adding further related commits. Never open a duplicate PR.
 
