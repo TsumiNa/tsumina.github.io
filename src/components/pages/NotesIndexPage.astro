@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import { site } from '../../config/site';
+import { type Locale, localePath, ui } from '../../i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const { lang = 'en' } = Astro.props as { lang?: Locale };
+const t = ui[lang];
+const entries = (
+  await getCollection('notes', ({ data }) => !data.draft && data.lang === lang)
+).sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+---
+
+<BaseLayout title={`${t.notes} — ${site.name}`} description={t.notesLead} {lang}>
+  <div class="container page" data-pagefind-body>
+    <header class="page-header">
+      <p class="eyebrow">~/notes</p>
+      <h1>{t.notes}</h1>
+      <p class="lead">{t.notesLead}</p>
+    </header>
+    {
+      entries.map((entry) => (
+        <article class="entry">
+          <p class="meta entry-meta">
+            <time datetime={entry.data.published.toISOString()}>
+              {entry.data.published.toLocaleDateString(lang)}
+            </time>
+            <span class="tag" data-status={entry.data.status}>
+              {t.statuses[entry.data.status]}
+            </span>
+            {entry.data.topic && <span class="tag">{entry.data.topic}</span>}
+          </p>
+          <h2>
+            <a href={localePath(lang, `notes/${entry.id}`)}>{entry.data.title}</a>
+          </h2>
+          {entry.data.description && <p class="entry-description">{entry.data.description}</p>}
+        </article>
+      ))
+    }
+    {entries.length === 0 && <p class="meta">{t.empty}</p>}
+  </div>
+</BaseLayout>

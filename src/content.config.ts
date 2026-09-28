@@ -11,9 +11,14 @@ const common = z.object({
   draft: z.boolean().default(false),
   translationKey: z.string().optional(),
 });
+export const blogCategories = ['research', 'technical', 'learning', 'tutorial'] as const;
+export type BlogCategory = (typeof blogCategories)[number];
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
-  schema: common.extend({ featured: z.boolean().default(false) }),
+  schema: common.extend({
+    featured: z.boolean().default(false),
+    category: z.enum(blogCategories).default('technical'),
+  }),
 });
 const notes = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/notes' }),

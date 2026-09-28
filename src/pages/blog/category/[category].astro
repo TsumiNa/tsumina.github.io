@@ -1,0 +1,14 @@
+---
+import { getCollection } from 'astro:content';
+import BlogIndexPage from '../../../components/pages/BlogIndexPage.astro';
+import type { BlogCategory } from '../../../content.config';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft && data.lang === 'en');
+  const categories = [...new Set(posts.map((p) => p.data.category))];
+  return categories.map((category) => ({ params: { category } }));
+}
+const { category } = Astro.params as { category: BlogCategory };
+---
+
+<BlogIndexPage lang="en" {category} />

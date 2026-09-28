@@ -5,11 +5,13 @@ A static-first [Astro](https://astro.build/) website for an academic CV, normali
 ## Architecture
 
 - Astro + TypeScript with no UI framework and no hydrated framework islands.
-- Blog and Notes are typed Astro Content Collections; MDX supports shared scientific components.
+- Blog and Notes are typed Astro Content Collections; MDX supports shared scientific components. Blog entries carry a `category` (research/technical/learning/tutorial) with static per-category listings.
 - Shiki syntax highlighting and KaTeX math render at build time.
 - Pagefind indexes the finished static output.
-- `src/config`, `src/i18n`, and CSS tokens centralize site behavior and design.
+- `src/config`, `src/i18n`, and CSS tokens centralize site behavior and design. The theme is a token-driven design system (self-hosted Inter + JetBrains Mono variable fonts, fluid type/space scales, light/dark, print).
 - ORCID is normalized by an explicit sync command; manual publication overrides remain separate.
+- SEO/AI surface: JSON-LD (Person, WebSite, articles, publications ItemList), translation-accurate `hreflang`, sitemap, RSS, and a generated `/llms.txt` site map for AI agents.
+- Analytics: `src/components/Analytics.astro` renders Google Analytics only when the `PUBLIC_GA_ID` build variable is set; default builds ship no tracking.
 
 No existing theme was copied. See [`docs/theme-decision.md`](docs/theme-decision.md) for the evaluated shortlist and rationale.
 

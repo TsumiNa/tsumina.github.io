@@ -12,12 +12,13 @@ published: 2026-09-27
 updated: 2026-10-03
 lang: en
 tags: [materials, machine-learning]
+category: technical
 draft: false
 translationKey: stable-topic-key
 ---
 ```
 
-Notes also accept `topic` and `status: draft | evolving | stable`. A translation is a separate file with the same `translationKey` and its own `lang`.
+Blog entries accept `category: research | technical | learning | tutorial` (default `technical`); each category with published posts gets a static listing at `/blog/category/<category>/`. Notes also accept `topic` and `status: draft | evolving | stable`. A translation is a separate file with the same `translationKey` and its own `lang`; the article's `hreflang` alternates and the header language switcher only advertise translations that actually exist.
 
 ## Figures and multi-panel figures
 

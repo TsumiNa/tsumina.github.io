@@ -1,8 +1,10 @@
-import { defineConfig } from 'astro/config';
+import { rehypeHeadingIds } from '@astrojs/markdown-remark';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
-import remarkMath from 'remark-math';
+import { defineConfig } from 'astro/config';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeKatex from 'rehype-katex';
+import remarkMath from 'remark-math';
 
 export default defineConfig({
   site: 'https://tsumina.github.io',
@@ -13,7 +15,18 @@ export default defineConfig({
   ],
   markdown: {
     remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex],
+    rehypePlugins: [
+      rehypeHeadingIds,
+      rehypeKatex,
+      [
+        rehypeAutolinkHeadings,
+        {
+          behavior: 'append',
+          properties: { className: ['heading-anchor'], ariaLabel: 'Link to this section' },
+          content: { type: 'text', value: '#' },
+        },
+      ],
+    ],
     shikiConfig: { themes: { light: 'github-light', dark: 'github-dark' }, wrap: false },
   },
 });

@@ -1,0 +1,93 @@
+---
+import { site } from '../../config/site';
+import { type Locale, ui } from '../../i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PublicationItem from '../PublicationItem.astro';
+import { hasAuthorMarkers } from '../../utils/citation';
+import { getPublications } from '../../utils/publications';
+import { publicationsLd } from '../../utils/structured-data';
+
+const { lang = 'en' } = Astro.props as { lang?: Locale };
+const t = ui[lang];
+const pubs = getPublications();
+const pubTypes = [...new Set(pubs.map((p) => p.category ?? p.type).filter(Boolean))].sort();
+const years = [...new Set(pubs.map((p) => p.year ?? 0))].sort((a, b) => b - a);
+const byYear = years.map((year) => ({
+  year,
+  items: pubs.filter((p) => (p.year ?? 0) === year),
+}));
+---
+
+<BaseLayout
+  title={`${t.publications} — ${site.name}`}
+  description={t.publicationsLead}
+  {lang}
+  jsonLd={pubs.length > 0 ? [publicationsLd(pubs)] : []}
+>
+  <div class="container page" data-pagefind-body>
+    <header class="page-header">
+      <p class="eyebrow">~/publications</p>
+      <h1>{t.publications}</h1>
+      <p class="lead">
+        {t.publicationsLead}
+        <a href={site.orcid}>ORCID ↗</a>
+      </p>
+    </header>
+    {
+      pubs.length > 0 && (
+        <div class="filter-bar no-print">
+          <input
+            id="publication-search"
+            type="search"
+            placeholder={t.filterSearch}
+            aria-label={t.filterSearch}
+          />
+          <select id="publication-type" aria-label={t.filterAllTypes}>
+            <option value="">{t.filterAllTypes}</option>
+            {pubTypes.map((x) => (
+              <option>{x}</option>
+            ))}
+          </select>
+        </div>
+      )
+    }
+    {hasAuthorMarkers(pubs) && <p class="meta marker-legend">{t.authorMarkers}</p>}
+    <div id="publications">
+      {
+        byYear.map(({ year, items }) => (
+          <section class="publication-year">
+            <h2 class="year-heading" data-year>
+              {year > 0 ? year : '—'}
+            </h2>
+            {items.map((p) => (
+              <PublicationItem pub={p} />
+            ))}
+          </section>
+        ))
+      }
+      {
+        pubs.length === 0 && (
+          <p>
+            {t.empty} <a href={site.orcid}>{t.viewOrcid}</a>
+          </p>
+        )
+      }
+    </div>
+  </div>
+  <script is:inline>
+    const query = document.querySelector('#publication-search');
+    const type = document.querySelector('#publication-type');
+    const run = () => {
+      document.querySelectorAll('#publications .publication').forEach((item) => {
+        item.hidden =
+          !item.dataset.search.includes(query.value.toLowerCase()) ||
+          (type.value && item.dataset.type !== type.value);
+      });
+      document.querySelectorAll('#publications .publication-year').forEach((group) => {
+        group.hidden = !group.querySelector('.publication:not([hidden])');
+      });
+    };
+    query?.addEventListener('input', run);
+    type?.addEventListener('change', run);
+  </script>
+</BaseLayout>

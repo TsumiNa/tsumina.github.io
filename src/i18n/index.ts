@@ -1,24 +1,59 @@
 export type Locale = 'en' | 'ja' | 'zh';
 export const locales: Locale[] = ['en', 'ja', 'zh'];
-export const ui = {
-  en: {
-    home: 'Home',
+
+const en = {
+  displayName: 'Chang Liu',
+  fullName: 'Chang Liu',
+  home: 'Home',
+  research: 'Research',
+  publications: 'Publications',
+  blog: 'Blog',
+  notes: 'Notes',
+  cv: 'CV',
+  search: 'Search',
+  menu: 'Menu',
+  intro: 'Researcher / AI Engineer / Scientific Computing',
+  lead: 'Exploring machine learning for scientific discovery, materials informatics, complex materials, and reproducible research software.',
+  focus: 'Research focus',
+  writing: 'Recent writing',
+  software: 'Research software',
+  selectedPublications: 'Selected publications',
+  allPublications: 'All publications',
+  allPosts: 'All posts',
+  empty: 'Content will appear here when authoritative source material is available.',
+  authorMarkers: '* Corresponding author · † Equal contribution',
+  language: 'Language',
+  theme: 'Theme',
+  contact: 'Contact',
+  updated: 'Updated',
+  skipToContent: 'Skip to content',
+  footerBuilt: 'Static Astro site — content lives in Git; no tracking by default.',
+  researchLead:
+    'A curated map of research directions connecting scientific questions, computational methods, and dependable software.',
+  publicationsLead:
+    'Synchronized from ORCID and enriched with DOI-registrar metadata. Corresponding-author and equal-contribution markers are curated by hand.',
+  blogLead: 'Essays on research, engineering, and the craft of scientific software.',
+  notesLead: 'Working knowledge and study notes. Status labels show their maturity.',
+  searchLead: 'Static full-text search across writing and research pages.',
+  filterSearch: 'Search title / venue / author',
+  filterAllTypes: 'All types',
+  viewOrcid: 'View the ORCID profile.',
+  categories: {
     research: 'Research',
-    publications: 'Publications',
-    blog: 'Blog',
-    notes: 'Notes',
-    cv: 'CV',
-    search: 'Search',
-    intro: 'Researcher / AI Engineer / Scientific Computing',
-    lead: 'Exploring machine learning for scientific discovery, materials informatics, complex materials, and reproducible research software.',
-    focus: 'Research focus',
-    writing: 'Recent writing',
-    empty: 'Content will appear here when authoritative source material is available.',
-    authorMarkers: '* Corresponding author · † Equal contribution',
-    language: 'Language',
-    theme: 'Theme',
+    technical: 'Technical',
+    learning: 'Learning',
+    tutorial: 'Tutorial',
   },
+  statuses: { draft: 'Draft', evolving: 'Evolving', stable: 'Stable' },
+};
+
+export type UIDict = typeof en;
+
+export const ui: Record<Locale, UIDict> = {
+  en,
   ja: {
+    displayName: '劉暢',
+    fullName: '劉 暢 (Chang Liu)',
     home: 'ホーム',
     research: '研究',
     publications: '論文',
@@ -26,16 +61,47 @@ export const ui = {
     notes: '学習ノート',
     cv: '経歴',
     search: '検索',
+    menu: 'メニュー',
     intro: '研究者 / AIエンジニア / 科学計算',
     lead: '科学的発見のための機械学習、材料インフォマティクス、複雑材料、再現可能な研究ソフトウェアを探究しています。',
     focus: '研究テーマ',
     writing: '最近の文章',
+    software: '研究ソフトウェア',
+    selectedPublications: '主要論文',
+    allPublications: '論文一覧',
+    allPosts: 'すべての記事',
     empty: '信頼できる資料が追加されると、ここに内容が表示されます。',
     authorMarkers: '* 責任著者 · † 同等貢献',
     language: '言語',
     theme: 'テーマ',
+    contact: '連絡先',
+    updated: '更新',
+    skipToContent: '本文へスキップ',
+    footerBuilt: '静的 Astro サイト — コンテンツは Git 管理、既定でトラッキングなし。',
+    researchLead: '科学的な問いと計算手法、信頼できるソフトウェアをつなぐ研究の見取り図。',
+    publicationsLead:
+      'ORCID から同期し、DOI レジストラのメタデータで補完しています。責任著者・同等貢献の印は手作業で管理しています。',
+    blogLead: '研究・技術・科学ソフトウェアづくりについてのエッセイ。',
+    notesLead: '学習メモと技術ノート。ステータスは成熟度を示します。',
+    searchLead: 'サイト全体の静的全文検索。',
+    filterSearch: 'タイトル・誌名・著者で検索',
+    filterAllTypes: 'すべての種類',
+    viewOrcid: 'ORCID プロフィールを見る',
+    categories: {
+      research: '研究',
+      technical: '技術',
+      learning: '学習',
+      tutorial: 'チュートリアル',
+    },
+    statuses: {
+      draft: '下書き',
+      evolving: '更新中',
+      stable: '安定',
+    },
   },
   zh: {
+    displayName: '刘畅',
+    fullName: '刘畅 (Chang Liu)',
     home: '首页',
     research: '研究',
     publications: '出版物',
@@ -43,17 +109,50 @@ export const ui = {
     notes: '学习笔记',
     cv: '履历',
     search: '搜索',
+    menu: '菜单',
     intro: '研究人员 / AI 工程师 / 科学计算',
     lead: '探索面向科学发现的机器学习、材料信息学、复杂材料与可复现科研软件。',
     focus: '研究方向',
     writing: '近期文章',
+    software: '科研软件',
+    selectedPublications: '精选论文',
+    allPublications: '全部论文',
+    allPosts: '全部文章',
     empty: '添加可靠来源资料后，内容将在此显示。',
     authorMarkers: '* 通讯作者 · † 同等贡献',
     language: '语言',
     theme: '主题',
+    contact: '联系方式',
+    updated: '更新于',
+    skipToContent: '跳到正文',
+    footerBuilt: '静态 Astro 站点 — 内容存于 Git，默认无跟踪。',
+    researchLead: '连接科学问题、计算方法与可靠软件的研究方向图谱。',
+    publicationsLead:
+      '数据自 ORCID 同步，并由 DOI 注册机构元数据补全；通讯作者与同等贡献标记为人工维护。',
+    blogLead: '关于研究、工程与科学软件的文章。',
+    notesLead: '学习笔记与技术备忘，状态标签表示成熟度。',
+    searchLead: '站内静态全文搜索。',
+    filterSearch: '按标题 / 期刊 / 作者搜索',
+    filterAllTypes: '所有类型',
+    viewOrcid: '查看 ORCID 档案',
+    categories: {
+      research: '研究',
+      technical: '技术',
+      learning: '学习',
+      tutorial: '教程',
+    },
+    statuses: {
+      draft: '草稿',
+      evolving: '演进中',
+      stable: '稳定',
+    },
   },
-} as const;
+};
+
 export const prefix = (lang: Locale) => (lang === 'en' ? '' : `/${lang}`);
+/** Root-relative URL for a locale, always with a trailing slash to match the
+ *  generated `.../index.html` routes (avoids host-side redirects). */
 export function localePath(lang: Locale, path = '') {
-  return `${prefix(lang)}/${path}`.replace(/\/+/g, '/');
+  const joined = `${prefix(lang)}/${path}`.replace(/\/+/g, '/');
+  return joined.endsWith('/') ? joined : `${joined}/`;
 }

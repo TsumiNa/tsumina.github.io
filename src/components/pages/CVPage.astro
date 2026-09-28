@@ -1,0 +1,16 @@
+---
+import { site } from '../../config/site';
+import { type Locale, ui } from '../../i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CVContent from '../CVContent.astro';
+import { personLd } from '../../utils/structured-data';
+
+const { lang = 'en' } = Astro.props as { lang?: Locale };
+const t = ui[lang];
+---
+
+<BaseLayout title={`${t.cv} — ${site.name}`} {lang} jsonLd={[personLd()]}>
+  <div class="container page cv-page" data-pagefind-body>
+    <CVContent {lang} />
+  </div>
+</BaseLayout>
