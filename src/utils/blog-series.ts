@@ -276,8 +276,16 @@ export function getBlogDirectories(
   entries: BlogEntry[],
   resolveConfig: BlogDirectoryConfigResolver = directoryConfig,
 ): BlogDirectory[] {
-  return organizeBlogEntries(entries, resolveConfig).series.flatMap((series) => [
+  const directories = organizeBlogEntries(entries, resolveConfig).series.flatMap((series) => [
     { kind: 'series' as const, series },
     ...series.chapters.map((chapter) => ({ kind: 'chapter' as const, series, chapter })),
   ]);
+  const articleIds = new Set(entries.map((entry) => entry.id));
+  for (const directory of directories) {
+    const slug = blogDirectorySlug(directory);
+    if (articleIds.has(slug)) {
+      throw new Error(`Blog article "${slug}" conflicts with a generated directory route.`);
+    }
+  }
+  return directories;
 }

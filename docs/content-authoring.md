@@ -52,7 +52,7 @@ articles/blog/
 - A second directory is a chapter; its `.mdx` files are the articles or sections in that chapter.
 - Do not author `index.mdx` or `index-en.mdx`/`index-ja.mdx`/`index-zh.mdx` inside a series. Astro generates index pages for both the series and every chapter.
 - Prefix filenames with zero-padded numbers such as `01-` and `02-`; natural filename order controls reading order and previous/next navigation.
-- The maximum authored path is `series/chapter/article.mdx`. Deeper paths, a direct article whose URL collides with a chapter directory, reserved index filenames, and mixed categories in one localized series fail the build.
+- The maximum authored path is `series/chapter/article.mdx`. Deeper paths, any article whose URL collides with a generated series or chapter index (including hidden articles), reserved index filenames, and mixed categories in one localized series fail the build.
 
 Series information never belongs in frontmatter. Folder names control hierarchy, labels, ordering, and URLs, so use readable slugs with optional numeric prefixes. Article pages receive a sticky, collapsible series table of contents with the current article highlighted; on small screens it becomes a collapsed disclosure above the article. The implementation is static and uses native HTML without client JavaScript.
 

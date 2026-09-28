@@ -161,6 +161,24 @@ test('rejects a direct article whose route collides with a chapter index', () =>
   );
 });
 
+test('rejects a root article whose route collides with a series index', () => {
+  assert.throws(
+    () => getBlogDirectories([entry('example'), entry('example/01-prologue')], resolveConfig),
+    /conflicts with a generated directory route/,
+  );
+});
+
+test('rejects a hidden article whose route collides with a chapter index', () => {
+  assert.throws(
+    () =>
+      getBlogDirectories(
+        [entry('example/01-basics', { show: false }), entry('example/01-basics/01-introduction')],
+        resolveConfig,
+      ),
+    /conflicts with a generated directory route/,
+  );
+});
+
 test('returns chapter context and previous/next entries in reading order', () => {
   const entries = [
     entry('example/01-prologue'),
