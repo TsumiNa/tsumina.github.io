@@ -4,7 +4,7 @@ import { localePath, type Locale } from '../../../i18n';
 import ArticleLayout from '../../../layouts/ArticleLayout.astro';
 
 export async function getStaticPaths() {
-  const all = await getCollection('notes', ({ data }) => !data.draft);
+  const all = await getCollection('notes');
   return all
     .filter((entry) => entry.data.lang !== 'en')
     .map((entry) => {

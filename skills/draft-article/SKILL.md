@@ -1,6 +1,6 @@
 ---
 name: draft-article
-description: Draft, revise, or translate a Blog post or Learning Note for this site from the owner's outline and key points. Enforces the outline-driven workflow, author grounding, factual integrity, argumentation quality, anti-content-farm style, and the draft:true approval gate. The agent gathers supporting sources and generates needed figures itself; every article opens with a TL;DR and cites with numbered footnote references. Use whenever asked to write, expand, or translate site content.
+description: Draft, revise, or translate a Blog post or Learning Note for this site from the owner's outline and key points. Enforces author grounding, factual integrity, TL;DR-first structure, numbered citations, anti-content-farm style, and preview-before-merge approval. The agent gathers supporting sources and generates needed figures. Use whenever asked to write, expand, or translate site content.
 ---
 
 # draft-article — AI-assisted writing for this site
@@ -11,7 +11,8 @@ Most articles on this site are drafted by an AI agent from the owner’s outline
 
 - The owner supplies the topic, an outline or key points, the target collection and category, any sources, and the target language(s).
 - The agent drafts. The owner reviews, edits, and approves.
-- Every AI-created or AI-revised article is written with `draft: true` and keeps it. Only the owner flips `draft: false` or explicitly instructs it. Never publish on your own judgment.
+- Every Blog post and Learning Note is an `.mdx` file and is rendered in branch builds. When remote PR work is authorized, use the Cloudflare branch preview as the primary visual review surface.
+- The owner approves content before merge. Never merge or otherwise publish AI-created or AI-revised prose on your own judgment; creating or updating a review PR does not authorize merging it.
 - Once the owner has approved an article, it becomes author-owned prose: later edits and reviews fall under the author-preserving boundary in `implementation-and-tests.instructions.md`.
 
 ## Author identity and grounding
@@ -64,10 +65,10 @@ Markup: in MDX use `<Callout type="Note" title="TL;DR">…</Callout>`; in plain 
 
 1. **Restate.** Turn the outline into a short plan: sections, the point each section makes, and what evidence exists, plus open questions. For a short post this is a few sentences; for a loose request, align on the plan before drafting long. If no outline or key points were provided at all, request them before drafting anything — never invent the content of an article.
 2. **Gather.** Collect the support each planned claim needs and plan the figures — what each shows and where its data comes from (see “Research and supporting material”). Generate the figure assets.
-3. **Draft**, opening with the TL;DR and using correct frontmatter per `docs/content-authoring.md`: `title`, a concrete 1–2 sentence `description` (it feeds SEO metadata and `llms.txt`), `published`, `lang`, sparse `tags` (reuse existing ones), `category` for blog or `topic`/`status` for notes, `draft: true`, and `translationKey` when translations are planned.
+3. **Draft** as `.mdx` under `articles/blog/` or `articles/notes/`, opening with the TL;DR and using correct frontmatter per `docs/content-authoring.md`: `title`, a concrete 1–2 sentence `description` (it feeds SEO metadata and `llms.txt`), `published`, `lang`, sparse `tags` (reuse existing ones), `category` for blog or `topic`/`status` for notes, optional `banner` and `show`, and `translationKey` when translations are planned. Put Blog files in the documented `series/chapter/article.mdx` hierarchy when they belong to a series; Astro generates directory indexes, so do not author `index*.mdx`. Every series/chapter folder requires `config.toml` with localized titles and inherited `show`; `cover` is optional. Never encode series structure in article frontmatter. Do not add a publication-hiding `draft` field; review isolation comes from the branch and PR.
 4. **Verify mechanics**: `pnpm format` and `pnpm build`; add `pnpm check` when imports, components, or expressions are involved.
 5. **Self-review** against the checklist below, including the reverse-outline test.
-6. **Hand off**: what was written, the sources gathered (with links) and figures generated, every unverified claim or TODO, open questions, and the suggested next step. Never present a draft as finished truth.
+6. **Hand off**: what was written, the sources gathered (with links) and figures generated, every unverified claim or TODO, open questions, the Cloudflare preview URL when a review PR exists, and the suggested next step. Never present unapproved prose as finished truth.
 
 ## Voice and style
 
@@ -114,8 +115,8 @@ Use numbered cite-plus-reference style, implemented with Markdown footnotes (the
 - Translate meaning, not word order: the result must read as natively written. Keep citations, numbers, code, and identifiers identical. For uncommon technical terms, give the established target-language term with the English original in parentheses at first use.
 - Use full-width CJK punctuation in Japanese and Chinese prose; keep ASCII punctuation inside code, URLs, and citations.
 - The anti-content-farm rules apply with extra force in Chinese: no 公众号-style bait, hype, or filler.
-- Translations pass through the same `draft: true` → owner-approval gate.
+- Translations pass through the same branch preview → owner approval → merge gate.
 
 ## Self-review checklist
 
-Before handing off, confirm: the TL;DR is present, faithful to the body, and gives away the conclusion; the thesis is stated early and every section serves it; the reverse-outline test passes; every important conclusion traces to a citation, owner-supplied material, or explicit reasoning; every footnote reference was actually consulted and supports its claim; every figure has real data or an honest schematic role, informative alt text, and a sourced caption; no invented facts, citations, or first-person experience; biography and project facts match `src/data/cv.ts`; voice, length, and anti-content-farm rules respected; frontmatter valid and category/tags/description sensible; format and build checks pass; `draft: true` still set.
+Before handing off, confirm: the TL;DR is present, faithful to the body, and gives away the conclusion; the thesis is stated early and every section serves it; the reverse-outline test passes; every important conclusion traces to a citation, owner-supplied material, or explicit reasoning; every footnote reference was actually consulted and supports its claim; every figure has real data or an honest schematic role, informative alt text, and a sourced caption; no invented facts, citations, or first-person experience; biography and project facts match `src/data/cv.ts`; voice, length, and anti-content-farm rules respected; the file uses `.mdx`; its folder depth and frontmatter are valid and category/tags/description are sensible; format and build checks pass; and the review PR remains unmerged until owner approval.

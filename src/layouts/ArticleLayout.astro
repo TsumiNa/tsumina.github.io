@@ -1,7 +1,9 @@
 ---
 import type { BlogCategory } from '../content.config';
-import { type Locale, ui } from '../i18n';
+import BlogSeriesSidebar from '../components/pages/BlogSeriesSidebar.astro';
+import { localePath, type Locale, ui } from '../i18n';
 import { articleLd } from '../utils/structured-data';
+import type { BlogSeriesNavigation } from '../utils/blog-series';
 import BaseLayout from './BaseLayout.astro';
 
 interface Props {
@@ -16,6 +18,10 @@ interface Props {
   status?: 'draft' | 'evolving' | 'stable';
   topic?: string;
   alternates?: Partial<Record<Locale, string>>;
+  show?: boolean;
+  banner?: { src: string; alt: string };
+  series?: BlogSeriesNavigation;
+  entryId?: string;
 }
 const {
   kind,
@@ -29,11 +35,25 @@ const {
   status,
   topic,
   alternates,
+  show = true,
+  banner,
+  series,
+  entryId,
 } = Astro.props;
 const t = ui[lang];
 const eyebrow = kind === 'blog' ? `~/blog${category ? `/${category}` : ''}` : '~/notes';
 const jsonLd = [
-  articleLd({ title, description, published, updated, url: Astro.url, lang, tags, kind }),
+  articleLd({
+    title,
+    description,
+    published,
+    updated,
+    url: Astro.url,
+    lang,
+    tags,
+    kind,
+    image: banner?.src,
+  }),
 ];
 ---
 
@@ -44,33 +64,85 @@ const jsonLd = [
   {alternates}
   article={{ published, updated, tags }}
   {jsonLd}
+  image={banner?.src}
+  noindex={!show}
 >
-  <article class="container page article" data-pagefind-body>
-    <header class="article-head">
-      <p class="eyebrow">{eyebrow}</p>
-      <h1>{title}</h1>
-      {description && <p class="lead">{description}</p>}
-      <p class="meta article-meta">
-        <time datetime={published.toISOString()}>{published.toLocaleDateString(lang)}</time>
+  <article class="container page article" data-pagefind-body={show ? true : undefined}>
+    <div class:list={['article-shell', { 'has-series': series }]}>
+      {series && entryId && <BlogSeriesSidebar navigation={series} currentId={entryId} {lang} />}
+      <div class="article-main">
+        <header class="article-head">
+          <p class="eyebrow">{eyebrow}</p>
+          {
+            series && (
+              <p class="article-series-kicker">
+                <a href={localePath(lang, `blog/${series.group.key}`)}>{series.group.title}</a>
+                {series.chapter && (
+                  <span>
+                    <a href={localePath(lang, `blog/${series.group.key}/${series.chapter.key}`)}>
+                      {series.chapter.title}
+                    </a>
+                  </span>
+                )}
+              </p>
+            )
+          }
+          <h1>{title}</h1>
+          {description && <p class="lead">{description}</p>}
+          <p class="meta article-meta">
+            <time datetime={published.toISOString()}>{published.toLocaleDateString(lang)}</time>
+            {
+              updated && (
+                <span>
+                  {t.updated}{' '}
+                  <time datetime={updated.toISOString()}>{updated.toLocaleDateString(lang)}</time>
+                </span>
+              )
+            }
+            {
+              status && (
+                <span class="tag" data-status={status}>
+                  {t.statuses[status]}
+                </span>
+              )
+            }
+            {topic && <span class="tag">{topic}</span>}
+            {tags.map((tag) => <span class="tag">{tag}</span>)}
+          </p>
+        </header>
         {
-          updated && (
-            <span>
-              {t.updated}{' '}
-              <time datetime={updated.toISOString()}>{updated.toLocaleDateString(lang)}</time>
-            </span>
+          banner && (
+            <figure class="article-banner">
+              <img src={banner.src} alt={banner.alt} />
+            </figure>
           )
         }
+        <div class="prose"><slot /></div>
         {
-          status && (
-            <span class="tag" data-status={status}>
-              {t.statuses[status]}
-            </span>
+          series && (series.previous || series.next) && (
+            <nav class="article-series-nav no-print" aria-label={series.group.title}>
+              {series.previous && (
+                <a
+                  class="article-series-link previous"
+                  href={localePath(lang, `blog/${series.previous.id}`)}
+                >
+                  <span>{ui[lang].previousArticle}</span>
+                  <strong>{series.previous.data.title}</strong>
+                </a>
+              )}
+              {series.next && (
+                <a
+                  class="article-series-link next"
+                  href={localePath(lang, `blog/${series.next.id}`)}
+                >
+                  <span>{ui[lang].nextArticle}</span>
+                  <strong>{series.next.data.title}</strong>
+                </a>
+              )}
+            </nav>
           )
         }
-        {topic && <span class="tag">{topic}</span>}
-        {tags.map((tag) => <span class="tag">{tag}</span>)}
-      </p>
-    </header>
-    <div class="prose"><slot /></div>
+      </div>
+    </div>
   </article>
 </BaseLayout>

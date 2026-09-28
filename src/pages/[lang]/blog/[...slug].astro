@@ -1,28 +1,96 @@
 ---
 import { getCollection, render } from 'astro:content';
-import { localePath, type Locale } from '../../../i18n';
+import BlogDirectoryPage from '../../../components/pages/BlogDirectoryPage.astro';
+import { localePath, locales, type Locale } from '../../../i18n';
 import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+import {
+  blogDirectorySlug,
+  getBlogDirectories,
+  getBlogSeriesNavigation,
+  isBlogEntryVisible,
+  type BlogDirectory,
+  type BlogEntry,
+} from '../../../utils/blog-series';
 
 export async function getStaticPaths() {
-  const all = await getCollection('blog', ({ data }) => !data.draft);
-  return all
-    .filter((entry) => entry.data.lang !== 'en')
-    .map((entry) => {
+  const all = await getCollection('blog');
+  const localized = all.filter((entry) => entry.data.lang !== 'en');
+  const directoryPaths = new Map<Locale, Set<string>>(
+    locales.map((lang) => [
+      lang,
+      new Set(
+        getBlogDirectories(all.filter((entry) => entry.data.lang === lang)).map(blogDirectorySlug),
+      ),
+    ]),
+  );
+
+  const articles = localized.map((entry) => {
+    const alternates = Object.fromEntries(
+      all
+        .filter(
+          (other) =>
+            other.id === entry.id ||
+            (entry.data.translationKey && other.data.translationKey === entry.data.translationKey),
+        )
+        .map((other) => [other.data.lang, localePath(other.data.lang, `blog/${other.id}`)]),
+    ) as Partial<Record<Locale, string>>;
+    return {
+      params: { lang: entry.data.lang, slug: entry.id },
+      props: { entry, alternates },
+    };
+  });
+
+  const directories: Array<{
+    params: { lang: Locale; slug: string };
+    props: { directory: BlogDirectory; alternates: Partial<Record<Locale, string>> };
+  }> = [];
+  for (const lang of locales.filter((locale) => locale !== 'en')) {
+    for (const directory of getBlogDirectories(all.filter((entry) => entry.data.lang === lang))) {
+      const slug = blogDirectorySlug(directory);
       const alternates = Object.fromEntries(
-        all
-          .filter(
-            (other) =>
-              other.id === entry.id ||
-              (entry.data.translationKey &&
-                other.data.translationKey === entry.data.translationKey),
-          )
-          .map((other) => [other.data.lang, localePath(other.data.lang, `blog/${other.id}`)]),
+        locales
+          .filter((locale) => directoryPaths.get(locale)?.has(slug))
+          .map((locale) => [locale, localePath(locale, `blog/${slug}`)]),
       ) as Partial<Record<Locale, string>>;
-      return { params: { lang: entry.data.lang, slug: entry.id }, props: { entry, alternates } };
-    });
+      directories.push({
+        params: { lang, slug },
+        props: { directory, alternates },
+      });
+    }
+  }
+
+  return [...articles, ...directories];
 }
-const { entry, alternates } = Astro.props;
-const { Content } = await render(entry);
+
+type PageProps =
+  | { entry: BlogEntry; directory?: undefined; alternates: Partial<Record<Locale, string>> }
+  | { entry?: undefined; directory: BlogDirectory; alternates: Partial<Record<Locale, string>> };
+const { entry, directory, alternates } = Astro.props as PageProps;
+const rendered = entry ? await render(entry) : undefined;
+const series = entry
+  ? getBlogSeriesNavigation(
+      await getCollection(
+        'blog',
+        ({ data }) => data.lang === entry.data.lang && data.category === entry.data.category,
+      ),
+      entry.id,
+    )
+  : undefined;
 ---
 
-<ArticleLayout kind="blog" {...entry.data} {alternates}><Content /></ArticleLayout>
+{
+  entry ? (
+    <ArticleLayout
+      kind="blog"
+      {...entry.data}
+      show={isBlogEntryVisible(entry)}
+      {alternates}
+      {series}
+      entryId={entry.id}
+    >
+      {rendered && <rendered.Content />}
+    </ArticleLayout>
+  ) : (
+    directory && <BlogDirectoryPage {directory} lang={Astro.params.lang as Locale} {alternates} />
+  )
+}

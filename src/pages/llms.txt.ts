@@ -3,18 +3,19 @@ import { researchThemes, site } from '../config/site';
 import { cv } from '../data/cv';
 import { ui } from '../i18n';
 import { getPublications } from '../utils/publications';
+import { isBlogEntryVisible } from '../utils/blog-series';
 
 /**
  * llms.txt — a compact, plain-Markdown map of the site for AI agents,
  * following the llms.txt convention (H1, block-quote summary, H2 link lists).
  */
 export async function GET() {
-  const blog = (await getCollection('blog', ({ data }) => !data.draft && data.lang === 'en')).sort(
+  const blog = (await getCollection('blog', ({ data }) => data.lang === 'en'))
+    .filter((entry) => isBlogEntryVisible(entry))
+    .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+  const notes = (await getCollection('notes', ({ data }) => data.lang === 'en' && data.show)).sort(
     (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
   );
-  const notes = (
-    await getCollection('notes', ({ data }) => !data.draft && data.lang === 'en')
-  ).sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
   const pubs = getPublications();
   const articles = pubs.filter((p) => p.type === 'journal-article');
   const appointment = cv.appointments[0];

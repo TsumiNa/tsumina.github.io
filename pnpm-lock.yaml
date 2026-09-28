@@ -34,6 +34,9 @@ importers:
       remark-math:
         specifier: ^6.0.0
         version: 6.0.0
+      smol-toml:
+        specifier: ^1.9.0
+        version: 1.9.0
     devDependencies:
       '@astrojs/check':
         specifier: ^0.9.4

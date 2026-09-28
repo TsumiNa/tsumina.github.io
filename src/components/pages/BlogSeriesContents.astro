@@ -1,0 +1,54 @@
+---
+import { localePath, type Locale } from '../../i18n';
+import type { BlogSeriesGroup } from '../../utils/blog-series';
+
+const { group, currentId, lang } = Astro.props as {
+  group: BlogSeriesGroup;
+  currentId: string;
+  lang: Locale;
+};
+---
+
+<div class="series-sidebar-body">
+  <a class="series-sidebar-title" href={localePath(lang, `blog/${group.key}`)}>
+    {group.title}
+  </a>
+  {
+    group.articles.length > 0 && (
+      <ol class="series-sidebar-list">
+        {group.articles.map(({ entry }) => (
+          <li>
+            <a
+              href={localePath(lang, `blog/${entry.id}`)}
+              aria-current={entry.id === currentId ? 'page' : undefined}
+            >
+              {entry.data.title}
+            </a>
+          </li>
+        ))}
+      </ol>
+    )
+  }
+  {
+    group.chapters.map((chapter) => {
+      const active = chapter.articles.some(({ entry }) => entry.id === currentId);
+      return (
+        <details class="series-sidebar-chapter" open={active}>
+          <summary>{chapter.title}</summary>
+          <ol class="series-sidebar-list">
+            {chapter.articles.map(({ entry }) => (
+              <li>
+                <a
+                  href={localePath(lang, `blog/${entry.id}`)}
+                  aria-current={entry.id === currentId ? 'page' : undefined}
+                >
+                  {entry.data.title}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </details>
+      );
+    })
+  }
+</div>

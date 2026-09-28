@@ -3,9 +3,12 @@ import { getCollection } from 'astro:content';
 import BlogIndexPage from '../../../../components/pages/BlogIndexPage.astro';
 import type { BlogCategory } from '../../../../content.config';
 import type { Locale } from '../../../../i18n';
+import { isBlogEntryVisible } from '../../../../utils/blog-series';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft && data.lang !== 'en');
+  const posts = (await getCollection('blog', ({ data }) => data.lang !== 'en')).filter((entry) =>
+    isBlogEntryVisible(entry),
+  );
   const pairs = new Set(posts.map((p) => `${p.data.lang}:${p.data.category}`));
   return [...pairs].map((pair) => {
     const [lang, category] = pair.split(':');
