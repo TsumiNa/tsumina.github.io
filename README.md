@@ -36,7 +36,7 @@ Add Blog `.md`/`.mdx` entries under `src/content/blog/` and Notes under `src/con
 
 Figures, grids, wide tables, equations, chemical structure SVGs, callouts, code, and footnotes are documented in [`docs/content-authoring.md`](docs/content-authoring.md). The sole sample is a draft development fixture, not personal content.
 
-Most articles are AI-drafted from the owner's outline and key points, then owner-reviewed. The self-contained, tool-agnostic writing skill lives at [`skills/draft-article/SKILL.md`](skills/draft-article/SKILL.md) in the open SKILL.md format; any agent reading `AGENTS.md` is directed to it, Claude Code discovers it through the `.claude/skills/draft-article` symlink, and `.github/instructions/ai-writing.instructions.md` auto-attaches it for editor integrations. It covers the outline-driven workflow, the owner's researcher identity, factual-integrity and argumentation rules, anti-content-farm style constraints, and the `draft: true` approval gate.
+Most articles are AI-drafted from the owner's outline and key points, then owner-reviewed. The self-contained, tool-agnostic writing skill lives at [`skills/draft-article/SKILL.md`](skills/draft-article/SKILL.md) in the open SKILL.md format; any agent reading `AGENTS.md` is directed to it, Claude Code discovers it through the `.claude/skills/draft-article` symlink, and `.github/instructions/ai-writing.instructions.md` auto-attaches it for editor integrations. It covers the outline-driven workflow, the owner's researcher identity, factual-integrity and argumentation rules, autonomous source gathering and figure generation, the TL;DR-first structure with numbered footnote citations, anti-content-farm style constraints, and the `draft: true` approval gate.
 
 ## Publications and ORCID
 

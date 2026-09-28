@@ -1,6 +1,6 @@
 ---
 name: draft-article
-description: Draft, revise, or translate a Blog post or Learning Note for this site from the owner's outline and key points. Enforces the outline-driven workflow, author grounding, factual integrity, argumentation quality, anti-content-farm style, and the draft:true approval gate. Use whenever asked to write, expand, or translate site content.
+description: Draft, revise, or translate a Blog post or Learning Note for this site from the owner's outline and key points. Enforces the outline-driven workflow, author grounding, factual integrity, argumentation quality, anti-content-farm style, and the draft:true approval gate. The agent gathers supporting sources and generates needed figures itself; every article opens with a TL;DR and cites with numbered footnote references. Use whenever asked to write, expand, or translate site content.
 ---
 
 # draft-article — AI-assisted writing for this site
@@ -30,6 +30,19 @@ The byline is the owner’s: a materials-informatics researcher working on machi
 - Every non-obvious claim needs an owner-supplied basis or a verifiable citation (DOI or stable link). If neither exists, drop the claim or mark it `<!-- TODO(owner): verify … -->` and list it in the handoff.
 - When the outline is ambiguous or silent on something that matters, ask. Do not fill gaps with plausible invention.
 
+## Research and supporting material
+
+The owner’s outline defines what the article says; the agent is responsible for assembling what supports it.
+
+**Gathering sources.** When a planned claim needs support the owner did not supply, find it: search for primary literature, official documentation, or authoritative references, preferring a paper’s DOI over blogs and press releases. Cite only what you actually retrieved and read — never from memory, never from an abstract alone when the claim depends on details, and never secondhand through another work without saying so. Record every source (title, venue, year, DOI/URL) as you gather. A claim that survives gathering without support is flagged as a TODO, not kept on faith.
+
+**Generating figures and materials.** Plan and produce the figures the article needs instead of leaving placeholders:
+
+- Schematics and conceptual diagrams: author clean, legible SVG. Group an article’s assets under `public/figures/<article-slug>/` and render them with the `Figure`/`FigureGrid` components per `docs/content-authoring.md`, with informative alt text and a caption that states what the figure shows.
+- Data plots: only from real data — owner-supplied or gathered, with the source named in the caption. Never plot invented or “illustrative” numbers as if they were measurements. Label axes with units; keep the plot legible at reading-column width; no chartjunk.
+- Tables follow the same rule: real values, sources named.
+- No decorative images. Every figure must carry information the text needs (see “Not content-farm writing”).
+
 ## Logic and argumentation
 
 An article is an argument, not a pile of paragraphs.
@@ -41,13 +54,20 @@ An article is an argument, not a pile of paragraphs.
 - **Calibrated strength.** Match verbs to evidence: data “show”, analyses “suggest”, single anecdotes “hint”. Distinguish observation, inference, and speculation, and label speculation as speculation.
 - **Reverse-outline test.** Before handoff, reconstruct the outline from the draft alone: each paragraph should reduce to one point, each point should serve the thesis, and each conclusion should point back at its basis. Whatever fails the test is rewritten or removed.
 
+## TL;DR opening
+
+Every article opens with a TL;DR: immediately after the title, before the first heading — 2–4 sentences (or up to four tight bullets) stating the thesis and the main conclusions. It is an inverted-pyramid opener: a reader who stops there still leaves with the article’s actual point, so no teasing and no withheld conclusions. Write it last, from the finished draft, and keep it consistent with the body.
+
+Markup: in MDX use `<Callout type="Note" title="TL;DR">…</Callout>`; in plain Markdown use a `> **TL;DR** —` blockquote. The `description` frontmatter remains a separate 1–2 sentence summary for SEO and `llms.txt`; the TL;DR lives in the body.
+
 ## Workflow
 
 1. **Restate.** Turn the outline into a short plan: sections, the point each section makes, and what evidence exists, plus open questions. For a short post this is a few sentences; for a loose request, align on the plan before drafting long. If no outline or key points were provided at all, request them before drafting anything — never invent the content of an article.
-2. **Draft** with correct frontmatter per `docs/content-authoring.md`: `title`, a concrete 1–2 sentence `description` (it feeds SEO metadata and `llms.txt`), `published`, `lang`, sparse `tags` (reuse existing ones), `category` for blog or `topic`/`status` for notes, `draft: true`, and `translationKey` when translations are planned.
-3. **Verify mechanics**: `pnpm format` and `pnpm build`; add `pnpm check` when imports, components, or expressions are involved.
-4. **Self-review** against the checklist below, including the reverse-outline test.
-5. **Hand off**: what was written, every unverified claim or TODO, open questions, and the suggested next step. Never present a draft as finished truth.
+2. **Gather.** Collect the support each planned claim needs and plan the figures — what each shows and where its data comes from (see “Research and supporting material”). Generate the figure assets.
+3. **Draft**, opening with the TL;DR and using correct frontmatter per `docs/content-authoring.md`: `title`, a concrete 1–2 sentence `description` (it feeds SEO metadata and `llms.txt`), `published`, `lang`, sparse `tags` (reuse existing ones), `category` for blog or `topic`/`status` for notes, `draft: true`, and `translationKey` when translations are planned.
+4. **Verify mechanics**: `pnpm format` and `pnpm build`; add `pnpm check` when imports, components, or expressions are involved.
+5. **Self-review** against the checklist below, including the reverse-outline test.
+6. **Hand off**: what was written, the sources gathered (with links) and figures generated, every unverified claim or TODO, open questions, and the suggested next step. Never present a draft as finished truth.
 
 ## Voice and style
 
@@ -71,6 +91,15 @@ This site is a researcher’s record of substance. Optimize for the reader’s t
 - Padding: restating the same idea in new words, recycling common knowledge as insight, or stretching thin material to look substantial.
 - If the outline does not contain something worth publishing, say exactly that to the owner instead of dressing it up. An honest “this needs more substance” beats a polished empty article.
 
+## Citations and references
+
+Use numbered cite-plus-reference style, implemented with Markdown footnotes (the repository’s supported mechanism; see `docs/content-authoring.md`):
+
+- Place the marker at the exact claim it supports — `…improves the screening yield.[^liu2024]` — not collected at the end of a paragraph. Reuse the same footnote for repeat citations of one source.
+- Each footnote is one reference entry, formatted to match the site’s publication style: `Family, I., Family, I. & Family, I. Title. *Venue* **vol**, pages (year). https://doi.org/10.xxxx/xxxxx`. For non-DOI web sources give the site or institution and a stable URL; for software give the project name and repository URL.
+- Cite only sources actually consulted during gathering. If you read a summary of X inside Y, cite Y — or go read X.
+- The cited source must say what the sentence claims, at the strength the sentence claims it.
+
 ## Category conventions
 
 - `research`: context → question → approach → evidence → implications; cite primary literature with DOIs.
@@ -89,4 +118,4 @@ This site is a researcher’s record of substance. Optimize for the reader’s t
 
 ## Self-review checklist
 
-Before handing off, confirm: the thesis is stated early and every section serves it; the reverse-outline test passes; every important conclusion traces to a citation, owner-supplied material, or explicit reasoning; no invented facts, citations, or first-person experience; biography and project facts match `src/data/cv.ts`; voice, length, and anti-content-farm rules respected; frontmatter valid and category/tags/description sensible; format and build checks pass; `draft: true` still set.
+Before handing off, confirm: the TL;DR is present, faithful to the body, and gives away the conclusion; the thesis is stated early and every section serves it; the reverse-outline test passes; every important conclusion traces to a citation, owner-supplied material, or explicit reasoning; every footnote reference was actually consulted and supports its claim; every figure has real data or an honest schematic role, informative alt text, and a sourced caption; no invented facts, citations, or first-person experience; biography and project facts match `src/data/cv.ts`; voice, length, and anti-content-farm rules respected; frontmatter valid and category/tags/description sensible; format and build checks pass; `draft: true` still set.
