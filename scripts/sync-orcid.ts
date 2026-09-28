@@ -21,13 +21,29 @@ const orcidHeaders: Record<string, string> = { Accept: 'application/json' };
 if (process.env.ORCID_ACCESS_TOKEN)
   orcidHeaders.Authorization = `Bearer ${process.env.ORCID_ACCESS_TOKEN}`;
 
-async function fetchJson(url: string, headers: Record<string, string> = {}): Promise<any | null> {
-  try {
-    const response = await fetch(url, { headers });
-    if (!response.ok) return null;
-    return await response.json();
-  } catch {
-    return null;
+/**
+ * Fetch JSON, distinguishing a genuine miss from a transient failure. A
+ * 404/410 means the registrar does not know the DOI and returns null so the
+ * caller can fall back. Anything else (429, 5xx, network errors, malformed
+ * JSON) is retried and then thrown, aborting the sync before it can commit a
+ * silently degraded publication list over previously enriched data.
+ */
+async function fetchJson(
+  url: string,
+  headers: Record<string, string> = {},
+  attempts = 3,
+): Promise<any | null> {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      const response = await fetch(url, { headers, signal: AbortSignal.timeout(30_000) });
+      if (response.status === 404 || response.status === 410) return null;
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return await response.json();
+    } catch (error) {
+      if (attempt >= attempts)
+        throw new Error(`Lookup failed after ${attempts} attempts: ${url} (${error})`);
+      await new Promise((done) => setTimeout(done, 1000 * attempt));
+    }
   }
 }
 
