@@ -6,9 +6,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const { lang = 'en' } = Astro.props as { lang?: Locale };
 const t = ui[lang];
-const entries = (
-  await getCollection('notes', ({ data }) => !data.draft && data.lang === lang)
-).sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+const entries = (await getCollection('notes', ({ data }) => data.lang === lang)).sort(
+  (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
+);
 ---
 
 <BaseLayout title={`${t.notes} — ${site.name}`} description={t.notesLead} {lang}>

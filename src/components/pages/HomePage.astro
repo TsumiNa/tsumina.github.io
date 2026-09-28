@@ -19,7 +19,7 @@ const highlighted = (
 ).slice(0, 4);
 
 const collect = async (name: 'blog' | 'notes') =>
-  (await getCollection(name, ({ data }) => !data.draft && data.lang === lang)).map((entry) => ({
+  (await getCollection(name, ({ data }) => data.lang === lang)).map((entry) => ({
     kind: name,
     entry,
   }));

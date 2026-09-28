@@ -7,6 +7,7 @@
     "dev": "astro dev",
     "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
+    "test": "node --import tsx --test src/utils/*.test.ts",
     "check": "astro check",
     "format": "prettier --check .",
     "format:write": "prettier --write .",

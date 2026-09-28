@@ -1,0 +1,32 @@
+---
+import { localePath, type Locale } from '../../i18n';
+import type { BlogSeriesNode } from '../../utils/blog-series';
+
+const { node, lang } = Astro.props as { node: BlogSeriesNode; lang: Locale };
+const position = node.path.join('.');
+---
+
+<li class="blog-series-node">
+  <article class="blog-series-entry">
+    <span class="blog-series-position" aria-hidden="true">{position}</span>
+    <div>
+      <h3>
+        <a href={localePath(lang, `blog/${node.entry.id}`)}>{node.entry.data.title}</a>
+      </h3>
+      {
+        node.entry.data.description && (
+          <p class="entry-description">{node.entry.data.description}</p>
+        )
+      }
+    </div>
+  </article>
+  {
+    node.children.length > 0 && (
+      <ol class="blog-series-level">
+        {node.children.map((child) => (
+          <Astro.self node={child} {lang} />
+        ))}
+      </ol>
+    )
+  }
+</li>

@@ -8,7 +8,7 @@ Before modifying this repository, read and follow the applicable rules in:
 
 - [Branch and Pull Request Workflow](.github/instructions/branch-and-pr-workflow.instructions.md) for branch selection, PR scope, and code-refactor planning;
 - [Implementation, Checks, and Content Review](.github/instructions/implementation-and-tests.instructions.md) for Astro/TypeScript implementation, proportionate verification, and the author-preserving Markdown/MDX review boundary;
-- [AI-Assisted Writing skill](skills/draft-article/SKILL.md) when drafting, revising, or translating Blog/Notes content on the owner's behalf — most articles are AI-drafted from the owner's outline and gated on the owner's approval. The skill is tool-agnostic and lives under `skills/`; `.claude/skills/draft-article` (Claude Code) and `.github/instructions/ai-writing.instructions.md` (editor auto-attach) are pointers to it;
+- [AI-Assisted Writing skill](skills/draft-article/SKILL.md) when drafting, revising, or translating Blog/Notes content on the owner's behalf — most articles are AI-drafted from the owner's outline, reviewed in the Cloudflare branch preview, and gated on the owner's approval before merge. The skill is tool-agnostic and lives under `skills/`; `.claude/skills/draft-article` (Claude Code) and `.github/instructions/ai-writing.instructions.md` (editor auto-attach) are pointers to it;
 - [Shell Environment and Repository Commands](.github/instructions/shell-environment.instructions.md) before running terminal commands.
 
 These files are mandatory extensions of `AGENTS.md`, not optional guidance. Classify work by what is changing:
@@ -19,7 +19,7 @@ These files are mandatory extensions of `AGENTS.md`, not optional guidance. Clas
 
 # Architecture Principles
 
-- Keep source content in Git as Markdown/MDX or typed structured data. Blog and Notes must use Astro Content Collections.
+- Keep source content in Git as MDX or typed structured data. Blog and Notes must use `.mdx` files in Astro Content Collections.
 - Prefer static generation, build-time transformations, reusable layouts/components, semantic HTML, and minimal client JavaScript.
 - Keep the architecture platform-neutral. GitHub Pages is primary; Cloudflare consumes the same `dist/` output.
 - Centralize site metadata, i18n dictionaries, design tokens, and publication normalization.
@@ -36,8 +36,9 @@ In site code and rendering implementation, do not use copy-pasted layouts, scatt
 
 # Content Rules
 
-- Blog and Notes use Content Collections. English is default; JA/ZH translations are optional independent files associated by stable `translationKey`.
-- Exclude drafts from production. Never fabricate personal facts or publication metadata.
+- Blog and Notes use `.mdx` Content Collection entries. English is default; JA/ZH translations are optional independent files associated by stable `translationKey`.
+- Blog entries are standalone by default. An optional `series` numeric path may organize entries into a validated hierarchy of at most three levels within one category; follow `docs/content-authoring.md` rather than encoding hierarchy in ad-hoc page logic.
+- Content branches and pull requests are review surfaces: every entry is rendered in the Cloudflare branch preview, and only owner-approved content may be merged into production. A Note's `status: draft` is a visible maturity label, not a publication filter. Never fabricate personal facts or publication metadata.
 - A supplied CV is authoritative for biography/career details. ORCID is the upstream publication source.
 - Generated ORCID data and manual overrides stay separate; generated data must never overwrite overrides.
 

@@ -9,12 +9,12 @@ import { getPublications } from '../utils/publications';
  * following the llms.txt convention (H1, block-quote summary, H2 link lists).
  */
 export async function GET() {
-  const blog = (await getCollection('blog', ({ data }) => !data.draft && data.lang === 'en')).sort(
+  const blog = (await getCollection('blog', ({ data }) => data.lang === 'en')).sort(
     (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
   );
-  const notes = (
-    await getCollection('notes', ({ data }) => !data.draft && data.lang === 'en')
-  ).sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+  const notes = (await getCollection('notes', ({ data }) => data.lang === 'en')).sort(
+    (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
+  );
   const pubs = getPublications();
   const articles = pubs.filter((p) => p.type === 'journal-article');
   const appointment = cv.appointments[0];

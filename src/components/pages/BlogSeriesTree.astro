@@ -1,0 +1,21 @@
+---
+import type { BlogSeriesGroup } from '../../utils/blog-series';
+import type { Locale } from '../../i18n';
+import BlogSeriesNode from './BlogSeriesNode.astro';
+
+const { series, lang, label } = Astro.props as {
+  series: BlogSeriesGroup;
+  lang: Locale;
+  label: string;
+};
+---
+
+<section class="blog-series" aria-labelledby={`series-${series.key}`}>
+  <header class="blog-series-header">
+    <p class="eyebrow">{label}</p>
+    <h2 id={`series-${series.key}`}>{series.title}</h2>
+  </header>
+  <ol class="blog-series-level">
+    {series.roots.map((node) => <BlogSeriesNode {node} {lang} />)}
+  </ol>
+</section>

@@ -1,6 +1,12 @@
 # Technical content authoring
 
-Blog entries belong in `src/content/blog/`; learning notes belong in `src/content/notes/`. Use `.mdx` when importing components. Drafts are built into the collection but excluded from routes and listings.
+Blog entries belong in `src/content/blog/`; learning notes belong in `src/content/notes/`. Both collections accept `.mdx` files only, including prose-only entries, so every article can adopt shared components without a later extension migration.
+
+## Preview and approval
+
+Content visibility follows Git state rather than a frontmatter flag. Every Content Collection entry is rendered by branch builds and appears in the Cloudflare branch preview. The owner reviews the rendered preview and approves the pull request before merge; merging is what makes the content eligible for the production build.
+
+Do not add a `draft` visibility field. Learning Notes may use `status: draft`, but that value is a public maturity label and does not hide the Note.
 
 ## Frontmatter
 
@@ -13,12 +19,30 @@ updated: 2026-10-03
 lang: en
 tags: [materials, machine-learning]
 category: technical
-draft: false
 translationKey: stable-topic-key
 ---
 ```
 
-Blog entries accept `category: research | technical | learning | tutorial` (default `technical`); each category with published posts gets a static listing at `/blog/category/<category>/`. Notes also accept `topic` and `status: draft | evolving | stable`. A translation is a separate file with the same `translationKey` and its own `lang`; the article's `hreflang` alternates and the header language switcher only advertise translations that actually exist.
+Blog entries accept `category: research | technical | learning | tutorial` (default `technical`); each category with posts gets a static listing at `/blog/category/<category>/`. Notes also accept `topic` and the visible maturity label `status: draft | evolving | stable`. A translation is a separate file with the same `translationKey` and its own `lang`; the article's `hreflang` alternates and the header language switcher only advertise translations that actually exist.
+
+## Optional series hierarchy
+
+Blog posts without `series` remain standalone entries directly under their category. A series uses an ordered numeric path to build a reading tree with at most three article levels:
+
+```yaml
+series:
+  key: ai-coding-for-non-cs
+  title: AI coding for non-CS learners
+  order: 1
+  path: [1, 2]
+```
+
+- `key` is a stable lowercase identifier shared by every entry in the series.
+- `title` is the localized series title. Entries with the same key and language must use the same title.
+- `order` sorts multiple series in one category and must remain consistent within the series.
+- `path` locates the article in the tree: `[0]` can be a prologue, `[1]` a first chapter, `[1, 1]` its first section, and `[1, 1, 1]` one final nested level. Every child path requires an article at its parent path.
+
+All entries in one localized series must use the same category. Duplicate positions, missing parents, inconsistent series metadata, and paths deeper than three levels fail the build. The series path controls list hierarchy and reading order; the file path still controls the article URL.
 
 ## Figures and multi-panel figures
 
@@ -117,5 +141,3 @@ Use Note, Important, Warning, Definition, Example, Result, Experiment, or Observ
 ## Diagrams
 
 Commit responsive SVG and render it through `Figure`. The repository includes a static workflow fixture. Mermaid is intentionally deferred: a build-time Mermaid dependency is not justified until real content needs it.
-
-See the deliberately unpublished `src/content/notes/technical-publishing-sample.mdx` for all primitives together.

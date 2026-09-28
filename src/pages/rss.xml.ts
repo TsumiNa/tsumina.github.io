@@ -4,7 +4,7 @@ import { getCollection } from 'astro:content';
 import { site } from '../config/site';
 
 export async function GET(context: APIContext) {
-  const posts = (await getCollection('blog', ({ data }) => !data.draft && data.lang === 'en')).sort(
+  const posts = (await getCollection('blog', ({ data }) => data.lang === 'en')).sort(
     (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
   );
   return rss({

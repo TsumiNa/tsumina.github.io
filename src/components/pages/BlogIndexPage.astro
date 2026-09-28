@@ -4,14 +4,17 @@ import type { BlogCategory } from '../../content.config';
 import { site } from '../../config/site';
 import { type Locale, localePath, ui } from '../../i18n';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { organizeBlogEntries } from '../../utils/blog-series';
+import BlogSeriesTree from './BlogSeriesTree.astro';
 
 const { lang = 'en', category } = Astro.props as { lang?: Locale; category?: BlogCategory };
 const t = ui[lang];
 
-const all = (await getCollection('blog', ({ data }) => !data.draft && data.lang === lang)).sort(
+const all = (await getCollection('blog', ({ data }) => data.lang === lang)).sort(
   (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
 );
 const entries = category ? all.filter((e) => e.data.category === category) : all;
+const organized = organizeBlogEntries(entries);
 const counts = new Map<BlogCategory, number>();
 for (const entry of all)
   counts.set(entry.data.category, (counts.get(entry.data.category) ?? 0) + 1);
@@ -27,7 +30,7 @@ const alternates = category
           (['en', 'ja', 'zh'] as Locale[]).map(async (l) => {
             const posts = await getCollection(
               'blog',
-              ({ data }) => !data.draft && data.lang === l && data.category === category,
+              ({ data }) => data.lang === l && data.category === category,
             );
             return posts.length > 0 ? [l, localePath(l, `blog/category/${category}`)] : null;
           }),
@@ -64,8 +67,9 @@ const alternates = category
         </nav>
       )
     }
+    {organized.series.map((series) => <BlogSeriesTree {series} {lang} label={t.series} />)}
     {
-      entries.map((entry) => (
+      organized.standalone.map((entry) => (
         <article class="entry">
           <p class="meta entry-meta">
             <time datetime={entry.data.published.toISOString()}>

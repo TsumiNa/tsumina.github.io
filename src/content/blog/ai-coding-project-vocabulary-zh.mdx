@@ -5,9 +5,21 @@ published: 2026-09-28
 lang: zh
 tags: [ai-coding, python, software-engineering]
 category: tutorial
-draft: true
+series:
+  key: ai-coding-for-non-cs
+  title: AI coding 时代的非 CS 编程
+  order: 1
+  path: [1]
 translationKey: ai-coding-project-vocabulary
 ---
+
+import Callout from '../../components/content/Callout.astro';
+
+<Callout type="Note" title="TL;DR">
+  AI coding 可以快速生成代码，但不能替代人对项目边界、结构和验收方式的判断。本章用一个 Python
+  命令行项目串起 framework、scaffold、factory、抽象、ABC、Protocol
+  和工程工具链：这些词不是需要背诵的术语表，而是检查生成代码是否真正属于当前项目的一组问题。
+</Callout>
 
 会写几段 Python，不等于能把一个想法做成可维护的项目。两者之间缺少的往往不是更多语法，而是一套用来描述项目的词汇：入口在哪里，依赖由谁管理，framework 和 library 有什么区别，scaffold 生成了什么，为什么这里需要抽象，以及某个接口应当写成 ABC 还是 Protocol。
 
