@@ -2,12 +2,12 @@ import rss from '@astrojs/rss';
 import type { APIContext } from 'astro';
 import { getCollection } from 'astro:content';
 import { site } from '../config/site';
-import { blogSlug } from '../utils/blog-series';
+import { isBlogEntryVisible } from '../utils/blog-series';
 
 export async function GET(context: APIContext) {
-  const posts = (await getCollection('blog', ({ data }) => data.lang === 'en' && data.show)).sort(
-    (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
-  );
+  const posts = (await getCollection('blog', ({ data }) => data.lang === 'en'))
+    .filter((entry) => isBlogEntryVisible(entry))
+    .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
   return rss({
     title: site.title,
     description: site.description,
@@ -17,7 +17,7 @@ export async function GET(context: APIContext) {
       description: p.data.description,
       pubDate: p.data.published,
       categories: [p.data.category, ...p.data.tags],
-      link: `/blog/${blogSlug(p.id)}/`,
+      link: `/blog/${p.id}/`,
     })),
   });
 }

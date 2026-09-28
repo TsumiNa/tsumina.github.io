@@ -1,8 +1,9 @@
 ---
 import type { BlogCategory } from '../content.config';
+import BlogSeriesSidebar from '../components/pages/BlogSeriesSidebar.astro';
 import { localePath, type Locale, ui } from '../i18n';
 import { articleLd } from '../utils/structured-data';
-import { blogSlug, type BlogSeriesNavigation } from '../utils/blog-series';
+import type { BlogSeriesNavigation } from '../utils/blog-series';
 import BaseLayout from './BaseLayout.astro';
 
 interface Props {
@@ -20,6 +21,7 @@ interface Props {
   show?: boolean;
   banner?: { src: string; alt: string };
   series?: BlogSeriesNavigation;
+  entryId?: string;
 }
 const {
   kind,
@@ -36,6 +38,7 @@ const {
   show = true,
   banner,
   series,
+  entryId,
 } = Astro.props;
 const t = ui[lang];
 const eyebrow = kind === 'blog' ? `~/blog${category ? `/${category}` : ''}` : '~/notes';
@@ -52,10 +55,6 @@ const jsonLd = [
     image: banner?.src,
   }),
 ];
-const seriesHref =
-  series?.overview && series.overview.id !== Astro.params.slug
-    ? localePath(lang, `blog/${blogSlug(series.overview.id)}`)
-    : localePath(lang, `blog/category/${category}`);
 ---
 
 <BaseLayout
@@ -69,70 +68,81 @@ const seriesHref =
   noindex={!show}
 >
   <article class="container page article" data-pagefind-body={show ? true : undefined}>
-    <header class="article-head">
-      <p class="eyebrow">{eyebrow}</p>
-      {
-        series && (
-          <p class="article-series-kicker">
-            <a href={seriesHref}>{series.title}</a>
-            {series.position && <span>{series.position}</span>}
+    <div class:list={['article-shell', { 'has-series': series }]}>
+      {series && entryId && <BlogSeriesSidebar navigation={series} currentId={entryId} {lang} />}
+      <div class="article-main">
+        <header class="article-head">
+          <p class="eyebrow">{eyebrow}</p>
+          {
+            series && (
+              <p class="article-series-kicker">
+                <a href={localePath(lang, `blog/${series.group.key}`)}>{series.group.title}</a>
+                {series.chapter && (
+                  <span>
+                    <a href={localePath(lang, `blog/${series.group.key}/${series.chapter.key}`)}>
+                      {series.chapter.title}
+                    </a>
+                  </span>
+                )}
+              </p>
+            )
+          }
+          <h1>{title}</h1>
+          {description && <p class="lead">{description}</p>}
+          <p class="meta article-meta">
+            <time datetime={published.toISOString()}>{published.toLocaleDateString(lang)}</time>
+            {
+              updated && (
+                <span>
+                  {t.updated}{' '}
+                  <time datetime={updated.toISOString()}>{updated.toLocaleDateString(lang)}</time>
+                </span>
+              )
+            }
+            {
+              status && (
+                <span class="tag" data-status={status}>
+                  {t.statuses[status]}
+                </span>
+              )
+            }
+            {topic && <span class="tag">{topic}</span>}
+            {tags.map((tag) => <span class="tag">{tag}</span>)}
           </p>
-        )
-      }
-      <h1>{title}</h1>
-      {description && <p class="lead">{description}</p>}
-      <p class="meta article-meta">
-        <time datetime={published.toISOString()}>{published.toLocaleDateString(lang)}</time>
+        </header>
         {
-          updated && (
-            <span>
-              {t.updated}{' '}
-              <time datetime={updated.toISOString()}>{updated.toLocaleDateString(lang)}</time>
-            </span>
+          banner && (
+            <figure class="article-banner">
+              <img src={banner.src} alt={banner.alt} />
+            </figure>
           )
         }
+        <div class="prose"><slot /></div>
         {
-          status && (
-            <span class="tag" data-status={status}>
-              {t.statuses[status]}
-            </span>
+          series && (series.previous || series.next) && (
+            <nav class="article-series-nav no-print" aria-label={series.group.title}>
+              {series.previous && (
+                <a
+                  class="article-series-link previous"
+                  href={localePath(lang, `blog/${series.previous.id}`)}
+                >
+                  <span>{ui[lang].previousArticle}</span>
+                  <strong>{series.previous.data.title}</strong>
+                </a>
+              )}
+              {series.next && (
+                <a
+                  class="article-series-link next"
+                  href={localePath(lang, `blog/${series.next.id}`)}
+                >
+                  <span>{ui[lang].nextArticle}</span>
+                  <strong>{series.next.data.title}</strong>
+                </a>
+              )}
+            </nav>
           )
         }
-        {topic && <span class="tag">{topic}</span>}
-        {tags.map((tag) => <span class="tag">{tag}</span>)}
-      </p>
-    </header>
-    {
-      banner && (
-        <figure class="article-banner">
-          <img src={banner.src} alt={banner.alt} />
-        </figure>
-      )
-    }
-    <div class="prose"><slot /></div>
-    {
-      series && (series.previous || series.next) && (
-        <nav class="article-series-nav no-print" aria-label={series.title}>
-          {series.previous && (
-            <a
-              class="article-series-link previous"
-              href={localePath(lang, `blog/${blogSlug(series.previous.id)}`)}
-            >
-              <span>{ui[lang].previousArticle}</span>
-              <strong>{series.previous.data.title}</strong>
-            </a>
-          )}
-          {series.next && (
-            <a
-              class="article-series-link next"
-              href={localePath(lang, `blog/${blogSlug(series.next.id)}`)}
-            >
-              <span>{ui[lang].nextArticle}</span>
-              <strong>{series.next.data.title}</strong>
-            </a>
-          )}
-        </nav>
-      )
-    }
+      </div>
+    </div>
   </article>
 </BaseLayout>

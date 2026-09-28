@@ -4,15 +4,15 @@ import type { BlogCategory } from '../../content.config';
 import { site } from '../../config/site';
 import { type Locale, localePath, ui } from '../../i18n';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { blogSlug, organizeBlogEntries } from '../../utils/blog-series';
+import { isBlogEntryVisible, organizeBlogEntries } from '../../utils/blog-series';
 import BlogSeriesTree from './BlogSeriesTree.astro';
 
 const { lang = 'en', category } = Astro.props as { lang?: Locale; category?: BlogCategory };
 const t = ui[lang];
 
-const all = (await getCollection('blog', ({ data }) => data.lang === lang && data.show)).sort(
-  (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
-);
+const all = (await getCollection('blog', ({ data }) => data.lang === lang))
+  .filter((entry) => isBlogEntryVisible(entry))
+  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
 const entries = category ? all.filter((e) => e.data.category === category) : all;
 const organized = organizeBlogEntries(entries);
 const counts = new Map<BlogCategory, number>();
@@ -28,10 +28,12 @@ const alternates = category
       (
         await Promise.all(
           (['en', 'ja', 'zh'] as Locale[]).map(async (l) => {
-            const posts = await getCollection(
-              'blog',
-              ({ data }) => data.lang === l && data.category === category && data.show,
-            );
+            const posts = (
+              await getCollection(
+                'blog',
+                ({ data }) => data.lang === l && data.category === category,
+              )
+            ).filter((entry) => isBlogEntryVisible(entry));
             return posts.length > 0 ? [l, localePath(l, `blog/category/${category}`)] : null;
           }),
         )
@@ -67,7 +69,11 @@ const alternates = category
         </nav>
       )
     }
-    {organized.series.map((series) => <BlogSeriesTree {series} {lang} label={t.series} />)}
+    {
+      organized.series.map((series) => (
+        <BlogSeriesTree {series} {lang} label={t.series} articleLabel={t.articles} />
+      ))
+    }
     {
       organized.standalone.map((entry) => (
         <article class:list={['entry', 'blog-entry-card', { 'has-banner': entry.data.banner }]}>
@@ -87,7 +93,7 @@ const alternates = category
               <span class="tag">{t.categories[entry.data.category]}</span>
             </p>
             <h2>
-              <a href={localePath(lang, `blog/${blogSlug(entry.id)}`)}>{entry.data.title}</a>
+              <a href={localePath(lang, `blog/${entry.id}`)}>{entry.data.title}</a>
             </h2>
             {entry.data.description && <p class="entry-description">{entry.data.description}</p>}
           </div>

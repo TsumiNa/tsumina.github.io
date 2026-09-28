@@ -1,25 +1,38 @@
 import type { CollectionEntry } from 'astro:content';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { parse } from 'smol-toml';
+import type { Locale } from '../i18n';
 
 export type BlogEntry = CollectionEntry<'blog'>;
+export type LocalizedDirectoryTitle = Partial<Record<Locale, string>>;
 
-const localizedIndex = /^index(?:-(?:en|ja|zh))?$/;
+export interface BlogDirectoryConfig {
+  title: LocalizedDirectoryTitle;
+  show: boolean;
+  cover?: string;
+}
 
-/** `index[-locale].mdx` represents its directory in public URLs. */
-export const blogSlug = (id: string) => id.replace(/\/index(?:-(?:en|ja|zh))?$/, '');
-
-export interface BlogSeriesNode {
+export interface BlogSeriesArticle {
   entry: BlogEntry;
-  path: string[];
-  position: number[];
-  children: BlogSeriesNode[];
+  order: number;
+}
+
+export interface BlogSeriesChapter {
+  key: string;
+  title: string;
+  order: number;
+  cover?: string;
+  articles: BlogSeriesArticle[];
 }
 
 export interface BlogSeriesGroup {
   key: string;
   title: string;
   category: BlogEntry['data']['category'];
-  overview?: BlogEntry;
-  roots: BlogSeriesNode[];
+  cover?: string;
+  articles: BlogSeriesArticle[];
+  chapters: BlogSeriesChapter[];
 }
 
 export interface OrganizedBlogEntries {
@@ -28,157 +41,243 @@ export interface OrganizedBlogEntries {
 }
 
 export interface BlogSeriesNavigation {
-  title: string;
-  position?: string;
-  overview?: BlogEntry;
+  group: BlogSeriesGroup;
+  chapter?: BlogSeriesChapter;
   previous?: BlogEntry;
   next?: BlogEntry;
 }
 
+export type BlogDirectory =
+  | { kind: 'series'; series: BlogSeriesGroup }
+  | { kind: 'chapter'; series: BlogSeriesGroup; chapter: BlogSeriesChapter };
+
+export const blogDirectorySlug = (directory: BlogDirectory) =>
+  directory.kind === 'series'
+    ? directory.series.key
+    : `${directory.series.key}/${directory.chapter.key}`;
+
+export type BlogDirectoryConfigResolver = (segments: string[]) => BlogDirectoryConfig;
+
+const localizedIndex = /^index(?:-(?:en|ja|zh))?$/;
+const blogContentRoot = join(process.cwd(), 'src/content/blog');
+const directoryConfigCache = new Map<string, BlogDirectoryConfig>();
+
 const compareNames = (a: string, b: string) =>
   a.localeCompare(b, 'en', { numeric: true, sensitivity: 'base' });
 
-const pathKey = (path: string[]) => path.join('/');
-
-const titleFromKey = (key: string) =>
-  key
-    .replace(/^\d+[-_.]*/, '')
-    .split(/[-_]+/)
-    .filter(Boolean)
-    .map((word) => {
-      const lower = word.toLowerCase();
-      if (lower === 'ai' || lower === 'cs') return lower.toUpperCase();
-      return `${word.charAt(0).toUpperCase()}${word.slice(1)}`;
-    })
-    .join(' ')
-    .replace(/\bFor\b/g, 'for')
-    .replace(/\bNon CS\b/g, 'Non-CS');
-
-function locationOf(entry: BlogEntry) {
-  const segments = entry.id.split('/');
-  if (segments.length === 1) return undefined;
-
-  const key = segments[0];
-  const path = segments.slice(1);
-  if (localizedIndex.test(path.at(-1) ?? '')) path.pop();
-  if (path.length > 2) {
-    throw new Error(
-      `Series "${key}" entry "${entry.id}" exceeds the three article levels: overview, chapter, section.`,
-    );
+export function parseBlogDirectoryConfig(
+  source: string,
+  configPath = 'config.toml',
+): BlogDirectoryConfig {
+  const data = parse(source);
+  if (!data.title || typeof data.title !== 'object' || Array.isArray(data.title)) {
+    throw new Error(`${configPath}: [title] is required.`);
   }
-  return { key, path };
+
+  const title: LocalizedDirectoryTitle = {};
+  for (const [locale, value] of Object.entries(data.title)) {
+    if (!['en', 'ja', 'zh'].includes(locale) || typeof value !== 'string' || !value.trim()) {
+      throw new Error(`${configPath}: title keys must be non-empty en, ja, or zh strings.`);
+    }
+    title[locale as Locale] = value;
+  }
+  if (Object.keys(title).length === 0) throw new Error(`${configPath}: [title] cannot be empty.`);
+  if (data.show !== undefined && typeof data.show !== 'boolean') {
+    throw new Error(`${configPath}: show must be a boolean.`);
+  }
+  if (
+    data.cover !== undefined &&
+    (typeof data.cover !== 'string' || !/^\/(?!\/)/.test(data.cover))
+  ) {
+    throw new Error(`${configPath}: cover must be a root-relative path.`);
+  }
+
+  return {
+    title,
+    show: (data.show as boolean | undefined) ?? true,
+    cover: data.cover as string | undefined,
+  };
 }
 
-export function organizeBlogEntries(entries: BlogEntry[]): OrganizedBlogEntries {
+function directoryConfig(segments: string[]): BlogDirectoryConfig {
+  const directory = join(blogContentRoot, ...segments);
+  const cached = directoryConfigCache.get(directory);
+  if (cached) return cached;
+  const configPath = join(directory, 'config.toml');
+  if (!existsSync(configPath)) {
+    throw new Error(`${configPath}: every Blog series and chapter directory requires config.toml.`);
+  }
+  const config = parseBlogDirectoryConfig(readFileSync(configPath, 'utf8'), configPath);
+  directoryConfigCache.set(directory, config);
+  return config;
+}
+
+const titleFor = (config: BlogDirectoryConfig, lang: Locale, configPath: string) => {
+  const title = config.title[lang];
+  if (!title) throw new Error(`${configPath}: missing title.${lang} for localized content.`);
+  return title;
+};
+
+function locationOf(entry: BlogEntry, resolveConfig: BlogDirectoryConfigResolver) {
+  const segments = entry.id.split('/');
+  if (segments.length === 1) return undefined;
+  if (segments.length > 3) {
+    throw new Error(
+      `Series entry "${entry.id}" exceeds the supported series/chapter/article depth.`,
+    );
+  }
+
+  const filename = segments.at(-1)!;
+  if (localizedIndex.test(filename)) {
+    throw new Error(
+      `Series entry "${entry.id}" uses a reserved index filename; directory indexes are generated by Astro.`,
+    );
+  }
+
+  return {
+    seriesKey: segments[0],
+    chapterKey: segments.length === 3 ? segments[1] : undefined,
+    filename,
+    seriesConfig: resolveConfig([segments[0]]),
+    chapterConfig: segments.length === 3 ? resolveConfig([segments[0], segments[1]]) : undefined,
+  };
+}
+
+export function isBlogEntryVisible(
+  entry: BlogEntry,
+  resolveConfig: BlogDirectoryConfigResolver = directoryConfig,
+) {
+  const location = locationOf(entry, resolveConfig);
+  return (
+    entry.data.show &&
+    (location?.seriesConfig.show ?? true) &&
+    (location?.chapterConfig?.show ?? true)
+  );
+}
+
+export function organizeBlogEntries(
+  entries: BlogEntry[],
+  resolveConfig: BlogDirectoryConfigResolver = directoryConfig,
+): OrganizedBlogEntries {
   const standalone: BlogEntry[] = [];
   const grouped = new Map<
     string,
-    { category: BlogEntry['data']['category']; entries: BlogEntry[] }
+    {
+      lang: Locale;
+      category: BlogEntry['data']['category'];
+      config: BlogDirectoryConfig;
+      direct: BlogEntry[];
+      chapters: Map<string, { config: BlogDirectoryConfig; entries: BlogEntry[] }>;
+    }
   >();
 
   for (const entry of entries) {
-    if (!entry.data.show) continue;
-    const location = locationOf(entry);
+    const location = locationOf(entry, resolveConfig);
     if (!location) {
-      standalone.push(entry);
+      if (entry.data.show) standalone.push(entry);
       continue;
     }
+    if (!entry.data.show || !location.seriesConfig.show || location.chapterConfig?.show === false)
+      continue;
 
-    const existing = grouped.get(location.key);
-    if (!existing) {
-      grouped.set(location.key, { category: entry.data.category, entries: [entry] });
+    const existing = grouped.get(location.seriesKey);
+    const group = existing ?? {
+      lang: entry.data.lang,
+      category: entry.data.category,
+      config: location.seriesConfig,
+      direct: [],
+      chapters: new Map<string, { config: BlogDirectoryConfig; entries: BlogEntry[] }>(),
+    };
+    if (!existing) grouped.set(location.seriesKey, group);
+    if (group.category !== entry.data.category || group.lang !== entry.data.lang) {
+      throw new Error(`Series "${location.seriesKey}" must use one category and language.`);
+    }
+
+    if (!location.chapterKey) {
+      group.direct.push(entry);
       continue;
     }
-
-    if (existing.category !== entry.data.category) {
-      throw new Error(`Series "${location.key}" must use one category within a language.`);
-    }
-    existing.entries.push(entry);
+    const chapter = group.chapters.get(location.chapterKey) ?? {
+      config: location.chapterConfig!,
+      entries: [],
+    };
+    chapter.entries.push(entry);
+    group.chapters.set(location.chapterKey, chapter);
   }
 
-  const groups = [...grouped.entries()].map(([key, { category, entries: seriesEntries }]) => {
-    const nodes = new Map<string, BlogSeriesNode>();
-    let overview: BlogEntry | undefined;
-
-    for (const entry of seriesEntries) {
-      const path = locationOf(entry)!.path;
-      const normalized = pathKey(path);
-      if (path.length === 0) {
-        if (overview) {
-          throw new Error(`Series "${key}" has more than one overview article.`);
-        }
-        overview = entry;
-        continue;
-      }
-      if (nodes.has(normalized)) {
-        throw new Error(`Series "${key}" has duplicate article path "${normalized}".`);
-      }
-      nodes.set(normalized, { entry, path, position: [], children: [] });
+  const series = [...grouped.entries()].map(([key, value]) => {
+    const chapterKeys = [...value.chapters.keys()].sort(compareNames);
+    const directRoutes = new Set(value.direct.map((entry) => entry.id.split('/').at(-1)!));
+    const routeCollision = chapterKeys.find((chapter) => directRoutes.has(chapter));
+    if (routeCollision) {
+      throw new Error(
+        `Series "${key}" has an article and chapter competing for route "${routeCollision}".`,
+      );
     }
 
-    const roots: BlogSeriesNode[] = [];
-    for (const node of nodes.values()) {
-      if (node.path.length === 1) {
-        roots.push(node);
-        continue;
-      }
-
-      const parentPath = node.path.slice(0, -1);
-      const parent = nodes.get(pathKey(parentPath));
-      if (!parent) {
-        throw new Error(
-          `Series "${key}" entry "${node.entry.id}" is missing chapter "${parentPath.join('/')}".`,
-        );
-      }
-      parent.children.push(node);
-    }
-
-    const sortNodes = (items: BlogSeriesNode[], parentPosition: number[] = []) => {
-      items.sort((a, b) => compareNames(a.path.at(-1)!, b.path.at(-1)!));
-      for (const [index, item] of items.entries()) {
-        item.position = [...parentPosition, index + 1];
-        sortNodes(item.children, item.position);
-      }
-    };
-    sortNodes(roots);
+    value.direct.sort((a, b) => compareNames(a.id, b.id));
+    const articles = value.direct.map((entry, index) => ({ entry, order: index + 1 }));
+    const chapters = chapterKeys.map((chapterKey, chapterIndex) => {
+      const chapter = value.chapters.get(chapterKey)!;
+      chapter.entries.sort((a, b) => compareNames(a.id, b.id));
+      return {
+        key: chapterKey,
+        title: titleFor(chapter.config, value.lang, `${key}/${chapterKey}/config.toml`),
+        order: chapterIndex + 1,
+        cover: chapter.config.cover,
+        articles: chapter.entries.map((entry, index) => ({ entry, order: index + 1 })),
+      };
+    });
 
     return {
       key,
-      title: overview?.data.title ?? titleFromKey(key),
-      category,
-      overview,
-      roots,
+      title: titleFor(value.config, value.lang, `${key}/config.toml`),
+      category: value.category,
+      cover: value.config.cover,
+      articles,
+      chapters,
     };
   });
 
   standalone.sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
-  groups.sort((a, b) => compareNames(a.key, b.key));
-  return { standalone, series: groups };
+  series.sort((a, b) => compareNames(a.key, b.key));
+  return { standalone, series };
 }
 
-const flattenNodes = (nodes: BlogSeriesNode[]): BlogSeriesNode[] =>
-  nodes.flatMap((node) => [node, ...flattenNodes(node.children)]);
+const readingOrder = (series: BlogSeriesGroup) => [
+  ...series.articles.map(({ entry }) => entry),
+  ...series.chapters.flatMap((chapter) => chapter.articles.map(({ entry }) => entry)),
+];
 
 export function getBlogSeriesNavigation(
   entries: BlogEntry[],
   currentId: string,
+  resolveConfig: BlogDirectoryConfigResolver = directoryConfig,
 ): BlogSeriesNavigation | undefined {
-  const organized = organizeBlogEntries(entries);
-  for (const series of organized.series) {
-    const nodes = flattenNodes(series.roots);
-    const ordered = series.overview
-      ? [series.overview, ...nodes.map((node) => node.entry)]
-      : nodes.map((node) => node.entry);
+  const organized = organizeBlogEntries(entries, resolveConfig);
+  for (const group of organized.series) {
+    const ordered = readingOrder(group);
     const currentIndex = ordered.findIndex((entry) => entry.id === currentId);
     if (currentIndex === -1) continue;
-    const node = nodes.find((item) => item.entry.id === currentId);
+    const chapter = group.chapters.find((item) =>
+      item.articles.some(({ entry }) => entry.id === currentId),
+    );
     return {
-      title: series.title,
-      position: node?.position.join('.'),
-      overview: series.overview,
+      group,
+      chapter,
       previous: ordered[currentIndex - 1],
       next: ordered[currentIndex + 1],
     };
   }
   return undefined;
+}
+
+export function getBlogDirectories(
+  entries: BlogEntry[],
+  resolveConfig: BlogDirectoryConfigResolver = directoryConfig,
+): BlogDirectory[] {
+  return organizeBlogEntries(entries, resolveConfig).series.flatMap((series) => [
+    { kind: 'series' as const, series },
+    ...series.chapters.map((chapter) => ({ kind: 'chapter' as const, series, chapter })),
+  ]);
 }

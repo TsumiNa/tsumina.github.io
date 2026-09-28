@@ -37,22 +37,41 @@ Blog posts directly inside `src/content/blog/` are standalone. A directory creat
 src/content/blog/
 ├── standalone-post.mdx
 └── ai-coding-for-non-cs/
-    ├── index-zh.mdx
+    ├── 00-prologue-zh.mdx
     ├── 01-project-language/
-    │   ├── index-zh.mdx
     │   ├── 01-frameworks-zh.mdx
     │   └── 02-abstraction-zh.mdx
     └── 02-first-delivery/
-        └── index-zh.mdx
+        └── 01-build-and-ci-zh.mdx
 ```
 
-- `index.mdx` is the optional series overview, table of contents, or prologue. In a multilingual series, use `index-en.mdx`, `index-ja.mdx`, or `index-zh.mdx`. Its title and description label the series card, and its public URL is the directory URL without the index filename.
-- A chapter can be a file directly under the series directory, or an `index[-locale].mdx` inside a chapter directory.
-- Files inside a chapter directory are sections. A section requires its parent chapter article to exist; using a chapter directory is therefore recommended when sections are planned.
+- The first directory is the series. An `.mdx` directly inside it is a series-level article such as a prologue.
+- A second directory is a chapter; its `.mdx` files are the articles or sections in that chapter.
+- Do not author `index.mdx` or `index-en.mdx`/`index-ja.mdx`/`index-zh.mdx` inside a series. Astro generates index pages for both the series and every chapter.
 - Prefix filenames with zero-padded numbers such as `01-` and `02-`; natural filename order controls reading order and previous/next navigation.
-- The maximum is overview/prologue → chapter → section. Deeper article paths, duplicate normalized paths such as both `chapter.mdx` and `chapter/index-en.mdx`, missing chapter parents, and mixed categories in one localized series fail the build.
+- The maximum authored path is `series/chapter/article.mdx`. Deeper paths, a direct article whose URL collides with a chapter directory, reserved index filenames, and mixed categories in one localized series fail the build.
 
-Series information never belongs in frontmatter. The folder path controls both hierarchy and the article URL. An overview is recommended; without one, the series title is derived from the directory name.
+Series information never belongs in frontmatter. Folder names control hierarchy, labels, ordering, and URLs, so use readable slugs with optional numeric prefixes. Article pages receive a sticky, collapsible series table of contents with the current article highlighted; on small screens it becomes a collapsed disclosure above the article. The implementation is static and uses native HTML without client JavaScript.
+
+### Directory configuration
+
+Every series and chapter directory must contain `config.toml`. The folder name remains a stable, URL-safe path segment; localized display titles and directory-level behavior live in the config:
+
+```toml
+show = true
+cover = "/figures/ai-coding/cover.svg"
+
+[title]
+en = "AI Coding for Non-CS Learners"
+ja = "AI coding 時代の非 CS 専攻向けプログラミング"
+zh = "AI coding 时代的非 CS 编程"
+```
+
+- `[title]` is required. Add a non-empty `en`, `ja`, or `zh` value for every language represented by articles below that directory. Titles never change the route.
+- `show` defaults to `true`. When `false`, the directory index and every descendant article are removed from listings, generated tables of contents, the home page, RSS, `llms.txt`, Pagefind, and search-engine indexing. Direct article URLs still build for branch-preview review; this is not access control.
+- `cover` is optional and must be a root-relative image path. A series cover appears on its generated book index and listing card; a chapter cover appears on the generated chapter title page.
+- A chapter's `show` is combined with its parent series setting. A hidden series therefore hides all chapters and articles below it.
+- Keep future directory-level behavior in this file rather than article frontmatter.
 
 ## Figures and multi-panel figures
 

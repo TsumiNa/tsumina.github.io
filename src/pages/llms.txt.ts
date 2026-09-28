@@ -3,16 +3,16 @@ import { researchThemes, site } from '../config/site';
 import { cv } from '../data/cv';
 import { ui } from '../i18n';
 import { getPublications } from '../utils/publications';
-import { blogSlug } from '../utils/blog-series';
+import { isBlogEntryVisible } from '../utils/blog-series';
 
 /**
  * llms.txt — a compact, plain-Markdown map of the site for AI agents,
  * following the llms.txt convention (H1, block-quote summary, H2 link lists).
  */
 export async function GET() {
-  const blog = (await getCollection('blog', ({ data }) => data.lang === 'en' && data.show)).sort(
-    (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
-  );
+  const blog = (await getCollection('blog', ({ data }) => data.lang === 'en'))
+    .filter((entry) => isBlogEntryVisible(entry))
+    .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
   const notes = (await getCollection('notes', ({ data }) => data.lang === 'en' && data.show)).sort(
     (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
   );
@@ -51,7 +51,7 @@ export async function GET() {
     lines.push('', '## Blog posts', '');
     for (const entry of blog)
       lines.push(
-        `- [${entry.data.title}](${site.url}/blog/${blogSlug(entry.id)}/)${entry.data.description ? `: ${entry.data.description}` : ''}`,
+        `- [${entry.data.title}](${site.url}/blog/${entry.id}/)${entry.data.description ? `: ${entry.data.description}` : ''}`,
       );
   }
   if (notes.length > 0) {

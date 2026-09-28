@@ -37,7 +37,7 @@ In site code and rendering implementation, do not use copy-pasted layouts, scatt
 # Content Rules
 
 - Blog and Notes use `.mdx` Content Collection entries. English is default; JA/ZH translations are optional independent files associated by stable `translationKey`.
-- Blog entries at the collection root are standalone. Nested folders organize a series as overview/prologue → chapter → section, with no more than three article levels; follow `docs/content-authoring.md`. `show: false` removes an entry from discovery surfaces while preserving its direct branch-preview URL.
+- Blog entries at the collection root are standalone. A nested path uses `series/chapter/article.mdx`; every series/chapter folder requires `config.toml` for localized titles, inherited visibility, and an optional cover. Astro generates series/chapter indexes and an article sidebar from those folders. Authored `index*.mdx` files are reserved and invalid; follow `docs/content-authoring.md`. `show: false` removes an entry from discovery surfaces while preserving its direct branch-preview URL.
 - Content branches and pull requests are review surfaces: every entry is rendered in the Cloudflare branch preview, and only owner-approved content may be merged into production. A Note's `status: draft` is a visible maturity label, not a publication filter. Never fabricate personal facts or publication metadata.
 - A supplied CV is authoritative for biography/career details. ORCID is the upstream publication source.
 - Generated ORCID data and manual overrides stay separate; generated data must never overwrite overrides.
