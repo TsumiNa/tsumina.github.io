@@ -7,6 +7,7 @@ import { cvUI } from '../../i18n/cv';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getPublications } from '../../utils/publications';
 import { personLd, websiteLd } from '../../utils/structured-data';
+import { blogSlug } from '../../utils/blog-series';
 
 const { lang = 'en' } = Astro.props as { lang?: Locale };
 const t = ui[lang];
@@ -19,7 +20,7 @@ const highlighted = (
 ).slice(0, 4);
 
 const collect = async (name: 'blog' | 'notes') =>
-  (await getCollection(name, ({ data }) => data.lang === lang)).map((entry) => ({
+  (await getCollection(name, ({ data }) => data.lang === lang && data.show)).map((entry) => ({
     kind: name,
     entry,
   }));
@@ -95,7 +96,14 @@ const projects = cv.projects.slice(0, 6);
           writing.map(({ kind, entry }) => (
             <article class="entry entry-compact">
               <h3>
-                <a href={localePath(lang, `${kind}/${entry.id}`)}>{entry.data.title}</a>
+                <a
+                  href={localePath(
+                    lang,
+                    `${kind}/${kind === 'blog' ? blogSlug(entry.id) : entry.id}`,
+                  )}
+                >
+                  {entry.data.title}
+                </a>
               </h3>
               <p class="meta">
                 <time datetime={entry.data.published.toISOString()}>

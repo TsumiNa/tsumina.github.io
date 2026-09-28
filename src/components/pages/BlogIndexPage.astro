@@ -4,13 +4,13 @@ import type { BlogCategory } from '../../content.config';
 import { site } from '../../config/site';
 import { type Locale, localePath, ui } from '../../i18n';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { organizeBlogEntries } from '../../utils/blog-series';
+import { blogSlug, organizeBlogEntries } from '../../utils/blog-series';
 import BlogSeriesTree from './BlogSeriesTree.astro';
 
 const { lang = 'en', category } = Astro.props as { lang?: Locale; category?: BlogCategory };
 const t = ui[lang];
 
-const all = (await getCollection('blog', ({ data }) => data.lang === lang)).sort(
+const all = (await getCollection('blog', ({ data }) => data.lang === lang && data.show)).sort(
   (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
 );
 const entries = category ? all.filter((e) => e.data.category === category) : all;
@@ -30,7 +30,7 @@ const alternates = category
           (['en', 'ja', 'zh'] as Locale[]).map(async (l) => {
             const posts = await getCollection(
               'blog',
-              ({ data }) => data.lang === l && data.category === category,
+              ({ data }) => data.lang === l && data.category === category && data.show,
             );
             return posts.length > 0 ? [l, localePath(l, `blog/category/${category}`)] : null;
           }),
@@ -70,17 +70,27 @@ const alternates = category
     {organized.series.map((series) => <BlogSeriesTree {series} {lang} label={t.series} />)}
     {
       organized.standalone.map((entry) => (
-        <article class="entry">
-          <p class="meta entry-meta">
-            <time datetime={entry.data.published.toISOString()}>
-              {entry.data.published.toLocaleDateString(lang)}
-            </time>
-            <span class="tag">{t.categories[entry.data.category]}</span>
-          </p>
-          <h2>
-            <a href={localePath(lang, `blog/${entry.id}`)}>{entry.data.title}</a>
-          </h2>
-          {entry.data.description && <p class="entry-description">{entry.data.description}</p>}
+        <article class:list={['entry', 'blog-entry-card', { 'has-banner': entry.data.banner }]}>
+          {entry.data.banner && (
+            <img
+              class="entry-banner"
+              src={entry.data.banner.src}
+              alt={entry.data.banner.alt}
+              loading="lazy"
+            />
+          )}
+          <div>
+            <p class="meta entry-meta">
+              <time datetime={entry.data.published.toISOString()}>
+                {entry.data.published.toLocaleDateString(lang)}
+              </time>
+              <span class="tag">{t.categories[entry.data.category]}</span>
+            </p>
+            <h2>
+              <a href={localePath(lang, `blog/${blogSlug(entry.id)}`)}>{entry.data.title}</a>
+            </h2>
+            {entry.data.description && <p class="entry-description">{entry.data.description}</p>}
+          </div>
         </article>
       ))
     }

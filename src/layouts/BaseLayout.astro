@@ -16,8 +16,19 @@ interface Props {
   alternates?: Partial<Record<Locale, string>>;
   article?: { published: Date; updated?: Date; tags?: string[] };
   jsonLd?: object[];
+  image?: string;
+  noindex?: boolean;
 }
-const { title, description, lang = 'en', alternates, article, jsonLd } = Astro.props;
+const {
+  title,
+  description,
+  lang = 'en',
+  alternates,
+  article,
+  jsonLd,
+  image,
+  noindex,
+} = Astro.props;
 const t = ui[lang];
 ---
 
@@ -27,7 +38,7 @@ const t = ui[lang];
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <SEO {title} {description} {lang} {alternates} {article} {jsonLd} />
+    <SEO {title} {description} {lang} {alternates} {article} {jsonLd} {image} {noindex} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="alternate" type="application/rss+xml" title="Blog RSS" href="/rss.xml" />
     <script is:inline>

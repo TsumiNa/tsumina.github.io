@@ -4,9 +4,9 @@ Blog entries belong in `src/content/blog/`; learning notes belong in `src/conten
 
 ## Preview and approval
 
-Content visibility follows Git state rather than a frontmatter flag. Every Content Collection entry is rendered by branch builds and appears in the Cloudflare branch preview. The owner reviews the rendered preview and approves the pull request before merge; merging is what makes the content eligible for the production build.
+Every Content Collection entry is rendered by branch builds and has a direct URL in the Cloudflare branch preview. The owner reviews the rendered preview and approves the pull request before merge; merging is what makes the content eligible for the production build.
 
-Do not add a `draft` visibility field. Learning Notes may use `status: draft`, but that value is a public maturity label and does not hide the Note.
+Do not add a `draft` visibility field. Set `show: false` only when an entry should remain directly accessible but be omitted from listings, the home page, RSS, `llms.txt`, Pagefind, and search-engine indexing. This is not access control. Learning Notes may use `status: draft`, but that value is a public maturity label and does not hide the Note.
 
 ## Frontmatter
 
@@ -20,29 +20,39 @@ lang: en
 tags: [materials, machine-learning]
 category: technical
 translationKey: stable-topic-key
+show: true
+banner:
+  src: /figures/article-slug/banner.webp
+  alt: A meaningful description of the banner image
 ---
 ```
 
-Blog entries accept `category: research | technical | learning | tutorial` (default `technical`); each category with posts gets a static listing at `/blog/category/<category>/`. Notes also accept `topic` and the visible maturity label `status: draft | evolving | stable`. A translation is a separate file with the same `translationKey` and its own `lang`; the article's `hreflang` alternates and the header language switcher only advertise translations that actually exist.
+Blog entries accept `category: research | technical | learning | tutorial` (default `technical`); each category with visible posts gets a static listing at `/blog/category/<category>/`. Notes also accept `topic` and the visible maturity label `status: draft | evolving | stable`. `show` defaults to `true`. `banner` is optional, but when present requires both a root-relative `src` and meaningful `alt` text; it is reused in the listing, article header, Open Graph metadata, and structured data. A translation is a separate file with the same `translationKey` and its own `lang`; the article's `hreflang` alternates and the header language switcher only advertise translations that actually exist.
 
 ## Optional series hierarchy
 
-Blog posts without `series` remain standalone entries directly under their category. A series uses an ordered numeric path to build a reading tree with at most three article levels:
+Blog posts directly inside `src/content/blog/` are standalone. A directory creates a series, and its file tree is the reading tree:
 
-```yaml
-series:
-  key: ai-coding-for-non-cs
-  title: AI coding for non-CS learners
-  order: 1
-  path: [1, 2]
+```text
+src/content/blog/
+├── standalone-post.mdx
+└── ai-coding-for-non-cs/
+    ├── index-zh.mdx
+    ├── 01-project-language/
+    │   ├── index-zh.mdx
+    │   ├── 01-frameworks-zh.mdx
+    │   └── 02-abstraction-zh.mdx
+    └── 02-first-delivery/
+        └── index-zh.mdx
 ```
 
-- `key` is a stable lowercase identifier shared by every entry in the series.
-- `title` is the localized series title. Entries with the same key and language must use the same title.
-- `order` sorts multiple series in one category and must remain consistent within the series.
-- `path` locates the article in the tree: `[0]` can be a prologue, `[1]` a first chapter, `[1, 1]` its first section, and `[1, 1, 1]` one final nested level. Every child path requires an article at its parent path.
+- `index.mdx` is the optional series overview, table of contents, or prologue. In a multilingual series, use `index-en.mdx`, `index-ja.mdx`, or `index-zh.mdx`. Its title and description label the series card, and its public URL is the directory URL without the index filename.
+- A chapter can be a file directly under the series directory, or an `index[-locale].mdx` inside a chapter directory.
+- Files inside a chapter directory are sections. A section requires its parent chapter article to exist; using a chapter directory is therefore recommended when sections are planned.
+- Prefix filenames with zero-padded numbers such as `01-` and `02-`; natural filename order controls reading order and previous/next navigation.
+- The maximum is overview/prologue → chapter → section. Deeper article paths, duplicate normalized paths such as both `chapter.mdx` and `chapter/index-en.mdx`, missing chapter parents, and mixed categories in one localized series fail the build.
 
-All entries in one localized series must use the same category. Duplicate positions, missing parents, inconsistent series metadata, and paths deeper than three levels fail the build. The series path controls list hierarchy and reading order; the file path still controls the article URL.
+Series information never belongs in frontmatter. The folder path controls both hierarchy and the article URL. An overview is recommended; without one, the series title is derived from the directory name.
 
 ## Figures and multi-panel figures
 

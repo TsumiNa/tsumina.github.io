@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import { localePath, type Locale } from '../../../i18n';
 import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+import { blogSlug, getBlogSeriesNavigation } from '../../../utils/blog-series';
 
 export async function getStaticPaths() {
   const all = await getCollection('blog');
@@ -16,13 +17,24 @@ export async function getStaticPaths() {
               (entry.data.translationKey &&
                 other.data.translationKey === entry.data.translationKey),
           )
-          .map((other) => [other.data.lang, localePath(other.data.lang, `blog/${other.id}`)]),
+          .map((other) => [
+            other.data.lang,
+            localePath(other.data.lang, `blog/${blogSlug(other.id)}`),
+          ]),
       ) as Partial<Record<Locale, string>>;
-      return { params: { lang: entry.data.lang, slug: entry.id }, props: { entry, alternates } };
+      return {
+        params: { lang: entry.data.lang, slug: blogSlug(entry.id) },
+        props: { entry, alternates },
+      };
     });
 }
 const { entry, alternates } = Astro.props;
 const { Content } = await render(entry);
+const entries = await getCollection(
+  'blog',
+  ({ data }) => data.lang === entry.data.lang && data.category === entry.data.category,
+);
+const series = getBlogSeriesNavigation(entries, entry.id);
 ---
 
-<ArticleLayout kind="blog" {...entry.data} {alternates}><Content /></ArticleLayout>
+<ArticleLayout kind="blog" {...entry.data} {alternates} {series}><Content /></ArticleLayout>

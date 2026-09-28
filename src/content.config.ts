@@ -9,12 +9,13 @@ const common = z.object({
   lang: z.enum(['en', 'ja', 'zh']).default('en'),
   tags: z.array(z.string()).default([]),
   translationKey: z.string().optional(),
-});
-const series = z.object({
-  key: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
-  title: z.string(),
-  order: z.number().int().nonnegative().default(0),
-  path: z.array(z.number().int().nonnegative()).min(1).max(3),
+  show: z.boolean().default(true),
+  banner: z
+    .object({
+      src: z.string().regex(/^\/(?!\/)/, 'Banner src must be a root-relative path.'),
+      alt: z.string().min(1),
+    })
+    .optional(),
 });
 export const blogCategories = ['research', 'technical', 'learning', 'tutorial'] as const;
 export type BlogCategory = (typeof blogCategories)[number];
@@ -23,7 +24,6 @@ const blog = defineCollection({
   schema: common.extend({
     featured: z.boolean().default(false),
     category: z.enum(blogCategories).default('technical'),
-    series: series.optional(),
   }),
 });
 const notes = defineCollection({

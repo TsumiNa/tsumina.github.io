@@ -1,7 +1,8 @@
 ---
 import type { BlogCategory } from '../content.config';
-import { type Locale, ui } from '../i18n';
+import { localePath, type Locale, ui } from '../i18n';
 import { articleLd } from '../utils/structured-data';
+import { blogSlug, type BlogSeriesNavigation } from '../utils/blog-series';
 import BaseLayout from './BaseLayout.astro';
 
 interface Props {
@@ -16,6 +17,9 @@ interface Props {
   status?: 'draft' | 'evolving' | 'stable';
   topic?: string;
   alternates?: Partial<Record<Locale, string>>;
+  show?: boolean;
+  banner?: { src: string; alt: string };
+  series?: BlogSeriesNavigation;
 }
 const {
   kind,
@@ -29,12 +33,29 @@ const {
   status,
   topic,
   alternates,
+  show = true,
+  banner,
+  series,
 } = Astro.props;
 const t = ui[lang];
 const eyebrow = kind === 'blog' ? `~/blog${category ? `/${category}` : ''}` : '~/notes';
 const jsonLd = [
-  articleLd({ title, description, published, updated, url: Astro.url, lang, tags, kind }),
+  articleLd({
+    title,
+    description,
+    published,
+    updated,
+    url: Astro.url,
+    lang,
+    tags,
+    kind,
+    image: banner?.src,
+  }),
 ];
+const seriesHref =
+  series?.overview && series.overview.id !== Astro.params.slug
+    ? localePath(lang, `blog/${blogSlug(series.overview.id)}`)
+    : localePath(lang, `blog/category/${category}`);
 ---
 
 <BaseLayout
@@ -44,10 +65,20 @@ const jsonLd = [
   {alternates}
   article={{ published, updated, tags }}
   {jsonLd}
+  image={banner?.src}
+  noindex={!show}
 >
-  <article class="container page article" data-pagefind-body>
+  <article class="container page article" data-pagefind-body={show ? true : undefined}>
     <header class="article-head">
       <p class="eyebrow">{eyebrow}</p>
+      {
+        series && (
+          <p class="article-series-kicker">
+            <a href={seriesHref}>{series.title}</a>
+            {series.position && <span>{series.position}</span>}
+          </p>
+        )
+      }
       <h1>{title}</h1>
       {description && <p class="lead">{description}</p>}
       <p class="meta article-meta">
@@ -71,6 +102,37 @@ const jsonLd = [
         {tags.map((tag) => <span class="tag">{tag}</span>)}
       </p>
     </header>
+    {
+      banner && (
+        <figure class="article-banner">
+          <img src={banner.src} alt={banner.alt} />
+        </figure>
+      )
+    }
     <div class="prose"><slot /></div>
+    {
+      series && (series.previous || series.next) && (
+        <nav class="article-series-nav no-print" aria-label={series.title}>
+          {series.previous && (
+            <a
+              class="article-series-link previous"
+              href={localePath(lang, `blog/${blogSlug(series.previous.id)}`)}
+            >
+              <span>{ui[lang].previousArticle}</span>
+              <strong>{series.previous.data.title}</strong>
+            </a>
+          )}
+          {series.next && (
+            <a
+              class="article-series-link next"
+              href={localePath(lang, `blog/${blogSlug(series.next.id)}`)}
+            >
+              <span>{ui[lang].nextArticle}</span>
+              <strong>{series.next.data.title}</strong>
+            </a>
+          )}
+        </nav>
+      )
+    }
   </article>
 </BaseLayout>

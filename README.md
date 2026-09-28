@@ -5,7 +5,7 @@ A static-first [Astro](https://astro.build/) website for an academic CV, normali
 ## Architecture
 
 - Astro + TypeScript with no UI framework and no hydrated framework islands.
-- Blog and Notes are typed Astro Content Collections; MDX supports shared scientific components. Blog entries carry a `category` (research/technical/learning/tutorial) with static per-category listings and may opt into a validated series tree up to three article levels deep.
+- Blog and Notes are typed Astro Content Collections; MDX supports shared scientific components. Blog entries carry a `category` (research/technical/learning/tutorial) with static per-category listings. Nested Blog folders create a validated series tree up to three article levels deep without series metadata in frontmatter.
 - Shiki syntax highlighting and KaTeX math render at build time.
 - Pagefind indexes the finished static output.
 - `src/config`, `src/i18n`, and CSS tokens centralize site behavior and design. The theme is a token-driven design system (self-hosted Inter + JetBrains Mono variable fonts, fluid type/space scales, light/dark, print).

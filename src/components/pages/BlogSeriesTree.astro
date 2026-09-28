@@ -1,6 +1,6 @@
 ---
-import type { BlogSeriesGroup } from '../../utils/blog-series';
-import type { Locale } from '../../i18n';
+import { blogSlug, type BlogSeriesGroup } from '../../utils/blog-series';
+import { localePath, type Locale } from '../../i18n';
 import BlogSeriesNode from './BlogSeriesNode.astro';
 
 const { series, lang, label } = Astro.props as {
@@ -12,8 +12,29 @@ const { series, lang, label } = Astro.props as {
 
 <section class="blog-series" aria-labelledby={`series-${series.key}`}>
   <header class="blog-series-header">
-    <p class="eyebrow">{label}</p>
-    <h2 id={`series-${series.key}`}>{series.title}</h2>
+    <div>
+      <p class="eyebrow">{label}</p>
+      <h2 id={`series-${series.key}`}>
+        {
+          series.overview ? (
+            <a href={localePath(lang, `blog/${blogSlug(series.overview.id)}`)}>{series.title}</a>
+          ) : (
+            series.title
+          )
+        }
+      </h2>
+      {series.overview?.data.description && <p>{series.overview.data.description}</p>}
+    </div>
+    {
+      series.overview?.data.banner && (
+        <img
+          class="blog-series-cover"
+          src={series.overview.data.banner.src}
+          alt={series.overview.data.banner.alt}
+          loading="lazy"
+        />
+      )
+    }
   </header>
   <ol class="blog-series-level">
     {series.roots.map((node) => <BlogSeriesNode {node} {lang} />)}
