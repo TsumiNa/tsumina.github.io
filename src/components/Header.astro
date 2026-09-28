@@ -94,11 +94,14 @@ const active = bare.split('/')[1] ?? '';
       localStorage.setItem('language', lang);
     } catch {}
     // Prefer the page's own translation, advertised via its hreflang links;
-    // fall back to the section index in the target language.
+    // fall back to the section index in the target language. hreflang URLs
+    // are absolute and canonical, so keep only the path — otherwise mirrors
+    // and preview deployments would jump to the production host.
     const hreflang = lang === 'zh' ? 'zh-Hans' : lang;
     const alternate = document.querySelector(`link[rel="alternate"][hreflang="${hreflang}"]`);
     if (alternate) {
-      location.href = alternate.href;
+      const target = new URL(alternate.getAttribute('href'), location.href);
+      location.href = target.pathname + target.search + target.hash;
       return;
     }
     const section = location.pathname.replace(/^\/(ja|zh)(?=\/|$)/, '').split('/')[1] ?? '';
