@@ -1,21 +1,31 @@
-name: Deploy static site
+name: Build and deploy GitHub Pages
 on:
   push: { branches: [main, master, work] }
   pull_request: { branches: [main, master] }
   workflow_dispatch:
 permissions: { contents: read, pages: write, id-token: write }
-concurrency: { group: 'pages-${{ github.ref }}', cancel-in-progress: true }
+concurrency: { group: 'github-pages-${{ github.ref }}', cancel-in-progress: true }
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: pnpm }
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      - uses: actions/upload-pages-artifact@v3
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with: { node-version-file: .node-version, cache: pnpm }
+      - name: Configure GitHub Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build Astro and Pagefind
+        run: pnpm build
+      - name: Upload GitHub Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
         with: { path: dist }
   deploy-pages:
     if: github.event_name != 'pull_request'
@@ -26,16 +36,3 @@ jobs:
       - name: Deploy once-built artifact to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-  deploy-cloudflare:
-    if: github.event_name != 'pull_request' && vars.ENABLE_CLOUDFLARE == 'true'
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with: { name: github-pages, path: artifact }
-      - run: mkdir dist && tar -xf artifact/artifact.tar -C dist
-      - uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: '${{ secrets.CLOUDFLARE_API_TOKEN }}'
-          accountId: '${{ secrets.CLOUDFLARE_ACCOUNT_ID }}'
-          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PROJECT_NAME }}

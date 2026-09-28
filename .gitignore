@@ -145,3 +145,4 @@ vite.config.ts.timestamp-*
 # Astro and deployment tooling
 .astro/
 .wrangler/
+.dev.vars*
