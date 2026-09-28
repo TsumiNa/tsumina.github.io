@@ -28,7 +28,7 @@ pnpm build
 pnpm preview
 ```
 
-`pnpm build` runs Astro and then Pagefind over `dist/`. It does not access ORCID.
+`pnpm build` force-syncs Astro content collections before building, then runs Pagefind over `dist/`. The forced sync prevents a cached article from surviving a branch switch to an empty collection. The build does not access ORCID.
 
 ## Authoring
 

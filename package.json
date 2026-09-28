@@ -5,7 +5,7 @@
   "packageManager": "pnpm@10.17.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && pagefind --site dist",
+    "build": "astro build --force && pagefind --site dist",
     "preview": "astro preview",
     "test": "node --import tsx --test src/utils/*.test.ts",
     "check": "astro check",
