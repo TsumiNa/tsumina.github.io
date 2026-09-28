@@ -1,7 +1,7 @@
 ---
-description: "Use for Astro, TypeScript, CSS, configuration, and Markdown/MDX changes. Enforces minimal scope, repository-native implementation, proportionate checks, and author-preserving content review."
-name: "Implementation, Checks, and Content Review"
-applyTo: "**"
+description: 'Use for Astro, TypeScript, CSS, configuration, and Markdown/MDX changes. Enforces minimal scope, repository-native implementation, proportionate checks, and author-preserving content review.'
+name: 'Implementation, Checks, and Content Review'
+applyTo: '**'
 ---
 
 # Implementation, Checks, and Content Review

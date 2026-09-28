@@ -1,26 +1,26 @@
 import generated from '../data/publications.json';
-import { publicationOverrides } from '../data/publication-overrides';
-export interface Publication {
-  id: string;
-  title: string;
-  authors?: string[];
-  year?: number;
-  month?: number;
-  venue?: string;
-  journal?: string;
-  volume?: string;
-  issue?: string;
-  pages?: string;
-  doi?: string;
-  url?: string;
-  type?: string;
-  orcidPutCode?: string;
-  source?: string;
-}
-export type DisplayPublication = Publication & (typeof publicationOverrides)[string];
+import { publicationOverrides, type PublicationOverride } from '../data/publication-overrides';
+import type { Publication, PublicationAuthor } from '../data/publication-types';
+
+export type { Publication, PublicationAuthor } from '../data/publication-types';
+
+export type DisplayPublication = Omit<Publication, 'authors'> &
+  Omit<PublicationOverride, 'authors'> & { authors?: PublicationAuthor[] };
+
 export function getPublications(): DisplayPublication[] {
   return (generated as Publication[])
-    .map((p) => ({ ...p, ...(publicationOverrides[p.doi?.toLowerCase() || p.id] ?? {}) }))
+    .map((p) => {
+      const override = publicationOverrides[p.doi?.toLowerCase() || p.id] ?? {};
+      const authors = override.authors
+        ? override.authors.map((name): PublicationAuthor => ({ name }))
+        : p.authors;
+      return { ...p, ...override, authors };
+    })
     .filter((p) => !p.hidden)
-    .sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
+    .sort(
+      (a, b) =>
+        (b.year ?? 0) - (a.year ?? 0) ||
+        (b.month ?? 0) - (a.month ?? 0) ||
+        a.title.localeCompare(b.title),
+    );
 }

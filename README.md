@@ -40,14 +40,17 @@ Figures, grids, wide tables, equations, chemical structure SVGs, callouts, code,
 ORCID_ID=0000-0002-9511-4283 pnpm sync:orcid
 ```
 
-The public ORCID endpoint may work without a token. Supported environment variables are:
+The public ORCID endpoint works without a token. Because ORCID work summaries carry no author lists, each DOI-bearing work is enriched from its DOI registrar: Crossref for journal articles and preprints, DataCite for datasets. Supported environment variables are:
 
 - `ORCID_ID` (defaults to the configured public identifier)
 - `ORCID_ACCESS_TOKEN` (optional API token; secret)
 - `ORCID_API_BASE` (optional testing/endpoint override)
+- `SYNC_CONTACT_EMAIL` (contact address for Crossref's polite pool)
 - `ORCID_CLIENT_ID` and `ORCID_CLIENT_SECRET` are reserved for a future token-acquisition job and must never be committed.
 
-The script deduplicates by normalized DOI and writes `src/data/publications.json`. Curate `src/data/publication-overrides.ts` by DOI or generated ID for featured/hidden flags, corrected display values, tags, annotation, and related links. Sync never writes that file.
+The script deduplicates by normalized DOI and writes `src/data/publications.json`. Curate `src/data/publication-overrides.ts` by DOI or generated ID for featured/hidden flags, corrected display values, tags, annotation, and related links. Corresponding-author (`*`) and equal-contribution (`†`) markers are also override-only: no public API exposes them reliably, so they are never generated. Sync never writes that file.
+
+Publications render as Nature-style citations: all authors are listed (`Family, I.`), the owner's name is emphasized, and the DOI is linked.
 
 ## Deployment
 
@@ -55,7 +58,7 @@ The script deduplicates by normalized DOI and writes `src/data/publications.json
 
 Cloudflare Workers Builds connects directly to the same repository and independently builds and deploys the same commit. GitHub Actions contains no Cloudflare credentials or deployment job. See [`docs/deployment.md`](docs/deployment.md) for the exact setup, commands, preview behavior, and domain guidance.
 
-`.github/workflows/sync-orcid.yml` runs a read-only weekly/manual sync preview and prints a diff; it deliberately does not commit.
+`.github/workflows/sync-orcid.yml` refreshes publication data weekly (or on manual dispatch). When the data changed, it commits `src/data/publications.json` to `main` as the Actions bot and dispatches the Pages deploy workflow; Cloudflare Workers Builds rebuilds from the same push via its own GitHub App webhook, so both mirrors stay in sync from one commit.
 
 ## Content status
 

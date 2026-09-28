@@ -1,7 +1,7 @@
 ---
-description: "Use before terminal work. Detects the active shell and standardizes safe pnpm, filesystem, and command practices for this Astro repository."
-name: "Shell Environment and Repository Commands"
-applyTo: "**"
+description: 'Use before terminal work. Detects the active shell and standardizes safe pnpm, filesystem, and command practices for this Astro repository.'
+name: 'Shell Environment and Repository Commands'
+applyTo: '**'
 ---
 
 # Shell Environment and Repository Commands
@@ -39,4 +39,4 @@ pnpm build
 pnpm sync:orcid
 ```
 
-Use `pnpm sync:orcid` only when publication synchronization is in scope and the required upstream access is available. Generated ORCID data must remain separate from manual overrides and must be reviewed before inclusion.
+Use `pnpm sync:orcid` only when publication synchronization is in scope and the required upstream access is available. Generated ORCID data must remain separate from manual overrides. The scheduled `sync-orcid.yml` workflow commits refreshed data to `main` automatically; when running the sync manually, review the generated diff before committing it.

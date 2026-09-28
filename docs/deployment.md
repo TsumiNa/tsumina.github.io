@@ -59,6 +59,7 @@ A hostname can have only one active origin. Keep `tsumina.github.io` as the GitH
 - Pull requests run the GitHub Actions build without deploying GitHub Pages.
 - Cloudflare preview builds can independently publish a branch-specific preview and comment its URL on the pull request.
 - A push to `main` causes both providers to build the same commit and update their production deployment.
+- The scheduled ORCID sync workflow keeps publication data fresh by committing to `main`: Cloudflare rebuilds from that push's webhook, and the workflow dispatches the Pages deploy workflow explicitly because pushes made with `GITHUB_TOKEN` do not start other GitHub Actions workflows.
 - GitHub Actions does not contain Cloudflare credentials, actions, variables, or deployment jobs.
 
 Official references:

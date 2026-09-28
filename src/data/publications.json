@@ -1,1 +1,1608 @@
-[]
+[
+  {
+    "id": "10.1021/jacs.6c03748",
+    "title": "Bulk Ferromagnetic Icosahedral Quasicrystals without Rapid Quenching",
+    "year": 2026,
+    "month": 7,
+    "venue": "Journal of the American\nChemical Society",
+    "doi": "10.1021/jacs.6c03748",
+    "url": "https://doi.org/10.1021/jacs.6c03748",
+    "type": "journal-article",
+    "orcidPutCode": "219903692",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Ryuji Tamura",
+        "given": "Ryuji",
+        "family": "Tamura",
+        "orcid": "0000-0001-8589-4311"
+      },
+      {
+        "name": "Farid Labib",
+        "given": "Farid",
+        "family": "Labib",
+        "orcid": "0000-0003-2912-2004"
+      },
+      {
+        "name": "Kazuki Inagaki",
+        "given": "Kazuki",
+        "family": "Inagaki"
+      },
+      {
+        "name": "Ryo Takeuchi",
+        "given": "Ryo",
+        "family": "Takeuchi"
+      },
+      {
+        "name": "Takafumi Tsugawa",
+        "given": "Takafumi",
+        "family": "Tsugawa"
+      },
+      {
+        "name": "Takenori Fujii",
+        "given": "Takenori",
+        "family": "Fujii"
+      },
+      {
+        "name": "Shintaro Suzuki",
+        "given": "Shintaro",
+        "family": "Suzuki"
+      },
+      {
+        "name": "Asuka Ishikawa",
+        "given": "Asuka",
+        "family": "Ishikawa"
+      },
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu",
+        "orcid": "0000-0002-9511-4283"
+      },
+      {
+        "name": "Minoru Kusaba",
+        "given": "Minoru",
+        "family": "Kusaba"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida"
+      }
+    ],
+    "volume": "148",
+    "issue": "32",
+    "pages": "34154-34160"
+  },
+  {
+    "id": "10.6084/m9.figshare.32084571",
+    "title": "Wyckoff proba prediction models",
+    "year": 2026,
+    "month": 4,
+    "venue": "figshare",
+    "doi": "10.6084/m9.figshare.32084571",
+    "url": "https://figshare.com/articles/dataset/Wyckoff_proba_prediction_models/32084571",
+    "type": "data-set",
+    "orcidPutCode": "212658396",
+    "source": "orcid+datacite",
+    "authors": [
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu",
+        "orcid": "0000-0002-9511-4283"
+      }
+    ]
+  },
+  {
+    "id": "10.1038/s41524-025-01692-5",
+    "title": "Author Correction: Shotgun crystal structure prediction using machine-learned formation energies",
+    "year": 2025,
+    "month": 6,
+    "venue": "npj Computational Materials",
+    "doi": "10.1038/s41524-025-01692-5",
+    "url": "https://doi.org/10.1038/s41524-025-01692-5",
+    "type": "journal-article",
+    "orcidPutCode": "186382536",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu",
+        "orcid": "0000-0002-9511-4283"
+      },
+      {
+        "name": "Hiromasa Tamaki",
+        "given": "Hiromasa",
+        "family": "Tamaki"
+      },
+      {
+        "name": "Tomoyasu Yokoyama",
+        "given": "Tomoyasu",
+        "family": "Yokoyama",
+        "orcid": "0000-0001-8993-7681"
+      },
+      {
+        "name": "Kensuke Wakasugi",
+        "given": "Kensuke",
+        "family": "Wakasugi",
+        "orcid": "0009-0002-9184-2571"
+      },
+      {
+        "name": "Satoshi Yotsuhashi",
+        "given": "Satoshi",
+        "family": "Yotsuhashi"
+      },
+      {
+        "name": "Minoru Kusaba",
+        "given": "Minoru",
+        "family": "Kusaba"
+      },
+      {
+        "name": "Artem R. Oganov",
+        "given": "Artem R.",
+        "family": "Oganov",
+        "orcid": "0000-0001-7082-9728"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida",
+        "orcid": "0000-0001-8092-0162"
+      }
+    ],
+    "volume": "11",
+    "issue": "1",
+    "pages": "192"
+  },
+  {
+    "id": "10.6084/m9.figshare.28830974",
+    "title": "External data",
+    "year": 2025,
+    "month": 4,
+    "venue": "figshare",
+    "doi": "10.6084/m9.figshare.28830974",
+    "url": "https://figshare.com/articles/dataset/External_data/28830974",
+    "type": "data-set",
+    "orcidPutCode": "182610774",
+    "source": "orcid+datacite",
+    "authors": [
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu",
+        "orcid": "0000-0002-9511-4283"
+      }
+    ]
+  },
+  {
+    "id": "10.6084/m9.figshare.28856366",
+    "title": "Prediction models",
+    "year": 2025,
+    "month": 4,
+    "venue": "figshare",
+    "doi": "10.6084/m9.figshare.28856366",
+    "url": "https://figshare.com/articles/dataset/Prediction_models/28856366",
+    "type": "data-set",
+    "orcidPutCode": "182847333",
+    "source": "orcid+datacite",
+    "authors": [
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu",
+        "orcid": "0000-0002-9511-4283"
+      }
+    ]
+  },
+  {
+    "id": "10.1038/s41524-024-01471-8",
+    "title": "Shotgun crystal structure prediction using machine-learned formation energies",
+    "year": 2024,
+    "month": 12,
+    "venue": "npj Computational Materials",
+    "doi": "10.1038/s41524-024-01471-8",
+    "url": "https://doi.org/10.1038/s41524-024-01471-8",
+    "type": "journal-article",
+    "orcidPutCode": "174163224",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu",
+        "orcid": "0000-0002-9511-4283"
+      },
+      {
+        "name": "Hiromasa Tamaki",
+        "given": "Hiromasa",
+        "family": "Tamaki"
+      },
+      {
+        "name": "Tomoyasu Yokoyama",
+        "given": "Tomoyasu",
+        "family": "Yokoyama",
+        "orcid": "0000-0001-8993-7681"
+      },
+      {
+        "name": "Kensuke Wakasugi",
+        "given": "Kensuke",
+        "family": "Wakasugi",
+        "orcid": "0009-0002-9184-2571"
+      },
+      {
+        "name": "Satoshi Yotsuhashi",
+        "given": "Satoshi",
+        "family": "Yotsuhashi"
+      },
+      {
+        "name": "Minoru Kusaba",
+        "given": "Minoru",
+        "family": "Kusaba"
+      },
+      {
+        "name": "Artem R. Oganov",
+        "given": "Artem R.",
+        "family": "Oganov",
+        "orcid": "0000-0001-7082-9728"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida",
+        "orcid": "0000-0001-8092-0162"
+      }
+    ],
+    "volume": "10",
+    "issue": "1",
+    "pages": "298"
+  },
+  {
+    "id": "10.1038/s41597-024-04043-z",
+    "title": "Comprehensive experimental datasets of quasicrystals and their approximants",
+    "year": 2024,
+    "month": 11,
+    "venue": "Scientific Data",
+    "doi": "10.1038/s41597-024-04043-z",
+    "url": "https://doi.org/10.1038/s41597-024-04043-z",
+    "type": "journal-article",
+    "orcidPutCode": "171617602",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Erina Fujita",
+        "given": "Erina",
+        "family": "Fujita",
+        "orcid": "0000-0002-0987-5597"
+      },
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu",
+        "orcid": "0000-0002-9511-4283"
+      },
+      {
+        "name": "Asuka Ishikawa",
+        "given": "Asuka",
+        "family": "Ishikawa",
+        "orcid": "0000-0003-4707-0703"
+      },
+      {
+        "name": "Tomoya Mato",
+        "given": "Tomoya",
+        "family": "Mato",
+        "orcid": "0000-0002-0918-6468"
+      },
+      {
+        "name": "Koichi Kitahara",
+        "given": "Koichi",
+        "family": "Kitahara"
+      },
+      {
+        "name": "Ryuji Tamura",
+        "given": "Ryuji",
+        "family": "Tamura",
+        "orcid": "0000-0001-8589-4311"
+      },
+      {
+        "name": "Kaoru Kimura",
+        "given": "Kaoru",
+        "family": "Kimura",
+        "orcid": "0000-0001-5050-4256"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida",
+        "orcid": "0000-0001-8092-0162"
+      },
+      {
+        "name": "Yukari Katsura",
+        "given": "Yukari",
+        "family": "Katsura",
+        "orcid": "0000-0002-8905-2995"
+      }
+    ],
+    "volume": "11",
+    "issue": "1",
+    "pages": "1211"
+  },
+  {
+    "id": "10.6084/m9.figshare.26536375",
+    "title": "Dataset I, II, and III",
+    "year": 2024,
+    "month": 8,
+    "venue": "figshare",
+    "doi": "10.6084/m9.figshare.26536375",
+    "url": "https://figshare.com/articles/dataset/Dataset_I_II_and_III/26536375",
+    "type": "data-set",
+    "orcidPutCode": "165314965",
+    "source": "orcid+datacite",
+    "authors": [
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu",
+        "orcid": "0000-0002-9511-4283"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida",
+        "orcid": "0000-0001-8092-0162"
+      }
+    ]
+  },
+  {
+    "id": "10.6084/m9.figshare.26536351",
+    "title": "Sample data",
+    "year": 2024,
+    "month": 8,
+    "venue": "figshare",
+    "doi": "10.6084/m9.figshare.26536351",
+    "url": "https://figshare.com/articles/dataset/Sample_data/26536351",
+    "type": "data-set",
+    "orcidPutCode": "165315079",
+    "source": "orcid+datacite",
+    "authors": [
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu",
+        "orcid": "0000-0002-9511-4283"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida",
+        "orcid": "0000-0001-8092-0162"
+      }
+    ]
+  },
+  {
+    "id": "10.1103/physrevb.108.134107",
+    "title": "Representation of materials by kernel mean embedding",
+    "year": 2023,
+    "month": 10,
+    "venue": "Physical Review B",
+    "doi": "10.1103/physrevb.108.134107",
+    "url": "https://doi.org/10.1103/PhysRevB.108.134107",
+    "type": "journal-article",
+    "orcidPutCode": "144542337",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Minoru Kusaba",
+        "given": "Minoru",
+        "family": "Kusaba",
+        "orcid": "0000-0002-3979-2901"
+      },
+      {
+        "name": "Yoshihiro Hayashi",
+        "given": "Yoshihiro",
+        "family": "Hayashi",
+        "orcid": "0000-0002-7650-4083"
+      },
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu",
+        "orcid": "0000-0002-9511-4283"
+      },
+      {
+        "name": "Araki Wakiuchi",
+        "given": "Araki",
+        "family": "Wakiuchi",
+        "orcid": "0000-0001-7607-2922"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida",
+        "orcid": "0000-0001-8092-0162"
+      }
+    ],
+    "volume": "108",
+    "issue": "13",
+    "pages": "134107"
+  },
+  {
+    "id": "10.1103/physrevmaterials.7.093805",
+    "title": "Quasicrystals predicted and discovered by machine learning",
+    "year": 2023,
+    "month": 9,
+    "venue": "Physical Review Materials",
+    "doi": "10.1103/physrevmaterials.7.093805",
+    "url": "https://doi.org/10.1103/PhysRevMaterials.7.093805",
+    "type": "journal-article",
+    "orcidPutCode": "142961755",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu",
+        "orcid": "0000-0002-9511-4283"
+      },
+      {
+        "name": "Koichi Kitahara",
+        "given": "Koichi",
+        "family": "Kitahara",
+        "orcid": "0009-0007-4557-4816"
+      },
+      {
+        "name": "Asuka Ishikawa",
+        "given": "Asuka",
+        "family": "Ishikawa",
+        "orcid": "0000-0003-4707-0703"
+      },
+      {
+        "name": "Takanobu Hiroto",
+        "given": "Takanobu",
+        "family": "Hiroto",
+        "orcid": "0000-0002-6176-5782"
+      },
+      {
+        "name": "Alok Singh",
+        "given": "Alok",
+        "family": "Singh",
+        "orcid": "0000-0001-5515-8305"
+      },
+      {
+        "name": "Erina Fujita",
+        "given": "Erina",
+        "family": "Fujita",
+        "orcid": "0000-0002-0987-5597"
+      },
+      {
+        "name": "Yukari Katsura",
+        "given": "Yukari",
+        "family": "Katsura",
+        "orcid": "0000-0002-8905-2995"
+      },
+      {
+        "name": "Yuki Inada",
+        "given": "Yuki",
+        "family": "Inada",
+        "orcid": "0000-0002-9104-1320"
+      },
+      {
+        "name": "Ryuji Tamura",
+        "given": "Ryuji",
+        "family": "Tamura",
+        "orcid": "0000-0001-8589-4311"
+      },
+      {
+        "name": "Kaoru Kimura",
+        "given": "Kaoru",
+        "family": "Kimura",
+        "orcid": "0000-0001-5050-4256"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida",
+        "orcid": "0000-0001-8092-0162"
+      }
+    ],
+    "volume": "7",
+    "issue": "9",
+    "pages": "093805"
+  },
+  {
+    "id": "10.1080/27660400.2023.2204994",
+    "title": "A Bayesian method for concurrently designing molecules and synthetic reaction networks",
+    "year": 2023,
+    "month": 5,
+    "venue": "Science and Technology of Advanced Materials: Methods",
+    "doi": "10.1080/27660400.2023.2204994",
+    "url": "http://dx.doi.org/10.1080/27660400.2023.2204994",
+    "type": "journal-article",
+    "orcidPutCode": "143251428",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Qi Zhang",
+        "given": "Qi",
+        "family": "Zhang",
+        "orcid": "0000-0002-7551-5792"
+      },
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "Stephen Wu",
+        "given": "Stephen",
+        "family": "Wu"
+      },
+      {
+        "name": "Yoshihiro Hayashi",
+        "given": "Yoshihiro",
+        "family": "Hayashi"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida",
+        "orcid": "0000-0001-8092-0162"
+      }
+    ],
+    "volume": "3",
+    "issue": "1",
+    "pages": "2204994"
+  },
+  {
+    "id": "10.1021/acs.jcim.2c00626",
+    "title": "Functional Output Regression for Machine Learning in Materials Science",
+    "year": 2022,
+    "month": 10,
+    "venue": "Journal of Chemical Information and Modeling",
+    "doi": "10.1021/acs.jcim.2c00626",
+    "url": "https://doi.org/10.1021/acs.jcim.2c00626",
+    "type": "journal-article",
+    "orcidPutCode": "120516627",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Megumi Iwayama",
+        "given": "Megumi",
+        "family": "Iwayama",
+        "orcid": "0000-0003-3032-9600"
+      },
+      {
+        "name": "Stephen Wu",
+        "given": "Stephen",
+        "family": "Wu",
+        "orcid": "0000-0002-7847-8106"
+      },
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu",
+        "orcid": "0000-0002-9511-4283"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida",
+        "orcid": "0000-0001-8092-0162"
+      }
+    ],
+    "volume": "62",
+    "issue": "20",
+    "pages": "4837-4851"
+  },
+  {
+    "id": "10.1016/j.commatsci.2022.111496",
+    "title": "Crystal structure prediction with machine learning-based element substitution",
+    "year": 2022,
+    "month": 8,
+    "venue": "Computational Materials Science",
+    "doi": "10.1016/j.commatsci.2022.111496",
+    "url": "http://dx.doi.org/10.1016/j.commatsci.2022.111496",
+    "type": "journal-article",
+    "orcidPutCode": "115307850",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Minoru Kusaba",
+        "given": "Minoru",
+        "family": "Kusaba",
+        "orcid": "0000-0002-3979-2901"
+      },
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida",
+        "orcid": "0000-0001-8092-0162"
+      }
+    ],
+    "volume": "211",
+    "pages": "111496"
+  },
+  {
+    "id": "orcid-143252603",
+    "title": "マテリアルズインフォマティクス",
+    "year": 2022,
+    "month": 8,
+    "venue": "KYORITSU SHUPPAN",
+    "url": "https://www.kyoritsu-pub.co.jp/book/b10013510.html",
+    "type": "book",
+    "orcidPutCode": "143252603",
+    "source": "orcid"
+  },
+  {
+    "id": "10.1088/1361-648x/ac49c9",
+    "title": "Descriptors of intrinsic hydrodynamic thermal transport: screening a phonon database in a machine learning approach",
+    "year": 2022,
+    "month": 1,
+    "venue": "Journal of Physics: Condensed Matter",
+    "doi": "10.1088/1361-648x/ac49c9",
+    "url": "http://dx.doi.org/10.1088/1361-648x/ac49c9",
+    "type": "journal-article",
+    "orcidPutCode": "108078022",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Pol Torres",
+        "given": "Pol",
+        "family": "Torres",
+        "orcid": "0000-0003-2544-5850"
+      },
+      {
+        "name": "Stephen Wu",
+        "given": "Stephen",
+        "family": "Wu"
+      },
+      {
+        "name": "Shenghong Ju",
+        "given": "Shenghong",
+        "family": "Ju"
+      },
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "Terumasa Tadano",
+        "given": "Terumasa",
+        "family": "Tadano",
+        "orcid": "0000-0002-8132-2161"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida"
+      },
+      {
+        "name": "Junichiro Shiomi",
+        "given": "Junichiro",
+        "family": "Shiomi"
+      }
+    ],
+    "volume": "34",
+    "issue": "13",
+    "pages": "135702"
+  },
+  {
+    "id": "10.2320/matertrans.mt-m2021110",
+    "title": "Theoretical Approach for Long-Ranged Local Lattice Distortion in Al-Rich AlX (X = H∼Sn) Disordered Alloys by Kanzaki Model Combined with KKR Green’s Function Method",
+    "year": 2021,
+    "month": 10,
+    "venue": "MATERIALS TRANSACTIONS",
+    "doi": "10.2320/matertrans.mt-m2021110",
+    "url": "http://dx.doi.org/10.2320/matertrans.mt-m2021110",
+    "type": "journal-article",
+    "orcidPutCode": "99807701",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Mitsuhiro Asato",
+        "given": "Mitsuhiro",
+        "family": "Asato"
+      },
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "Nobuhisa Fujima",
+        "given": "Nobuhisa",
+        "family": "Fujima"
+      },
+      {
+        "name": "Toshiharu Hoshino",
+        "given": "Toshiharu",
+        "family": "Hoshino"
+      }
+    ],
+    "volume": "62",
+    "issue": "10",
+    "pages": "1429-1438"
+  },
+  {
+    "id": "10.1002/adma.202102507",
+    "title": "Machine Learning to Predict Quasicrystals from Chemical Compositions",
+    "year": 2021,
+    "month": 7,
+    "venue": "Advanced Materials",
+    "doi": "10.1002/adma.202102507",
+    "url": "https://doi.org/10.1002/adma.202102507",
+    "type": "journal-article",
+    "orcidPutCode": "97157454",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu",
+        "orcid": "0000-0002-9511-4283"
+      },
+      {
+        "name": "Erina Fujita",
+        "given": "Erina",
+        "family": "Fujita",
+        "orcid": "0000-0002-0987-5597"
+      },
+      {
+        "name": "Yukari Katsura",
+        "given": "Yukari",
+        "family": "Katsura",
+        "orcid": "0000-0002-8905-2995"
+      },
+      {
+        "name": "Yuki Inada",
+        "given": "Yuki",
+        "family": "Inada",
+        "orcid": "0000-0002-9104-1320"
+      },
+      {
+        "name": "Asuka Ishikawa",
+        "given": "Asuka",
+        "family": "Ishikawa",
+        "orcid": "0000-0003-4707-0703"
+      },
+      {
+        "name": "Ryuji Tamura",
+        "given": "Ryuji",
+        "family": "Tamura",
+        "orcid": "0000-0001-8589-4311"
+      },
+      {
+        "name": "Kaoru Kimura",
+        "given": "Kaoru",
+        "family": "Kimura",
+        "orcid": "0000-0001-5050-4256"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida",
+        "orcid": "0000-0001-8092-0162"
+      }
+    ],
+    "volume": "33",
+    "issue": "36",
+    "pages": "2102507"
+  },
+  {
+    "id": "10.1103/physrevmaterials.5.053801",
+    "title": "Exploring diamondlike lattice thermal conductivity crystals via feature-based transfer learning",
+    "year": 2021,
+    "month": 5,
+    "venue": "Physical Review Materials",
+    "doi": "10.1103/physrevmaterials.5.053801",
+    "url": "http://dx.doi.org/10.1103/physrevmaterials.5.053801",
+    "type": "journal-article",
+    "orcidPutCode": "97342588",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Shenghong Ju",
+        "given": "Shenghong",
+        "family": "Ju"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida"
+      },
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "Stephen Wu",
+        "given": "Stephen",
+        "family": "Wu"
+      },
+      {
+        "name": "Kenta Hongo",
+        "given": "Kenta",
+        "family": "Hongo"
+      },
+      {
+        "name": "Terumasa Tadano",
+        "given": "Terumasa",
+        "family": "Tadano"
+      },
+      {
+        "name": "Junichiro Shiomi",
+        "given": "Junichiro",
+        "family": "Shiomi",
+        "orcid": "0000-0002-3552-4555"
+      }
+    ],
+    "volume": "5",
+    "issue": "5",
+    "pages": "053801"
+  },
+  {
+    "id": "10.21203/rs.3.rs-240290/v1",
+    "title": "Machine learning to predict quasicrystals from chemical compositions",
+    "year": 2021,
+    "month": 2,
+    "venue": "Springer Science and Business Media LLC",
+    "doi": "10.21203/rs.3.rs-240290/v1",
+    "url": "https://doi.org/10.21203/rs.3.rs-240290/v1",
+    "type": "preprint",
+    "orcidPutCode": "116505585",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu",
+        "orcid": "0000-0002-9511-4283"
+      },
+      {
+        "name": "Erina Fujita",
+        "given": "Erina",
+        "family": "Fujita"
+      },
+      {
+        "name": "Yukari Katsura",
+        "given": "Yukari",
+        "family": "Katsura"
+      },
+      {
+        "name": "Yuki Inada",
+        "given": "Yuki",
+        "family": "Inada"
+      },
+      {
+        "name": "Asuka Ishikawa",
+        "given": "Asuka",
+        "family": "Ishikawa"
+      },
+      {
+        "name": "Ryuji Tamura",
+        "given": "Ryuji",
+        "family": "Tamura"
+      },
+      {
+        "name": "Kaoru Kimura",
+        "given": "Kaoru",
+        "family": "Kimura"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida",
+        "orcid": "0000-0001-8092-0162"
+      }
+    ]
+  },
+  {
+    "id": "10.1038/s41598-021-81850-z",
+    "title": "Recreation of the periodic table with an unsupervised machine learning algorithm",
+    "year": 2021,
+    "month": 2,
+    "venue": "Scientific Reports",
+    "doi": "10.1038/s41598-021-81850-z",
+    "url": "http://dx.doi.org/10.1038/s41598-021-81850-z",
+    "type": "journal-article",
+    "orcidPutCode": "97342574",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Minoru Kusaba",
+        "given": "Minoru",
+        "family": "Kusaba"
+      },
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "Yukinori Koyama",
+        "given": "Yukinori",
+        "family": "Koyama"
+      },
+      {
+        "name": "Kiyoyuki Terakura",
+        "given": "Kiyoyuki",
+        "family": "Terakura"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida"
+      }
+    ],
+    "volume": "11",
+    "issue": "1",
+    "pages": "4780"
+  },
+  {
+    "id": "10.2320/jinstmet.j2020018",
+    "title": "Full-potential KKR calculations for interaction energies in Al-Rich AlX- X= H∼Sn) Alloys: I. fundamental features and thermal electronic contribution due to fermi-dirac distribution",
+    "year": 2020,
+    "month": 9,
+    "venue": "Journal of the Japan Institute of Metals and Materials",
+    "doi": "10.2320/jinstmet.j2020018",
+    "url": "http://www.scopus.com/inward/record.url?eid=2-s2.0-85091148557&partnerID=MN8TOARS",
+    "type": "journal-article",
+    "orcidPutCode": "101333562",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Mitsuhiro Asato",
+        "given": "Mitsuhiro",
+        "family": "Asato"
+      },
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "Nobuhisa Fujima",
+        "given": "Nobuhisa",
+        "family": "Fujima"
+      },
+      {
+        "name": "Toshiharu Hoshino",
+        "given": "Toshiharu",
+        "family": "Hoshino"
+      },
+      {
+        "name": "Tetsuo Mohri",
+        "given": "Tetsuo",
+        "family": "Mohri"
+      }
+    ],
+    "volume": "84",
+    "issue": "9",
+    "pages": "295-303"
+  },
+  {
+    "id": "10.2320/matertrans.mt-m2019228",
+    "title": "Full-Potential KKR Calculations for Interaction Energies in Al-Rich AlX (X = H∼Sn) Alloys: I. Fundamental Features and Thermal Electronic Contribution due to Fermi-Dirac Distribution",
+    "year": 2020,
+    "month": 1,
+    "venue": "MATERIALS TRANSACTIONS",
+    "doi": "10.2320/matertrans.mt-m2019228",
+    "url": "http://dx.doi.org/10.2320/matertrans.mt-m2019228",
+    "type": "journal-article",
+    "orcidPutCode": "97342674",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Mitsuhiro Asato",
+        "given": "Mitsuhiro",
+        "family": "Asato"
+      },
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "Nobuhisa Fujima",
+        "given": "Nobuhisa",
+        "family": "Fujima"
+      },
+      {
+        "name": "Toshiharu Hoshino",
+        "given": "Toshiharu",
+        "family": "Hoshino"
+      },
+      {
+        "name": "Tetsuo Mohri",
+        "given": "Tetsuo",
+        "family": "Mohri"
+      }
+    ],
+    "volume": "61",
+    "issue": "1",
+    "pages": "94-103"
+  },
+  {
+    "id": "10.1002/minf.201900107",
+    "title": "iQSPR in XenonPy: A Bayesian Molecular Design Algorithm",
+    "year": 2019,
+    "month": 11,
+    "venue": "Molecular Informatics",
+    "doi": "10.1002/minf.201900107",
+    "url": "http://dx.doi.org/10.1002/minf.201900107",
+    "type": "journal-article",
+    "orcidPutCode": "97342673",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Stephen Wu",
+        "given": "Stephen",
+        "family": "Wu",
+        "orcid": "0000-0002-7847-8106"
+      },
+      {
+        "name": "Guillaume Lambard",
+        "given": "Guillaume",
+        "family": "Lambard"
+      },
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "Hironao Yamada",
+        "given": "Hironao",
+        "family": "Yamada"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida"
+      }
+    ],
+    "volume": "39",
+    "issue": "1-2",
+    "pages": "1900107"
+  },
+  {
+    "id": "10.26434/chemrxiv.9850301.v1",
+    "title": "Exploring diamond-like lattice thermal conductivity crystals via feature-based transfer learning",
+    "year": 2019,
+    "month": 9,
+    "venue": "ChemRxiv",
+    "doi": "10.26434/chemrxiv.9850301.v1",
+    "url": "http://www.scopus.com/inward/record.url?eid=2-s2.0-85095655901&partnerID=MN8TOARS",
+    "type": "other",
+    "orcidPutCode": "101333984",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Shenghong Ju",
+        "given": "Shenghong",
+        "family": "Ju",
+        "orcid": "0000-0001-7863-6947"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida"
+      },
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "Kenta Hongo",
+        "given": "Kenta",
+        "family": "Hongo"
+      },
+      {
+        "name": "Terumasa Tadano",
+        "given": "Terumasa",
+        "family": "Tadano"
+      },
+      {
+        "name": "Junichiro Shiomi",
+        "given": "Junichiro",
+        "family": "Shiomi"
+      }
+    ]
+  },
+  {
+    "id": "10.1021/acscentsci.9b00804",
+    "title": "Predicting Materials Properties with Little Data Using Shotgun Transfer Learning",
+    "year": 2019,
+    "month": 9,
+    "venue": "ACS Central Science",
+    "doi": "10.1021/acscentsci.9b00804",
+    "url": "http://dx.doi.org/10.1021/acscentsci.9b00804",
+    "type": "journal-article",
+    "orcidPutCode": "97342684",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Hironao Yamada",
+        "given": "Hironao",
+        "family": "Yamada"
+      },
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "Stephen Wu",
+        "given": "Stephen",
+        "family": "Wu",
+        "orcid": "0000-0002-7847-8106"
+      },
+      {
+        "name": "Yukinori Koyama",
+        "given": "Yukinori",
+        "family": "Koyama",
+        "orcid": "0000-0002-7090-4430"
+      },
+      {
+        "name": "Shenghong Ju",
+        "given": "Shenghong",
+        "family": "Ju",
+        "orcid": "0000-0001-7863-6947"
+      },
+      {
+        "name": "Junichiro Shiomi",
+        "given": "Junichiro",
+        "family": "Shiomi",
+        "orcid": "0000-0002-3552-4555"
+      },
+      {
+        "name": "Junko Morikawa",
+        "given": "Junko",
+        "family": "Morikawa",
+        "orcid": "0000-0002-9530-9478"
+      },
+      {
+        "name": "Ryo Yoshida",
+        "given": "Ryo",
+        "family": "Yoshida"
+      }
+    ],
+    "volume": "5",
+    "issue": "10",
+    "pages": "1717-1730"
+  },
+  {
+    "id": "10.1051/matecconf/201926403002",
+    "title": "Accuracy of Real Space Cluster Expansion for Total Energies of Pd-rich PdX (X=Rh, Ru) Alloys, based on Full-Potential KKR Calculations for Perfect and Impurity Systems",
+    "year": 2019,
+    "venue": "MATEC Web of Conferences",
+    "doi": "10.1051/matecconf/201926403002",
+    "url": "http://dx.doi.org/10.1051/matecconf/201926403002",
+    "type": "journal-article",
+    "orcidPutCode": "97342690",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Mitsuhiro Asato",
+        "given": "Mitsuhiro",
+        "family": "Asato"
+      },
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "Nobuhisa Fujima",
+        "given": "Nobuhisa",
+        "family": "Fujima"
+      },
+      {
+        "name": "Toshiharu Hoshino",
+        "given": "Toshiharu",
+        "family": "Hoshino"
+      },
+      {
+        "name": "Ying Chen",
+        "given": "Ying",
+        "family": "Chen"
+      },
+      {
+        "name": "Tetsuo Mohri",
+        "given": "Tetsuo",
+        "family": "Mohri"
+      }
+    ],
+    "volume": "264",
+    "pages": "03002"
+  },
+  {
+    "id": "orcid-101333983",
+    "title": "Exploring diamond-like lattice thermal conductivity crystals via feature-based transfer learning",
+    "year": 2019,
+    "venue": "arXiv",
+    "url": "http://www.scopus.com/inward/record.url?eid=2-s2.0-85093634235&partnerID=MN8TOARS",
+    "type": "other",
+    "orcidPutCode": "101333983",
+    "source": "orcid"
+  },
+  {
+    "id": "10.2320/matertrans.m2018194",
+    "title": "Real Space Cluster Expansion for Total Energies of Pd-Rich PdX (X = Rh, Ru) Alloys, Based on Full-Potential KKR Calculations: An Approach from a Dilute Limit",
+    "year": 2018,
+    "month": 11,
+    "venue": "MATERIALS TRANSACTIONS",
+    "doi": "10.2320/matertrans.m2018194",
+    "url": "http://dx.doi.org/10.2320/matertrans.m2018194",
+    "type": "journal-article",
+    "orcidPutCode": "97342700",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "Mitsuhiro Asato",
+        "given": "Mitsuhiro",
+        "family": "Asato"
+      },
+      {
+        "name": "Nobuhisa Fujima",
+        "given": "Nobuhisa",
+        "family": "Fujima"
+      },
+      {
+        "name": "Toshiharu Hoshino",
+        "given": "Toshiharu",
+        "family": "Hoshino"
+      },
+      {
+        "name": "Ying Chen",
+        "given": "Ying",
+        "family": "Chen"
+      },
+      {
+        "name": "Tetsuo Mohri",
+        "given": "Tetsuo",
+        "family": "Mohri"
+      }
+    ],
+    "volume": "59",
+    "issue": "11",
+    "pages": "1669-1676"
+  },
+  {
+    "id": "10.2320/matertrans.m2017409",
+    "title": "Interaction Energies Among Rh Impurities in Pd and Solvus Temperatures of Pd-Rich PdRh Alloys",
+    "year": 2018,
+    "month": 6,
+    "venue": "MATERIALS TRANSACTIONS",
+    "doi": "10.2320/matertrans.m2017409",
+    "url": "http://dx.doi.org/10.2320/matertrans.m2017409",
+    "type": "journal-article",
+    "orcidPutCode": "97342701",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "Mitsuhiro Asato",
+        "given": "Mitsuhiro",
+        "family": "Asato"
+      },
+      {
+        "name": "Nobuhisa Fujima",
+        "given": "Nobuhisa",
+        "family": "Fujima"
+      },
+      {
+        "name": "Toshiharu Hoshino",
+        "given": "Toshiharu",
+        "family": "Hoshino"
+      },
+      {
+        "name": "Ying Chen",
+        "given": "Ying",
+        "family": "Chen"
+      },
+      {
+        "name": "Tetsuo Mohri",
+        "given": "Tetsuo",
+        "family": "Mohri"
+      }
+    ],
+    "volume": "59",
+    "issue": "6",
+    "pages": "883-889"
+  },
+  {
+    "id": "10.2320/matertrans.m2017292",
+    "title": "Ab-Initio Calculations for Solvus Temperatures of Pd-Rich PdRu Alloys: Real-Space Cluster Expansion and Cluster Variation Method",
+    "year": 2018,
+    "venue": "MATERIALS TRANSACTIONS",
+    "doi": "10.2320/matertrans.m2017292",
+    "url": "http://dx.doi.org/10.2320/matertrans.m2017292",
+    "type": "journal-article",
+    "orcidPutCode": "97342705",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "Mitsuhiro Asato",
+        "given": "Mitsuhiro",
+        "family": "Asato"
+      },
+      {
+        "name": "Nobuhisa Fujima",
+        "given": "Nobuhisa",
+        "family": "Fujima"
+      },
+      {
+        "name": "Toshiharu Hoshino",
+        "given": "Toshiharu",
+        "family": "Hoshino"
+      },
+      {
+        "name": "Ying Chen",
+        "given": "Ying",
+        "family": "Chen"
+      },
+      {
+        "name": "Tetsuo Mohri",
+        "given": "Tetsuo",
+        "family": "Mohri"
+      }
+    ],
+    "volume": "59",
+    "issue": "3",
+    "pages": "338-347"
+  },
+  {
+    "id": "10.11546/cicsj.36.9",
+    "title": "マテリアルズ・インフォマティクス概説",
+    "year": 2018,
+    "venue": "日本化学会情報化学部会誌",
+    "doi": "10.11546/cicsj.36.9",
+    "url": "https://doi.org/10.11546/cicsj.36.9",
+    "type": "journal-article",
+    "orcidPutCode": "143252656",
+    "source": "orcid"
+  },
+  {
+    "id": "10.14723/tmrsj.40.159",
+    "title": "Full-Potential KKR calculations for Lattice Distortion around Impurities in Al-based dilute alloys, based on the Generalized-Gradient Approximation",
+    "year": 2015,
+    "venue": "Transactions of the Materials Research Society of Japan",
+    "doi": "10.14723/tmrsj.40.159",
+    "url": "http://dx.doi.org/10.14723/tmrsj.40.159",
+    "type": "journal-article",
+    "orcidPutCode": "97342715",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "C. Liu",
+        "given": "C.",
+        "family": "Liu"
+      },
+      {
+        "name": "M. Asato",
+        "given": "M.",
+        "family": "Asato"
+      },
+      {
+        "name": "N. Fujima",
+        "given": "N.",
+        "family": "Fujima"
+      },
+      {
+        "name": "T. Hoshino",
+        "given": "T.",
+        "family": "Hoshino"
+      }
+    ],
+    "volume": "40",
+    "issue": "2",
+    "pages": "159-164"
+  },
+  {
+    "id": "10.1016/j.phpro.2015.12.179",
+    "title": "Full-Potential KKR Calculations for Lattice Distortion Around Impurities in Al-based Dilute Alloys, Based on the Generalized-Gradient Approximation",
+    "year": 2015,
+    "venue": "Physics Procedia",
+    "doi": "10.1016/j.phpro.2015.12.179",
+    "url": "http://dx.doi.org/10.1016/j.phpro.2015.12.179",
+    "type": "journal-article",
+    "orcidPutCode": "97342716",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "C. Liu",
+        "given": "C.",
+        "family": "Liu"
+      },
+      {
+        "name": "M. Asato",
+        "given": "M.",
+        "family": "Asato"
+      },
+      {
+        "name": "N. Fujima",
+        "given": "N.",
+        "family": "Fujima"
+      },
+      {
+        "name": "T. Hoshino",
+        "given": "T.",
+        "family": "Hoshino"
+      }
+    ],
+    "volume": "75",
+    "pages": "1088-1095"
+  },
+  {
+    "id": "10.2320/matertrans.m2013391",
+    "title": "Full-Potential KKR Calculations for Lattice Distortion Effect of Point Defect in bcc-Fe Dilute Alloys, Based on the Generalized-Gradient Approximation",
+    "year": 2014,
+    "venue": "MATERIALS TRANSACTIONS",
+    "doi": "10.2320/matertrans.m2013391",
+    "url": "http://dx.doi.org/10.2320/matertrans.m2013391",
+    "type": "journal-article",
+    "orcidPutCode": "97342721",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "M. Asato",
+        "given": "M.",
+        "family": "Asato"
+      },
+      {
+        "name": "C. Liu",
+        "given": "C.",
+        "family": "Liu"
+      },
+      {
+        "name": "K. Kawakami",
+        "given": "K.",
+        "family": "Kawakami"
+      },
+      {
+        "name": "N. Fujima",
+        "given": "N.",
+        "family": "Fujima"
+      },
+      {
+        "name": "T. Hoshino",
+        "given": "T.",
+        "family": "Hoshino"
+      }
+    ],
+    "volume": "55",
+    "issue": "8",
+    "pages": "1248-1256"
+  },
+  {
+    "id": "10.2320/jinstmet.j2014019",
+    "title": "Full-Potential KKR calculations for point defect energies in Fe-based dilute alloys, based on the Generalized-Gradient Approximation",
+    "year": 2014,
+    "venue": "Journal of the Japan Institute of Metals and Materials",
+    "doi": "10.2320/jinstmet.j2014019",
+    "url": "http://www.scopus.com/inward/record.url?eid=2-s2.0-84905447733&partnerID=MN8TOARS",
+    "type": "journal-article",
+    "orcidPutCode": "101333568",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "M. Asato",
+        "given": "M.",
+        "family": "Asato"
+      },
+      {
+        "name": "N. Fujima",
+        "given": "N.",
+        "family": "Fujima"
+      },
+      {
+        "name": "T. Hoshino",
+        "given": "T.",
+        "family": "Hoshino"
+      }
+    ],
+    "volume": "78",
+    "issue": "6",
+    "pages": "235-240"
+  },
+  {
+    "id": "10.1002/9781118792148.ch349",
+    "title": "Full-Potential KKR Calculations for Lattice Distortion of Impurities in Fe-Based Dilute Alloys, Based on the Generalized-Gradient Approximation",
+    "year": 2013,
+    "month": 8,
+    "venue": "PRICM",
+    "doi": "10.1002/9781118792148.ch349",
+    "url": "http://dx.doi.org/10.1002/9781118792148.ch349",
+    "type": "book-chapter",
+    "orcidPutCode": "97342739",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "C. Liu",
+        "given": "C.",
+        "family": "Liu"
+      },
+      {
+        "name": "M. Asato",
+        "given": "M.",
+        "family": "Asato"
+      },
+      {
+        "name": "N. Fujima",
+        "given": "N.",
+        "family": "Fujima"
+      },
+      {
+        "name": "T. Hoshino",
+        "given": "T.",
+        "family": "Hoshino"
+      }
+    ],
+    "pages": "2821-2825"
+  },
+  {
+    "id": "10.2320/matertrans.m2013176",
+    "title": "Full-Potential KKR Calculations for Point Defect Energies in Fe-Based Dilute Alloys, Based on the Generalized-Gradient Approximation",
+    "year": 2013,
+    "venue": "MATERIALS TRANSACTIONS",
+    "doi": "10.2320/matertrans.m2013176",
+    "url": "http://dx.doi.org/10.2320/matertrans.m2013176",
+    "type": "journal-article",
+    "orcidPutCode": "97342735",
+    "source": "orcid+crossref",
+    "authors": [
+      {
+        "name": "Chang Liu",
+        "given": "Chang",
+        "family": "Liu"
+      },
+      {
+        "name": "M. Asato",
+        "given": "M.",
+        "family": "Asato"
+      },
+      {
+        "name": "N. Fujima",
+        "given": "N.",
+        "family": "Fujima"
+      },
+      {
+        "name": "T. Hoshino",
+        "given": "T.",
+        "family": "Hoshino"
+      }
+    ],
+    "volume": "54",
+    "issue": "9",
+    "pages": "1667-1672"
+  }
+]

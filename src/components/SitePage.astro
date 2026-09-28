@@ -1,15 +1,18 @@
 ---
 import CVContent from './CVContent.astro';
+import PublicationItem from './PublicationItem.astro';
 import { cvUI } from '../i18n/cv';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { type Locale, localePath, ui } from '../i18n';
 import { researchThemes, site } from '../config/site';
 import { getCollection } from 'astro:content';
 import { getPublications } from '../utils/publications';
+import { hasAuthorMarkers } from '../utils/citation';
 const { lang = 'en', section = 'home' } = Astro.props as { lang?: Locale; section?: string };
 const t = ui[lang];
 const profile = cvUI[lang];
 const pubs = getPublications();
+const pubTypes = [...new Set(pubs.map((p) => p.category ?? p.type).filter(Boolean))].sort();
 const entries = (
   await getCollection(
     section === 'notes' ? 'notes' : 'blog',
@@ -113,30 +116,10 @@ const title = titles[section] ?? site.name;
           placeholder="Search title / venue / author"
           aria-label="Search publications"
         /><select id="publication-type"
-          ><option value="">All types</option><option>journal-article</option><option
-            >conference-paper</option
-          ><option>preprint</option><option>dataset</option></select
+          ><option value="">All types</option>{pubTypes.map((x) => <option>{x}</option>)}</select
         >
-      </div><div id="publications">
-        {
-          pubs.map((p) => (
-            <article
-              class="entry"
-              data-search={[p.title, p.venue, ...(p.authors ?? [])].join(' ').toLowerCase()}
-              data-type={p.category ?? p.type ?? ''}
-            >
-              <h2>{p.title}</h2>
-              {p.authors && <p>{p.authors.join(', ')}</p>}
-              <p class="meta">
-                {p.venue ?? p.journal} {p.year && `· ${p.year}`}
-              </p>
-              <p>
-                {p.doi && <a href={`https://doi.org/${p.doi}`}>DOI</a>}{' '}
-                {p.links && Object.entries(p.links).map(([k, v]) => <a href={v}>{k} </a>)}
-              </p>
-            </article>
-          ))
-        }{
+      </div>{hasAuthorMarkers(pubs) && <p class="meta">{t.authorMarkers}</p>}<div id="publications">
+        {pubs.map((p) => <PublicationItem pub={p} />)}{
           pubs.length === 0 && (
             <p>
               {t.empty} <a href={site.orcid}>View the ORCID profile.</a>
