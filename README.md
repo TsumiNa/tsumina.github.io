@@ -1,6 +1,6 @@
 # TsumiNa academic website
 
-A static-first [Astro](https://astro.build/) website for an academic CV, normalized publications, polished Blog posts, and evolving Learning Notes. English is canonical; Japanese and Simplified Chinese use `/ja/` and `/zh/`. The repository is the content source of truth, and the same `dist/` deploys to GitHub Pages or Cloudflare Pages.
+A static-first [Astro](https://astro.build/) website for an academic CV, normalized publications, polished Blog posts, and evolving Learning Notes. English is canonical; Japanese and Simplified Chinese use `/ja/` and `/zh/`. The repository is the content source of truth, and the same build produces `dist/` for GitHub Pages or Cloudflare Workers.
 
 ## Architecture
 
@@ -15,7 +15,7 @@ No existing theme was copied. See [`docs/theme-decision.md`](docs/theme-decision
 
 ## Local development
 
-Requires Node 22 and pnpm 10.
+Requires the Node.js LTS major declared in `.node-version` and the pnpm release declared in `package.json`.
 
 ```sh
 pnpm install
@@ -51,14 +51,11 @@ The script deduplicates by normalized DOI and writes `src/data/publications.json
 
 ## Deployment
 
-`.github/workflows/deploy.yml` builds once and deploys the artifact to GitHub Pages at the root URL. Enable Pages with **GitHub Actions** as its source.
+`.github/workflows/deploy.yml` builds and deploys the site to GitHub Pages at the root URL. Enable Pages with **GitHub Actions** as its source.
 
-Optional Cloudflare deployment consumes that same artifact when repository variable `ENABLE_CLOUDFLARE=true`. Configure:
+Cloudflare Workers Builds connects directly to the same repository and independently builds and deploys the same commit. GitHub Actions contains no Cloudflare credentials or deployment job. See [`docs/deployment.md`](docs/deployment.md) for the exact setup, commands, preview behavior, and domain guidance.
 
-- secrets `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
-- variable `CLOUDFLARE_PROJECT_NAME`
-
-Cloudflare is otherwise skipped and cannot block Pages. `.github/workflows/sync-orcid.yml` runs a read-only weekly/manual sync preview and prints a diff; it deliberately does not commit.
+`.github/workflows/sync-orcid.yml` runs a read-only weekly/manual sync preview and prints a diff; it deliberately does not commit.
 
 ## Content status
 
