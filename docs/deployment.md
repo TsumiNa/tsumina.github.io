@@ -23,11 +23,11 @@ Until the source is changed to GitHub Actions, GitHub may continue starting its 
 
 ## Cloudflare Workers Builds setup
 
-The repository contains `wrangler.jsonc` for an assets-only Worker named `tsumina-github-io`. Static files are served from `dist/`; unmatched routes return 404 rather than falling back to an SPA shell.
+The repository contains `wrangler.jsonc` for an assets-only Worker named `know`. Static files are served from `dist/`; unmatched routes return 404 rather than falling back to an SPA shell.
 
 1. In Cloudflare, open **Workers & Pages → Create application**.
 2. Under **Import a repository**, connect the GitHub account and select `TsumiNa/tsumina.github.io`.
-3. Set the Worker name to `tsumina-github-io`. It must match the `name` in `wrangler.jsonc`.
+3. Set the Worker name to `know`. It must match the `name` in `wrangler.jsonc`.
 4. Use these production build settings:
    - Production branch: `main`
    - Root directory: `/`
@@ -43,12 +43,12 @@ Cloudflare production and GitHub Pages deployments are triggered independently b
 
 ## Domain and canonical URL
 
-The site currently uses `https://tsumina.github.io` as Astro's `site` value, so canonical links and the sitemap identify GitHub Pages as the primary site. The Cloudflare Worker is initially a synchronized mirror on its `workers.dev` URL.
+The site currently uses `https://tsumina.github.io` as Astro's `site` value, so canonical links and the sitemap identify GitHub Pages as the primary site. The Cloudflare Worker is initially a synchronized mirror at `https://know.sakuki-harada.workers.dev`.
 
 To use a domain managed by Cloudflare as the primary site:
 
 1. Deploy the Worker successfully once.
-2. In **Workers & Pages**, select `tsumina-github-io`.
+2. In **Workers & Pages**, select `know`.
 3. Open **Settings → Domains & Routes → Add → Custom Domain** and attach a domain or subdomain in a Cloudflare-managed zone.
 4. Change Astro's `site` setting to that custom domain in a separate PR, then rebuild both mirrors.
 
