@@ -20,14 +20,14 @@ const common = z.object({
 export const blogCategories = ['research', 'technical', 'learning', 'tutorial'] as const;
 export type BlogCategory = (typeof blogCategories)[number];
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.mdx', base: './src/content/blog' }),
+  loader: glob({ pattern: '**/*.mdx', base: './articles/blog' }),
   schema: common.extend({
     featured: z.boolean().default(false),
     category: z.enum(blogCategories).default('technical'),
   }),
 });
 const notes = defineCollection({
-  loader: glob({ pattern: '**/*.mdx', base: './src/content/notes' }),
+  loader: glob({ pattern: '**/*.mdx', base: './articles/notes' }),
   schema: common.extend({
     topic: z.string().optional(),
     status: z.enum(['draft', 'evolving', 'stable']).default('evolving'),

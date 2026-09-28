@@ -19,7 +19,7 @@ These files are mandatory extensions of `AGENTS.md`, not optional guidance. Clas
 
 # Architecture Principles
 
-- Keep source content in Git as MDX or typed structured data. Blog and Notes must use `.mdx` files in Astro Content Collections.
+- Keep source content in Git as MDX or typed structured data. Blog and Notes must use `.mdx` files in Astro Content Collections, with authored files under the repository-root `articles/` directory.
 - Prefer static generation, build-time transformations, reusable layouts/components, semantic HTML, and minimal client JavaScript.
 - Keep the architecture platform-neutral. GitHub Pages is primary; Cloudflare consumes the same `dist/` output.
 - Centralize site metadata, i18n dictionaries, design tokens, and publication normalization.

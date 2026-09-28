@@ -32,7 +32,7 @@ pnpm preview
 
 ## Authoring
 
-Add Blog `.mdx` entries under `src/content/blog/` and Notes `.mdx` entries under `src/content/notes/`. Follow `src/content.config.ts`. Every entry renders in branch builds for Cloudflare Preview review; merging the owner-approved PR makes it eligible for production. Optional translations are separate files with `lang: ja` or `lang: zh` and a shared stable `translationKey`.
+Add Blog `.mdx` entries under `articles/blog/` and Notes `.mdx` entries under `articles/notes/`. Follow `src/content.config.ts`. Every entry renders in branch builds for Cloudflare Preview review; merging the owner-approved PR makes it eligible for production. Optional translations are separate files with `lang: ja` or `lang: zh` and a shared stable `translationKey`.
 
 Figures, grids, wide tables, equations, chemical structure SVGs, callouts, code, and footnotes are documented in [`docs/content-authoring.md`](docs/content-authoring.md).
 

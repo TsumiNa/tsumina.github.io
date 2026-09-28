@@ -59,7 +59,7 @@ export const blogDirectorySlug = (directory: BlogDirectory) =>
 export type BlogDirectoryConfigResolver = (segments: string[]) => BlogDirectoryConfig;
 
 const localizedIndex = /^index(?:-(?:en|ja|zh))?$/;
-const blogContentRoot = join(process.cwd(), 'src/content/blog');
+const blogContentRoot = join(process.cwd(), 'articles/blog');
 const directoryConfigCache = new Map<string, BlogDirectoryConfig>();
 
 const compareNames = (a: string, b: string) =>

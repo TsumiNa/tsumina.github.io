@@ -1,6 +1,6 @@
 # Technical content authoring
 
-Blog entries belong in `src/content/blog/`; learning notes belong in `src/content/notes/`. Both collections accept `.mdx` files only, including prose-only entries, so every article can adopt shared components without a later extension migration.
+Blog entries belong in `articles/blog/`; learning notes belong in `articles/notes/`. Both collections accept `.mdx` files only, including prose-only entries, so every article can adopt shared components without a later extension migration.
 
 ## Preview and approval
 
@@ -31,17 +31,20 @@ Blog entries accept `category: research | technical | learning | tutorial` (defa
 
 ## Optional series hierarchy
 
-Blog posts directly inside `src/content/blog/` are standalone. A directory creates a series, and its file tree is the reading tree:
+Blog posts directly inside `articles/blog/` are standalone. A directory creates a series, and its file tree is the reading tree:
 
 ```text
-src/content/blog/
+articles/blog/
 ├── standalone-post.mdx
 └── ai-coding-for-non-cs/
+    ├── config.toml
     ├── 00-prologue-zh.mdx
     ├── 01-project-language/
+    │   ├── config.toml
     │   ├── 01-frameworks-zh.mdx
     │   └── 02-abstraction-zh.mdx
     └── 02-first-delivery/
+        ├── config.toml
         └── 01-build-and-ci-zh.mdx
 ```
 
@@ -76,8 +79,8 @@ zh = "AI coding 时代的非 CS 编程"
 ## Figures and multi-panel figures
 
 ```mdx
-import Figure from '../../components/content/Figure.astro';
-import FigureGrid from '../../components/content/FigureGrid.astro';
+import Figure from '../../src/components/content/Figure.astro';
+import FigureGrid from '../../src/components/content/FigureGrid.astro';
 
 <Figure
   src="/figures/result.svg"
@@ -94,6 +97,8 @@ import FigureGrid from '../../components/content/FigureGrid.astro';
 ```
 
 `width` is `normal`, `wide`, or `full`. Prefer authored SVG or optimized PNG/JPEG/WebP/AVIF files and meaningful alt text.
+
+The imports above are relative to an article directly in `articles/blog/`. Add one `../` for each series or chapter directory when importing a component from `src/`.
 
 ## Tables
 
@@ -140,7 +145,7 @@ Use `$E=mc^2$` inline and double-dollar fences for display math. `remark-math` a
 Prefer publication-quality static SVG:
 
 ```mdx
-import ChemStructure from '../../components/content/ChemStructure.astro';
+import ChemStructure from '../../src/components/content/ChemStructure.astro';
 <ChemStructure src="/figures/molecule.svg" alt="Structural formula of …" caption="Molecular structure." />
 ```
 
@@ -161,7 +166,7 @@ A structured BibTeX/CSL engine is deferred, but this syntax can be migrated late
 ## Callouts
 
 ```mdx
-import Callout from '../../components/content/Callout.astro';
+import Callout from '../../src/components/content/Callout.astro';
 <Callout type="Definition" title="Order parameter">Concise semantic content.</Callout>
 ```
 

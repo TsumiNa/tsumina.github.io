@@ -1,7 +1,7 @@
 ---
 description: "Use when drafting, revising, or translating Blog and Notes content on the owner's behalf. Defers to the repository's tool-agnostic writing skill."
 name: 'AI-Assisted Writing'
-applyTo: 'src/content/**'
+applyTo: 'articles/**'
 ---
 
 # AI-Assisted Writing
